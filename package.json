@@ -1,0 +1,30 @@
+{
+  "name": "jss-examples",
+  "description": "JSS Examples",
+  "version": "0.1.0",
+  "author": {
+    "name": "Oleg Slobodskoi",
+    "email": "oleg008@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jsstyles/jss-examples.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "devDependencies": {
+    "jss": "^2.2.0",
+    "babel": "^5.6.14",
+    "babel-core": "^5.6.20",
+    "babel-loader": "^5.3.1",
+    "webpack": "^1.11.0"
+  },
+  "scripts": {
+    "all": "npm run jss && npm run build",
+    "build": "npm run build:calendar",
+    "build:calendar": "webpack ./calendar/index.js ./calendar/dist/index.js --config ./calendar/webpack.config.js",
+    "jss": "cp ./node_modules/jss/dist/jss.js ./jss.js"
+  }
+}
