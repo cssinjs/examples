@@ -135,8 +135,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
-
 	/**
 	 * StyleSheets written in javascript.
 	 *
@@ -145,25 +143,133 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @license MIT
 	 */
 
-	var StyleSheet = __webpack_require__(4)
-	var Rule = __webpack_require__(5)
-	var Jss = __webpack_require__(9)
-	var uid = __webpack_require__(6)
+	'use strict';
 
-	module.exports = exports = new Jss()
+	exports.__esModule = true;
 
-	exports.StyleSheet = StyleSheet
-	exports.Rule = Rule
-	exports.Jss = Jss
-	exports.uid = uid
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _Jss = __webpack_require__(4);
+
+	var _Jss2 = _interopRequireDefault(_Jss);
+
+	exports['default'] = new _Jss2['default']();
+	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
+	'use strict';
 
-	var Rule = __webpack_require__(5)
+	exports.__esModule = true;
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _StyleSheet = __webpack_require__(5);
+
+	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
+
+	var _Rule = __webpack_require__(6);
+
+	var _Rule2 = _interopRequireDefault(_Rule);
+
+	var _PluginsRegistry = __webpack_require__(10);
+
+	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
+
+	var _uid = __webpack_require__(7);
+
+	var uid = _interopRequireWildcard(_uid);
+
+	/**
+	 * Main Jss class.
+	 *
+	 * @api public
+	 */
+
+	var Jss = (function () {
+	  function Jss() {
+	    _classCallCheck(this, Jss);
+
+	    this.plugins = new _PluginsRegistry2['default']();
+	    this.Jss = Jss;
+	    this.StyleSheet = _StyleSheet2['default'];
+	    this.Rule = _Rule2['default'];
+	    this.uid = uid;
+	  }
+
+	  /**
+	   * Creates a new instance of Jss.
+	   *
+	   * @see Jss
+	   * @api public
+	   */
+
+	  Jss.prototype.create = function create() {
+	    return new Jss();
+	  };
+
+	  /**
+	   * Create a stylesheet.
+	   *
+	   * @see StyleSheet
+	   * @api public
+	   */
+
+	  Jss.prototype.createStyleSheet = function createStyleSheet(rules) {
+	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    options.jss = this;
+	    return new _StyleSheet2['default'](rules, options);
+	  };
+
+	  /**
+	   * Create a rule.
+	   *
+	   * @see Rule
+	   * @return {Rule}
+	   * @api public
+	   */
+
+	  Jss.prototype.createRule = function createRule(selector, style, options) {
+	    if (typeof selector == 'object') {
+	      options = style;
+	      style = selector;
+	      selector = null;
+	    }
+	    if (!options) options = {};
+	    options.jss = this;
+	    var rule = new _Rule2['default'](selector, style, options);
+	    this.plugins.run(rule);
+	    return rule;
+	  };
+
+	  /**
+	   * Register plugin. Passed function will be invoked with a rule instance.
+	   *
+	   * @param {Function} fn
+	   * @api public
+	   */
+
+	  Jss.prototype.use = function use(fn) {
+	    this.plugins.use(fn);
+	    return this;
+	  };
+
+	  return Jss;
+	})();
+
+	exports['default'] = Jss;
+	module.exports = exports['default'];
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
 
 	/**
 	 * StyleSheet abstraction, contains rules, injects stylesheet into dom.
@@ -182,255 +288,287 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} [options]
 	 * @api public
 	 */
-	function StyleSheet(rules, options) {
-	    this.options = options || {}
-	    if (this.options.named == null) this.options.named = true
-	    this.element = null
-	    this.attached = false
-	    this.media = this.options.media
-	    this.type = this.options.type
-	    this.title = this.options.title
-	    this.rules = {}
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var StyleSheet = (function () {
+	  _createClass(StyleSheet, null, [{
+	    key: 'ATTRIBUTES',
+	    value: ['title', 'type', 'media'],
+	    enumerable: true
+	  }]);
+
+	  function StyleSheet(rules) {
+	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    _classCallCheck(this, StyleSheet);
+
+	    if (options.named == null) options.named = true;
+	    this.options = options;
+	    this.element = null;
+	    this.attached = false;
+	    this.media = options.media;
+	    this.type = options.type;
+	    this.title = options.title;
+	    this.rules = {};
 	    // Only when options.named: true.
-	    this.classes = {}
-	    this.deployed = false
-	    this.linked = false
-	    this.jss = this.options.jss
+	    this.classes = {};
+	    this.deployed = false;
+	    this.linked = false;
+	    this.jss = this.options.jss;
 
 	    // Don't create element if we are not in a browser environment.
 	    if (typeof document != 'undefined') {
-	        this.element = this.createElement()
+	      this.element = this.createElement();
 	    }
 
 	    for (var key in rules) {
-	        this.createRules(key, rules[key])
+	      this.createRules(key, rules[key]);
 	    }
-	}
+	  }
 
-	StyleSheet.ATTRIBUTES = ['title', 'type', 'media']
+	  /**
+	   * Insert stylesheet element to render tree.
+	   *
+	   * @api public
+	   * @return {StyleSheet}
+	   */
 
-	module.exports = StyleSheet
-
-	/**
-	 * Insert stylesheet element to render tree.
-	 *
-	 * @api public
-	 * @return {StyleSheet}
-	 */
-	StyleSheet.prototype.attach = function () {
-	    if (this.attached) return this
-
+	  StyleSheet.prototype.attach = function attach() {
+	    if (this.attached) return this;
 	    if (!this.deployed) {
-	        this.deploy()
-	        this.deployed = true
+	      this.deploy();
+	      this.deployed = true;
 	    }
 
-	    document.head.appendChild(this.element)
+	    document.head.appendChild(this.element);
 
 	    // Before element is attached to the dom rules are not created.
 	    if (!this.linked && this.options.link) {
-	        this.link()
-	        this.linked = true
+	      this.link();
+	      this.linked = true;
 	    }
+	    this.attached = true;
+	    return this;
+	  };
 
-	    this.attached = true
+	  /**
+	   * Remove stylesheet element from render tree.
+	   *
+	   * @return {StyleSheet}
+	   * @api public
+	   */
 
-	    return this
-	}
+	  StyleSheet.prototype.detach = function detach() {
+	    if (!this.attached) return this;
+	    this.element.parentNode.removeChild(this.element);
+	    this.attached = false;
+	    return this;
+	  };
 
-	/**
-	 * Remove stylesheet element from render tree.
-	 *
-	 * @return {StyleSheet}
-	 * @api public
-	 */
-	StyleSheet.prototype.detach = function () {
-	    if (!this.attached) return this
+	  /**
+	   * Deploy styles to the element.
+	   *
+	   * @return {StyleSheet}
+	   * @api private
+	   */
 
-	    this.element.parentNode.removeChild(this.element)
-	    this.attached = false
+	  StyleSheet.prototype.deploy = function deploy() {
+	    this.element.innerHTML = '\n' + this.toString() + '\n';
+	    return this;
+	  };
 
-	    return this
-	}
+	  /**
+	   * Find CSSRule objects in the DOM and link them in the corresponding Rule instance.
+	   *
+	   * @return {StyleSheet}
+	   * @api private
+	   */
 
-	/**
-	 * Deploy styles to the element.
-	 *
-	 * @return {StyleSheet}
-	 * @api private
-	 */
-	StyleSheet.prototype.deploy = function () {
-	    this.element.innerHTML = '\n' + this.toString() + '\n'
-
-	    return this
-	}
-
-	/**
-	 * Find CSSRule objects in the DOM and link them in the corresponding Rule instance.
-	 *
-	 * @return {StyleSheet}
-	 * @api private
-	 */
-	StyleSheet.prototype.link = function () {
-	    var CSSRuleList = this.element.sheet.cssRules
-	    var rules = this.rules
+	  StyleSheet.prototype.link = function link() {
+	    var CSSRuleList = this.element.sheet.cssRules;
+	    var rules = this.rules;
 
 	    for (var i = 0; i < CSSRuleList.length; i++) {
-	        var CSSRule = CSSRuleList[i]
-	        var rule = rules[CSSRule.selectorText]
-	        if (rule) rule.CSSRule = CSSRule
+	      var CSSRule = CSSRuleList[i];
+	      var rule = rules[CSSRule.selectorText];
+	      if (rule) rule.CSSRule = CSSRule;
 	    }
+	    return this;
+	  };
 
-	    return this
-	}
+	  /**
+	   * Add a rule to the current stylesheet. Will insert a rule also after the stylesheet
+	   * has been rendered first time.
+	   *
+	   * @param {Object} [key] can be selector or name if `options.named` is true
+	   * @param {Object} style property/value hash
+	   * @return {Rule}
+	   * @api public
+	   */
 
-	/**
-	 * Add a rule to the current stylesheet. Will insert a rule also after the stylesheet
-	 * has been rendered first time.
-	 *
-	 * @param {Object} [key] can be selector or name if `options.named` is true
-	 * @param {Object} style property/value hash
-	 * @return {Rule}
-	 * @api public
-	 */
-	StyleSheet.prototype.addRule = function (key, style) {
-	    var rules = this.createRules(key, style)
+	  StyleSheet.prototype.addRule = function addRule(key, style) {
+	    var rules = this.createRules(key, style);
 
 	    // Don't insert rule directly if there is no stringified version yet.
 	    // It will be inserted all together when .attach is called.
 	    if (this.deployed) {
-	        var sheet = this.element.sheet
-	        for (var i = 0; i < rules.length; i++) {
-	            var nextIndex = sheet.cssRules.length
-	            var rule = rules[i]
-	            sheet.insertRule(rule.toString(), nextIndex)
-	            if (this.options.link) rule.CSSRule = sheet.cssRules[nextIndex]
-	        }
-	    } else {
-	        this.deploy()
-	    }
+	      var sheet = this.element.sheet;
 
-	    return rules
-	}
+	      for (var i = 0; i < rules.length; i++) {
+	        var nextIndex = sheet.cssRules.length;
+	        var rule = rules[i];
+	        sheet.insertRule(rule.toString(), nextIndex);
+	        if (this.options.link) rule.CSSRule = sheet.cssRules[nextIndex];
+	      }
+	    } else this.deploy();
+	    return rules;
+	  };
 
-	/**
-	 * Create rules, will render also after stylesheet was rendered the first time.
-	 *
-	 * @param {Object} rules key:style hash.
-	 * @return {Array} array of added rules
-	 * @api public
-	 */
-	StyleSheet.prototype.addRules = function (rules) {
-	    var added = []
+	  /**
+	   * Create rules, will render also after stylesheet was rendered the first time.
+	   *
+	   * @param {Object} rules key:style hash.
+	   * @return {Array} array of added rules
+	   * @api public
+	   */
 
+	  StyleSheet.prototype.addRules = function addRules(rules) {
+	    var added = [];
 	    for (var key in rules) {
-	        added.push.apply(added, this.addRule(key, rules[key]))
+	      added.push.apply(added, this.addRule(key, rules[key]));
 	    }
+	    return added;
+	  };
 
-	    return added
-	}
+	  /**
+	   * Get a rule.
+	   *
+	   * @param {String} key can be selector or name if `named` is true.
+	   * @return {Rule}
+	   * @api public
+	   */
 
-	/**
-	 * Get a rule.
-	 *
-	 * @param {String} key can be selector or name if `named` is true.
-	 * @return {Rule}
-	 * @api public
-	 */
-	StyleSheet.prototype.getRule = function (key) {
-	    return this.rules[key]
-	}
+	  StyleSheet.prototype.getRule = function getRule(key) {
+	    return this.rules[key];
+	  };
 
-	/**
-	 * Convert rules to a css string.
-	 *
-	 * @return {String}
-	 * @api public
-	 */
-	StyleSheet.prototype.toString = function () {
-	    var str = ''
-	    var rules = this.rules
-	    var stringified = {}
+	  /**
+	   * Convert rules to a css string.
+	   *
+	   * @return {String}
+	   * @api public
+	   */
+
+	  StyleSheet.prototype.toString = function toString() {
+	    var str = '';
+	    var rules = this.rules;
+
+	    var stringified = {};
 	    for (var key in rules) {
-	        var rule = rules[key]
-	        // We have the same rule referenced twice if using named urles.
-	        // By name and by selector.
-	        if (stringified[rule.id]) continue
-	        if (str) str += '\n'
-	        str += rules[key].toString()
-	        stringified[rule.id] = true
+	      var rule = rules[key];
+	      // We have the same rule referenced twice if using named urles.
+	      // By name and by selector.
+	      if (stringified[rule.id]) continue;
+	      if (str) str += '\n';
+	      str += rules[key].toString();
+	      stringified[rule.id] = true;
 	    }
+	    return str;
+	  };
 
-	    return str
-	}
+	  /**
+	   * Create a rule, will not render after stylesheet was rendered the first time.
+	   *
+	   * @param {Object} [selector] if you don't pass selector - it will be generated
+	   * @param {Object} [style] declarations block
+	   * @param {Object} [options] rule options
+	   * @return {Array} rule can contain child rules
+	   * @api private
+	   */
 
-	/**
-	 * Create a rule, will not render after stylesheet was rendered the first time.
-	 *
-	 * @param {Object} [selector] if you don't pass selector - it will be generated
-	 * @param {Object} [style] declarations block
-	 * @param {Object} [options] rule options
-	 * @return {Array} rule can contain child rules
-	 * @api private
-	 */
-	StyleSheet.prototype.createRules = function (key, style, options) {
-	    var rules = []
-	    if (!options) options = {}
-	    var named = this.options.named
+	  StyleSheet.prototype.createRules = function createRules(key, style) {
+	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+	    var rules = [];
+	    var named = this.options.named;
+
 	    // Scope options overwrite instance options.
-	    if (options.named != null) named = options.named
+	    if (options.named != null) named = options.named;
 
 	    var rule = this.jss.createRule(key, style, {
-	        sheet: this,
-	        named: named
-	    })
-	    rules.push(rule)
+	      sheet: this,
+	      named: named
+	    });
+	    rules.push(rule);
 
-	    this.rules[rule.selector] = rule
+	    this.rules[rule.selector] = rule;
 	    if (named && !rule.isAtRule) {
-	        this.rules[key] = rule
-	        this.classes[key] = rule.className
+	      this.rules[key] = rule;
+	      this.classes[key] = rule.className;
 	    }
 
 	    for (key in rule.children) {
-	        rules.push(this.createRules(
-	            key,
-	            rule.children[key].style,
-	            rule.children[key].options
-	        ))
+	      rules.push(this.createRules(key, rule.children[key].style, rule.children[key].options));
 	    }
+	    return rules;
+	  };
 
-	    return rules
-	}
+	  /**
+	   * Create style sheet element.
+	   *
+	   * @return {Element}
+	   * @api private
+	   */
 
-	/**
-	 * Create style sheet element.
-	 *
-	 * @api private
-	 * @return {Element}
-	 */
-	StyleSheet.prototype.createElement = function () {
-	    var element = document.createElement('style')
+	  StyleSheet.prototype.createElement = function createElement() {
+	    var _this = this;
 
+	    var element = document.createElement('style');
 	    StyleSheet.ATTRIBUTES.forEach(function (name) {
-	        if (this[name]) element.setAttribute(name, this[name])
-	    }, this)
+	      if (_this[name]) element.setAttribute(name, _this[name]);
+	    });
+	    return element;
+	  };
 
-	    return element
-	}
+	  return StyleSheet;
+	})();
 
+	exports['default'] = StyleSheet;
+	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
+	'use strict';
 
-	var uid = __webpack_require__(6)
-	var clone = __webpack_require__(7)
-	var defaults = __webpack_require__(8)
+	exports.__esModule = true;
 
-	var toString = Object.prototype.toString
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _uid = __webpack_require__(7);
+
+	var uid = _interopRequireWildcard(_uid);
+
+	var _clone = __webpack_require__(8);
+
+	var _clone2 = _interopRequireDefault(_clone);
+
+	var _defaults = __webpack_require__(9);
+
+	var _defaults2 = _interopRequireDefault(_defaults);
 
 	/**
 	 * Rule is selector + style hash.
@@ -440,249 +578,257 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} [options]
 	 * @api public
 	 */
-	function Rule(selector, style, options) {
-	    this.id = uid.get()
-	    this.options = options || {}
-	    if (this.options.named == null) this.options.named = true
-	    this.isAtRule = (selector || '')[0] == '@'
 
-	    if (this.options.named) {
-	        if (this.isAtRule) {
-	            this.selector = selector
-	        } else {
-	            this.className = Rule.NAMESPACE_PREFIX + '-' + this.id
-	            this.selector = '.' + this.className
-	        }
-	    } else {
-	        this.selector = selector
-	    }
+	var Rule = (function () {
+	  _createClass(Rule, null, [{
+	    key: 'NAMESPACE_PREFIX',
+
+	    /**
+	     * Class name prefix when generated.
+	     *
+	     * @type {String}
+	     * @api private
+	     */
+	    value: 'jss',
+
+	    /**
+	     * Indentation string for formatting toString output.
+	     *
+	     * @type {String}
+	     * @api private
+	     */
+	    enumerable: true
+	  }, {
+	    key: 'INDENTATION',
+	    value: '  ',
+	    enumerable: true
+	  }]);
+
+	  function Rule(selector, style) {
+	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+	    _classCallCheck(this, Rule);
+
+	    if (options.named == null) options.named = true;
+	    this.id = uid.get();
+	    this.options = options;
+	    this.isAtRule = (selector || '')[0] === '@';
+
+	    if (options.named) {
+	      if (this.isAtRule) {
+	        this.selector = selector;
+	      } else {
+	        this.className = Rule.NAMESPACE_PREFIX + '-' + this.id;
+	        this.selector = '.' + this.className;
+	      }
+	    } else this.selector = selector;
 
 	    // We expect style to be plain object.
-	    if (style) this.style = clone(style)
+	    if (style) this.style = _clone2['default'](style);
 
 	    // Will be set by StyleSheet#link if link option is true.
-	    this.CSSRule = null
+	    this.CSSRule = null;
 	    // When at-rule has sub rules.
-	    this.subrules = null
-	    this.jss = this.options.jss
-	    this.extractSubrules()
-	}
+	    this.subrules = null;
+	    this.jss = this.options.jss;
+	    this.extractSubrules();
+	  }
 
-	module.exports = Rule
+	  /**
+	   * Indent a string.
+	   *
+	   * http://jsperf.com/array-join-vs-for
+	   *
+	   * @param {Number} level
+	   * @param {String} str
+	   * @return {String}
+	   */
 
-	/**
-	 * Class name prefix when generated.
-	 *
-	 * @type {String}
-	 * @api private
-	 */
-	Rule.NAMESPACE_PREFIX = 'jss'
+	  /**
+	   * Get or set a style property.
+	   *
+	   * @param {String} name
+	   * @param {String|Number} [value]
+	   * @return {Rule|String|Number}
+	   * @api public
+	   */
 
-	/**
-	 * Indentation string for formatting toString output.
-	 *
-	 * @type {String}
-	 * @api private
-	 */
-	Rule.INDENTATION = '  '
-
-	/**
-	 * Get or set a style property.
-	 *
-	 * @param {String} name
-	 * @param {String|Number} [value]
-	 * @return {Rule|String|Number}
-	 * @api public
-	 */
-	Rule.prototype.prop = function (name, value) {
+	  Rule.prototype.prop = function prop(name, value) {
 	    // Its a setter.
 	    if (value != null) {
-	        if (!this.style) this.style = {}
-	        this.style[name] = value
-	        // If linked option in StyleSheet is not passed, CSSRule is not defined.
-	        if (this.CSSRule) this.CSSRule.style[name] = value
-	        return this
+	      if (!this.style) this.style = {};
+	      this.style[name] = value;
+	      // If linked option in StyleSheet is not passed, CSSRule is not defined.
+	      if (this.CSSRule) this.CSSRule.style[name] = value;
+	      return this;
 	    }
 
 	    // Its a getter.
-	    if (this.style) value = this.style[name]
+	    if (this.style) value = this.style[name];
 
 	    // Read the value from the DOM if its not cached.
 	    if (value == null && this.CSSRule) {
-	        value = this.CSSRule.style[name]
-	        // Cache the value after we have got it from the DOM once.
-	        this.style[name] = value
+	      value = this.CSSRule.style[name];
+	      // Cache the value after we have got it from the DOM once.
+	      this.style[name] = value;
 	    }
+	    return value;
+	  };
 
-	    return value
-	}
+	  /**
+	   * Add child rule. Required for plugins like "nested".
+	   * StyleSheet will render them as a separate rule.
+	   *
+	   * @param {String} selector
+	   * @param {Object} style
+	   * @param {Object} [options] rule options
+	   * @return {Rule}
+	   * @api private
+	   */
 
-	/**
-	 * Add child rule. Required for plugins like "nested".
-	 * StyleSheet will render them as a separate rule.
-	 *
-	 * @param {String} selector
-	 * @param {Object} style
-	 * @param {Object} [options] rule options
-	 * @return {Rule}
-	 * @api private
-	 */
-	Rule.prototype.addChild = function (selector, style, options) {
-	    if (!this.children) this.children = {}
-	    this.children[selector] = {
-	        style: style,
-	        options: options
-	    }
+	  Rule.prototype.addChild = function addChild(selector, style, options) {
+	    if (!this.children) this.children = {};
+	    this.children[selector] = { style: style, options: options };
+	    return this;
+	  };
 
-	    return this
-	}
+	  /**
+	   * Extract @ rules into separate rules.
+	   *
+	   * @return {Rule}
+	   * @api private
+	   */
 
-	/**
-	 * Extract @ rules into separate rules.
-	 *
-	 * @return {Rule}
-	 * @api private
-	 */
-	Rule.prototype.extractSubrules = function () {
-	    if (!this.isAtRule || !this.style) return
-	    if (!this.subrules) this.subrules = {}
-	    var sheet = this.options.sheet
-	    for (var name in this.style) {
-	        var options = this.options
-	        var style = this.style[name]
-	        // Not a nested rule.
-	        if (typeof style == 'string') break
-	        var selector
-	        // We are going to overwrite some rule within the same sheet when
-	        // @media query matches conditions.
-	        if (options.named) {
-	            var prevRule = sheet && sheet.rules[name]
-	            if (prevRule) {
-	                selector = prevRule.selector
-	                options = defaults({named: false}, options)
-	            }
-	        } else selector = name
-	        this.subrules[name] = this.jss.createRule(selector, style, options)
-	        delete this.style[name]
-	    }
-	}
-
-	/**
-	 * Apply rule to an element inline.
-	 *
-	 * @param {Element} element
-	 * @return {Rule}
-	 * @api public
-	 */
-	Rule.prototype.applyTo = function (element) {
-	    for (var prop in this.style) {
-	        var value = this.style[prop]
-	        if (toString.call(value) == '[object Array]') {
-	            for (var i = 0; i < value.length; i++) {
-	                element.style[prop] = value[i]
-	            }
-	        } else {
-	            element.style[prop] = value
+	  Rule.prototype.extractSubrules = function extractSubrules() {
+	    if (!this.isAtRule || !this.style) return;
+	    if (!this.subrules) this.subrules = {};
+	    var sheet = this.options.sheet;
+	    for (var _name in this.style) {
+	      var options = this.options;
+	      var style = this.style[_name];
+	      // Not a nested rule.
+	      if (typeof style == 'string') break;
+	      var selector = undefined;
+	      // We are going to overwrite some rule within the same sheet when
+	      // @media query matches conditions.
+	      if (options.named) {
+	        var prevRule = sheet && sheet.rules[_name];
+	        if (prevRule) {
+	          selector = prevRule.selector;
+	          options = _defaults2['default']({ named: false }, options);
 	        }
+	      } else selector = _name;
+	      this.subrules[_name] = this.jss.createRule(selector, style, options);
+	      delete this.style[_name];
 	    }
+	  };
 
-	    return this
-	}
+	  /**
+	   * Apply rule to an element inline.
+	   *
+	   * @param {Element} element
+	   * @return {Rule}
+	   * @api public
+	   */
 
-	/**
-	 * Converts the rule to css string.
-	 *
-	 * @return {String}
-	 * @api public
-	 */
-	Rule.prototype.toString = function (options) {
-	    var style = this.style
+	  Rule.prototype.applyTo = function applyTo(element) {
+	    for (var prop in this.style) {
+	      var value = this.style[prop];
+	      if (Array.isArray(value)) {
+	        for (var i = 0; i < value.length; i++) {
+	          element.style[prop] = value[i];
+	        }
+	      } else element.style[prop] = value;
+	    }
+	    return this;
+	  };
 
+	  /**
+	   * Converts the rule to css string.
+	   *
+	   * @return {String}
+	   * @api public
+	   */
+
+	  Rule.prototype.toString = function toString() {
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    var style = this.style;
 	    // At rules like @charset
-	    if (this.isAtRule && !this.style && !this.subrules) return this.selector + ';'
-
-	    if (!options) options = {}
-	    if (options.indentationLevel == null) options.indentationLevel = 0
-
-	    var str = indent(options.indentationLevel, this.selector + ' {')
+	    if (this.isAtRule && !this.style && !this.subrules) return this.selector + ';';
+	    if (options.indentationLevel == null) options.indentationLevel = 0;
+	    var str = indent(options.indentationLevel, this.selector + ' {');
 
 	    for (var prop in style) {
-	        var value = style[prop]
-	        // We want to generate multiple style with identical property names.
-	        if (toString.call(value) == '[object Array]') {
-	            for (var i = 0; i < value.length; i++) {
-	                str += '\n' + indent(options.indentationLevel + 1, prop + ': ' + value[i] + ';')
-	            }
-	        } else {
-	            str += '\n' + indent(options.indentationLevel + 1, prop + ': ' + value + ';')
+	      var value = style[prop];
+	      // We want to generate multiple style with identical property names.
+	      if (Array.isArray(value)) {
+	        for (var i = 0; i < value.length; i++) {
+	          str += '\n' + indent(options.indentationLevel + 1, prop + ': ' + value[i] + ';');
 	        }
+	      } else {
+	        str += '\n' + indent(options.indentationLevel + 1, prop + ': ' + value + ';');
+	      }
 	    }
 
 	    // We have an at-rule with nested statements.
 	    // https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule
-	    var toStringOptions = {indentationLevel: options.indentationLevel + 1}
-	    for (var name in this.subrules) {
-	        str += '\n' + indent(
-	            options.indentationLevel,
-	            this.subrules[name].toString(toStringOptions)
-	        )
+	    var toStringOptions = { indentationLevel: options.indentationLevel + 1 };
+	    for (var _name2 in this.subrules) {
+	      str += '\n' + indent(options.indentationLevel, this.subrules[_name2].toString(toStringOptions));
 	    }
 
-	    str += '\n' + indent(options.indentationLevel, '}')
+	    str += '\n' + indent(options.indentationLevel, '}');
+	    return str;
+	  };
 
-	    return str
-	}
+	  /**
+	   * Returns JSON representation of the rule.
+	   * Nested rules, at-rules and array values are not supported.
+	   *
+	   * @return {Object}
+	   * @api public
+	   */
 
-	/**
-	 * Returns JSON representation of the rule.
-	 * Nested rules, at-rules and array values are not supported.
-	 *
-	 * @return {Object}
-	 * @api public
-	 */
-	Rule.prototype.toJSON = function () {
-	    var style = {}
-
+	  Rule.prototype.toJSON = function toJSON() {
+	    var style = {};
 	    for (var prop in this.style) {
-	        var value = this.style[prop]
-	        var type = typeof value
-	        if (type == 'string' || type == 'number') {
-	            style[prop] = value
-	        }
+	      var value = this.style[prop];
+	      var type = typeof value;
+	      if (type === 'string' || type === 'number') {
+	        style[prop] = value;
+	      }
 	    }
+	    return style;
+	  };
 
-	    return style
-	}
+	  return Rule;
+	})();
 
-	/**
-	 * Indent a string.
-	 *
-	 * http://jsperf.com/array-join-vs-for
-	 *
-	 * @param {Number} level
-	 * @param {String} str
-	 * @return {String}
-	 */
+	exports['default'] = Rule;
 	function indent(level, str) {
-	    var indentStr = ''
-	    for (var i = 0; i < level; i++) indentStr += Rule.INDENTATION
-	    return indentStr + str
+	  var indentStr = '';
+	  for (var i = 0; i < level; i++) {
+	    indentStr += Rule.INDENTATION;
+	  }return indentStr + str;
 	}
-
+	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict'
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
-	var globalReference = typeof window === 'undefined' ? global : window
-	var namespace = '__JSS_UID_PREFIX__'
-	if (globalReference[namespace] == null) globalReference[namespace] = 0
+	exports.__esModule = true;
+	exports.get = get;
+	exports.reset = reset;
+	var globalReference = typeof window === 'undefined' ? global : window;
+	var namespace = '__JSS_UID_PREFIX__';
+	if (globalReference[namespace] == null) globalReference[namespace] = 0;
 
-	var prefix = globalReference[namespace]++
-
-	var counter = 0
+	var prefix = globalReference[namespace]++;
+	var counter = 0;
 
 	/**
 	 * Returns a uid.
@@ -691,8 +837,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @api private
 	 * @return {String}
 	 */
-	exports.get = function() {
-	    return prefix + '-' + counter++
+
+	function get() {
+	  return prefix + '-' + counter++;
 	}
 
 	/**
@@ -700,20 +847,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @api private
 	 */
-	exports.reset = function() {
-	    counter = 0
-	}
 
+	function reset() {
+	  counter = 0;
+	}
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
-	'use strict'
+	"use strict";
 
-	var stringify = JSON.stringify
-	var parse = JSON.parse
+	exports.__esModule = true;
+	exports["default"] = clone;
+	var stringify = JSON.stringify;
+	var parse = JSON.parse;
 
 	/**
 	 * Deeply clone object using serialization.
@@ -724,15 +873,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {Object} obj
 	 * @return {Object}
 	 */
-	module.exports = function clone(obj) {
-	    return parse(stringify(obj))
+
+	function clone(obj) {
+	  return parse(stringify(obj));
 	}
 
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
+	module.exports = exports["default"];
 
-	'use strict'
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
 
 	/**
 	 * Merges second object with first one only if value is undefined.
@@ -742,125 +892,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} obj2
 	 * @return {Object} obj1
 	 */
-	module.exports = function(obj1, obj2) {
-	    for (var key in obj2) {
-	        if (obj1[key] === undefined) obj1[key] = obj2[key]
-	    }
-	    return obj1
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = defaults;
+
+	function defaults(obj1, obj2) {
+	  for (var key in obj2) {
+	    if (obj1[key] === undefined) obj1[key] = obj2[key];
+	  }
+	  return obj1;
 	}
 
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict'
-
-	var StyleSheet = __webpack_require__(4)
-	var Rule = __webpack_require__(5)
-	var PluginsRegistry = __webpack_require__(10)
-
-	/**
-	 * Jss constructor.
-	 *
-	 * @api public
-	 */
-	function Jss() {
-		this.plugins = new PluginsRegistry()
-	}
-
-	module.exports = Jss
-
-	/**
-	 * Creates a new instance of Jss.
-	 *
-	 * @see Jss
-	 * @api public
-	 */
-	Jss.prototype.create = function () {
-		return new Jss()
-	}
-
-	/**
-	 * Create a stylesheet.
-	 *
-	 * @see StyleSheet
-	 * @api public
-	 */
-	Jss.prototype.createStyleSheet = function (rules, options) {
-	    if (!options) options = {}
-	    options.jss = this
-	    var sheet = new StyleSheet(rules, options)
-	    return sheet
-	}
-
-	/**
-	 * Create a rule.
-	 *
-	 * @see Rule
-	 * @return {Rule}
-	 * @api public
-	 */
-	Jss.prototype.createRule = function (selector, style, options) {
-	    if (typeof selector == 'object') {
-	        options = style
-	        style = selector
-	        selector = null
-	    }
-	    if (!options) options = {}
-	    options.jss = this
-	    var rule = new Rule(selector, style, options)
-	    this.plugins.run(rule)
-	    return rule
-	}
-
-	/**
-	 * Register plugin. Passed function will be invoked with a rule instance.
-	 *
-	 * @param {Function} fn
-	 * @api public
-	 */
-	Jss.prototype.use = function (fn) {
-		this.plugins.use(fn)
-		return this
-	}
-
+	module.exports = exports["default"];
 
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
 
-	'use strict'
+	"use strict";
 
-	function PluginsRegistry() {
-		this.registry = []
-	}
+	exports.__esModule = true;
 
-	module.exports = PluginsRegistry
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	/**
-	 * Register plugin. Passed function will be invoked with a rule instance.
-	 *
-	 * @param {Function} fn
-	 * @api public
-	 */
-	PluginsRegistry.prototype.use = function (fn) {
-	    this.registry.push(fn)
-	}
+	var PluginsRegistry = (function () {
+	  function PluginsRegistry() {
+	    _classCallCheck(this, PluginsRegistry);
 
-	/**
-	 * Execute all registered plugins.
-	 *
-	 * @param {Rule} rule
-	 * @api private
-	 */
-	PluginsRegistry.prototype.run = function (rule) {
+	    this.registry = [];
+	  }
+
+	  /**
+	   * Register plugin. Passed function will be invoked with a rule instance.
+	   *
+	   * @param {Function} fn
+	   * @api public
+	   */
+
+	  PluginsRegistry.prototype.use = function use(fn) {
+	    this.registry.push(fn);
+	  };
+
+	  /**
+	   * Execute all registered plugins.
+	   *
+	   * @param {Rule} rule
+	   * @api private
+	   */
+
+	  PluginsRegistry.prototype.run = function run(rule) {
 	    for (var i = 0; i < this.registry.length; i++) {
-	        this.registry[i](rule)
+	      this.registry[i](rule);
 	    }
-	}
+	  };
 
+	  return PluginsRegistry;
+	})();
+
+	exports["default"] = PluginsRegistry;
+	module.exports = exports["default"];
 
 /***/ },
 /* 11 */

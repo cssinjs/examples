@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Simple example - jss-vendor-prefix plugin</title>
+</head>
+<body>
+  <button>Button</button>
+
+  <script src="../../../jss.js"></script>
+  <script src="../../../jss-vendor-prefixer.js"></script>
+  <!-- <script src="./style.js"></script> -->
+  <!-- <script src="./app.js"></script> -->
+
+
+  <script>
+    jss.use(jssVendorPrefixer)
+
+    var styleSheet = jss.createStyleSheet({
+      container: {
+        transform: 'translateX(100px)'
+      }
+    })
+
+    // console.log('styleSheet:', styleSheet)
+    // console.log('styleSheet.classes:', styleSheet.classes)
+    // console.log('styleSheet.toString():', styleSheet.toString())
+
+    console.log('assertion 1:', JSON.stringify(styleSheet.classes) === '{"container":"jss-0-0"}')
+    console.log('assertion 2:', styleSheet.toString() === '.jss-0-0 {\n  transform: translateX(100px);\n}')
+  </script>
+
+
+</body>
+</html>
