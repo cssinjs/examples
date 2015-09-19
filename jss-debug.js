@@ -60,26 +60,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Rule} rule
 	 * @api public
 	 */
-	'use strict';
+	"use strict";
 
 	exports.__esModule = true;
-	exports['default'] = jssDebug;
+	exports["default"] = jssDebug;
 
 	function jssDebug(rule) {
-	  console.log('rule:', rule);
 	  if (!rule.options.named) return;
 
-	  var name = rule.options.name;
-	  console.log('name:', name);
+	  var name = rule.name;
 
-	  rule.className += ' jss:' + name;
+	  rule.className += " jss:" + name;
 
 	  if (rule.options.sheet) {
 	    rule.options.sheet.classes[name] = rule.className;
 	  }
 	}
 
-	module.exports = exports['default'];
+	module.exports = exports["default"];
 
 /***/ }
 /******/ ])
