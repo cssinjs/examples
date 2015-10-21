@@ -65,16 +65,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 	exports["default"] = jssDebug;
 
-	function jssDebug(rule) {
-	  if (!rule.options.named) return;
+	function jssDebug() {
+	  return function (rule) {
+	    var name = rule.name;
 
-	  var name = rule.name;
-
-	  rule.className += " jss:" + name;
-
-	  if (rule.options.sheet) {
-	    rule.options.sheet.classes[name] = rule.className;
-	  }
+	    if (!rule.options.named || !name) return;
+	    rule.className += " jss:" + name;
+	    if (rule.options.sheet) {
+	      rule.options.sheet.classes[name] = rule.className;
+	    }
+	  };
 	}
 
 	module.exports = exports["default"];

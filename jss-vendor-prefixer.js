@@ -59,14 +59,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.__esModule = true;
 	exports['default'] = jssVendorPrefixer;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 	var _cssVendor = __webpack_require__(1);
 
-	var _cssVendor2 = _interopRequireDefault(_cssVendor);
-
-	var KEYFRAMES = '@keyframes';
-	var KEYFRAMES_LENGHT = KEYFRAMES.length;
+	var vendor = _interopRequireWildcard(_cssVendor);
 
 	/**
 	 * Add vendor prefix to a property name when needed.
@@ -75,30 +72,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @api public
 	 */
 
-	function jssVendorPrefixer(rule) {
-	  var style = rule.style;
-
-	  if (rule.isAtRule && rule.selector.substr(0, KEYFRAMES_LENGHT) === KEYFRAMES) {
-	    rule.selector = '@' + _cssVendor2['default'].prefix.css + 'keyframes' + rule.selector.substr(KEYFRAMES_LENGHT);
-	    return;
-	  }
-
-	  for (var prop in style) {
-	    var value = style[prop];
-
-	    var changeProp = false;
-	    var supportedProp = _cssVendor2['default'].supportedProperty(prop);
-	    if (supportedProp && supportedProp !== prop) changeProp = true;
-
-	    var changeValue = false;
-	    var supportedValue = _cssVendor2['default'].supportedValue(supportedProp, value);
-	    if (supportedValue && supportedValue !== value) changeValue = true;
-
-	    if (changeProp || changeValue) {
-	      if (changeProp) delete style[prop];
-	      style[supportedProp] = supportedValue;
+	function jssVendorPrefixer() {
+	  return function (rule) {
+	    if (rule.type === 'keyframe') {
+	      rule.selector = '@' + vendor.prefix.css + 'keyframes' + rule.selector.substr(10);
+	      return;
 	    }
-	  }
+
+	    if (rule.type !== 'regular') return;
+
+	    for (var prop in rule.style) {
+	      var value = rule.style[prop];
+
+	      var changeProp = false;
+	      var supportedProp = vendor.supportedProperty(prop);
+	      if (supportedProp && supportedProp !== prop) changeProp = true;
+
+	      var changeValue = false;
+	      var supportedValue = vendor.supportedValue(supportedProp, value);
+	      if (supportedValue && supportedValue !== value) changeValue = true;
+
+	      if (changeProp || changeValue) {
+	        if (changeProp) delete rule.style[prop];
+	        rule.style[supportedProp] = supportedValue;
+	      }
+	    }
+	  };
 	}
 
 	module.exports = exports['default'];
@@ -107,7 +106,73 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
+	/**
+	 * CSS Vendor prefix detection and property feature testing.
+	 *
+	 * @copyright Oleg Slobodskoi 2015
+	 * @website https://github.com/jsstyles/css-vendor
+	 * @license MIT
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _prefix2 = __webpack_require__(2);
+
+	var _prefix3 = _interopRequireDefault(_prefix2);
+
+	exports.prefix = _prefix3['default'];
+
+	var _supportedProperty2 = __webpack_require__(3);
+
+	var _supportedProperty3 = _interopRequireDefault(_supportedProperty2);
+
+	exports.supportedProperty = _supportedProperty3['default'];
+
+	var _supportedValue2 = __webpack_require__(5);
+
+	var _supportedValue3 = _interopRequireDefault(_supportedValue2);
+
+	exports.supportedValue = _supportedValue3['default'];
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	/**
+	 * Export javascript style and css style vendor prefixes.
+	 * Based on "transform" support test.
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+	var js = '';
+	var css = '';
+
+	// We should not do anything if required serverside.
+	if (typeof document != 'undefined') {
+	  var jsCssMap = {
+	    Webkit: '-webkit-',
+	    Moz: '-moz-',
+	    // IE did it wrong again ...
+	    ms: '-ms-',
+	    O: '-o-'
+	  };
+	  var style = document.createElement('p').style;
+	  var testProp = 'Transform';
+
+	  for (var key in jsCssMap) {
+	    if (key + testProp in style) {
+	      js = key;
+	      css = jsCssMap[key];
+	      break;
+	    }
+	  }
+	}
 
 	/**
 	 * Vendor prefix string for the current browser.
@@ -115,90 +180,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {{js: String, css: String}}
 	 * @api public
 	 */
-	exports.prefix = __webpack_require__(2)
-
-	/**
-	 * Test if a property is supported, returns property with vendor
-	 * prefix if required, otherwise `false`.
-	 *
-	 * @param {String} prop
-	 * @return {String|Boolean}
-	 * @api public
-	 */
-	exports.supportedProperty = __webpack_require__(3)
-
-	/**
-	 * Returns prefixed value if needed. Returns `false` if value is not supported.
-	 *
-	 * @param {String} property
-	 * @param {String} value
-	 * @return {String|Boolean}
-	 * @api public
-	 */
-	 exports.supportedValue = __webpack_require__(5)
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	'use strict'
-
-	/**
-	 * Export javascript style and css style vendor prefixes.
-	 * Based on "transform" support test.
-	 */
-
-	var jsCssMap = {
-	    Webkit: '-webkit-',
-	    Moz: '-moz-',
-	    // IE did it wrong again ...
-	    ms: '-ms-',
-	    O: '-o-'
-	}
-
-	var style = document.createElement('p').style
-	var testProp = 'Transform'
-
-	for (var js in jsCssMap) {
-	    if ((js + testProp) in style) {
-	        exports.js = js
-	        exports.css = jsCssMap[js]
-	        break
-	    }
-	}
-
+	exports['default'] = { js: js, css: css };
+	module.exports = exports['default'];
 
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
+	'use strict';
 
-	var prefix = __webpack_require__(2)
-	var camelize = __webpack_require__(4)
+	exports.__esModule = true;
+	exports['default'] = supportedProperty;
 
-	var el = document.createElement('p')
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	/**
-	 * We test every property on vendor prefix requirement.
-	 * Once tested, result is cached. It gives us up to 70% perf boost.
-	 * http://jsperf.com/element-style-object-access-vs-plain-object
-	 *
-	 * Prefill cache with known css properties to reduce amount of
-	 * properties we need to feature test at runtime.
-	 * http://davidwalsh.name/vendor-prefix
-	 */
-	var cache = (function() {
-	    var computed = window.getComputedStyle(document.documentElement, '')
-	    var cache = {}
+	var _prefix = __webpack_require__(2);
 
-	    for (var key in computed) {
-	        cache[computed[key]] = computed[key]
-	    }
+	var _prefix2 = _interopRequireDefault(_prefix);
 
-	    return cache
-	}())
+	var _camelize = __webpack_require__(4);
+
+	var _camelize2 = _interopRequireDefault(_camelize);
+
+	var el = undefined;
+	var cache = {};
+
+	if (typeof document != 'undefined') {
+	  el = document.createElement('p');
+
+	  /**
+	   * We test every property on vendor prefix requirement.
+	   * Once tested, result is cached. It gives us up to 70% perf boost.
+	   * http://jsperf.com/element-style-object-access-vs-plain-object
+	   *
+	   * Prefill cache with known css properties to reduce amount of
+	   * properties we need to feature test at runtime.
+	   * http://davidwalsh.name/vendor-prefix
+	   */
+	  var computed = window.getComputedStyle(document.documentElement, '');
+	  for (var key in computed) {
+	    cache[computed[key]] = computed[key];
+	  }
+	}
 
 	/**
 	 * Test if a property is supported, returns supported property with vendor
@@ -208,33 +231,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {String|Boolean}
 	 * @api public
 	 */
-	module.exports = function (prop) {
-	    // We have not tested this prop yet, lets do the test.
-	    if (cache[prop] != null) return cache[prop]
 
-	    // Camelization is required because we can't test using
-	    // css syntax for e.g. in FF.
-	    // Test if property is supported as it is.
-	    if (camelize(prop) in el.style) {
-	        cache[prop] = prop
+	function supportedProperty(prop) {
+	  // We have not tested this prop yet, lets do the test.
+	  if (cache[prop] != null) return cache[prop];
+
+	  // Camelization is required because we can't test using
+	  // css syntax for e.g. in FF.
+	  // Test if property is supported as it is.
+	  if (_camelize2['default'](prop) in el.style) {
+	    cache[prop] = prop;
 	    // Test if property is supported with vendor prefix.
-	    } else if ((prefix.js + camelize('-' + prop)) in el.style) {
-	        cache[prop] = prefix.css + prop
+	  } else if (_prefix2['default'].js + _camelize2['default']('-' + prop) in el.style) {
+	      cache[prop] = _prefix2['default'].css + prop;
 	    } else {
-	        cache[prop] = false
+	      cache[prop] = false;
 	    }
 
-	    return cache[prop]
+	  return cache[prop];
 	}
 
+	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
 /***/ function(module, exports) {
 
-	'use strict'
+	'use strict';
 
-	var regExp = /[-\s]+(.)?/g
+	exports.__esModule = true;
+	exports['default'] = camelize;
+	var regExp = /[-\s]+(.)?/g;
 
 	/**
 	 * Convert dash separated strings to camel cased.
@@ -242,27 +269,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} str
 	 * @return {String}
 	 */
-	module.exports = function(str) {
-	    return str.replace(regExp, toUpper)
+
+	function camelize(str) {
+	  return str.replace(regExp, toUpper);
 	}
 
 	function toUpper(match, c) {
-	    return c ? c.toUpperCase() : ''
+	  return c ? c.toUpperCase() : '';
 	}
-
-
+	module.exports = exports['default'];
 
 /***/ },
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict'
+	'use strict';
 
-	var prefix = __webpack_require__(2)
+	exports.__esModule = true;
+	exports['default'] = supportedValue;
 
-	var cache = {}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var el = document.createElement('p')
+	var _prefix = __webpack_require__(2);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	var cache = {};
+	var el = undefined;
+
+	if (typeof document != 'undefined') el = document.createElement('p');
 
 	/**
 	 * Returns prefixed value if needed. Returns `false` if value is not supported.
@@ -272,33 +307,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {String|Boolean}
 	 * @api public
 	 */
-	module.exports = function (property, value) {
-	    if (typeof value != 'string' || !isNaN(parseInt(value, 10))) return value
 
-	    var cacheKey = property + value
+	function supportedValue(property, value) {
+	  if (typeof value != 'string' || !isNaN(parseInt(value, 10))) return value;
 
-	    if (cache[cacheKey] != null) return cache[cacheKey]
+	  var cacheKey = property + value;
 
-	    // Test value as it is.
-	    el.style[property] = value
+	  if (cache[cacheKey] != null) return cache[cacheKey];
 
-	    // Value is supported as it is.
-	    if (el.style[property] == value) {
-	        cache[cacheKey] = value
-	    } else {
-	        // Test value with vendor prefix.
-	        value = prefix.css + value
-	        el.style[property] = value
+	  // Test value as it is.
+	  el.style[property] = value;
 
-	        // Value is supported with vendor prefix.
-	        if (el.style[property] == value) cache[cacheKey] = value
-	    }
+	  // Value is supported as it is.
+	  if (el.style[property] === value) {
+	    cache[cacheKey] = value;
+	  } else {
+	    // Test value with vendor prefix.
+	    value = _prefix2['default'].css + value;
 
-	    if (!cache[cacheKey]) cache[cacheKey] = false
+	    // Hardcode test to convert "flex" to "-ms-flexbox" for IE10.
+	    if (value === '-ms-flex') value = '-ms-flexbox';
 
-	    return cache[cacheKey]
+	    el.style[property] = value;
+
+	    // Value is supported with vendor prefix.
+	    if (el.style[property] === value) cache[cacheKey] = value;
+	  }
+
+	  if (!cache[cacheKey]) cache[cacheKey] = false;
+
+	  return cache[cacheKey];
 	}
 
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

@@ -54,42 +54,42 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-	'use strict';
-
-	exports.__esModule = true;
-	exports['default'] = jssExtend;
-	var toString = Object.prototype.toString;
-
 	/**
 	 * Handle `extend` property.
 	 *
 	 * @param {Rule} rule
 	 * @api public
 	 */
+	'use strict';
 
-	function jssExtend(rule) {
-	  var currStyle = rule.style;
+	exports.__esModule = true;
+	exports['default'] = jssExtend;
 
-	  if (!currStyle || !currStyle.extend) return;
+	function jssExtend() {
+	  return function (rule) {
+	    if (!rule.style || !rule.style.extend) return;
 
-	  var newStyle = {};(function extend(style) {
-	    if (toString.call(style.extend) === '[object Array]') {
-	      for (var i = 0; i < style.extend.length; i++) {
-	        extend(style.extend[i]);
+	    function extend(newStyle, style) {
+	      if (Array.isArray(style.extend)) {
+	        for (var i = 0; i < style.extend.length; i++) {
+	          extend(newStyle, style.extend[i]);
+	        }
+	      } else {
+	        for (var prop in style.extend) {
+	          if (prop === 'extend') extend(newStyle, style.extend.extend);else newStyle[prop] = style.extend[prop];
+	        }
 	      }
-	    } else {
-	      for (var prop in style.extend) {
-	        if (prop === 'extend') extend(style.extend.extend);else newStyle[prop] = style.extend[prop];
+
+	      // Copy base style.
+	      for (var prop in style) {
+	        if (prop !== 'extend') newStyle[prop] = style[prop];
 	      }
+
+	      return newStyle;
 	    }
 
-	    // Copy base style.
-	    for (var prop in style) {
-	      if (prop !== 'extend') newStyle[prop] = style[prop];
-	    }
-	  })(currStyle);
-
-	  rule.style = newStyle;
+	    rule.style = extend({}, rule.style);
+	  };
 	}
 
 	module.exports = exports['default'];

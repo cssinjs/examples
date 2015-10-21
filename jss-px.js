@@ -88,16 +88,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @api public
 	 */
 
-	function jssPx(rule) {
-	  var style = rule.style;
+	function jssPx() {
+	  return function (rule) {
+	    var style = rule.style;
 
-	  if (!style) return;
-
-	  for (var prop in style) {
-	    if (!cssNumber[prop] && typeof style[prop] == 'number') {
-	      style[prop] += 'px';
+	    if (!style) return;
+	    for (var prop in style) {
+	      if (!cssNumber[prop] && typeof style[prop] == 'number') {
+	        style[prop] += 'px';
+	      }
 	    }
-	  }
+	  };
 	}
 
 	module.exports = exports['default'];

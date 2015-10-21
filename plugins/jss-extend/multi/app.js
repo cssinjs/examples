@@ -1,5 +1,5 @@
 // Application
-jss.use(jssExtend)
+jss.use(jssExtend())
 var sheet = jss.createStyleSheet(window.styles).attach()
 
 var buttons = document.querySelectorAll('button')

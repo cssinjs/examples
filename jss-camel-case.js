@@ -67,19 +67,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @api public
 	 */
 
-	function jssCamelCase(rule) {
-	  var style = rule.style;
+	function jssCamelCase() {
+	  return function (rule) {
+	    var style = rule.style;
 
-	  if (!style) return;
-
-	  rule.style = {};
-
-	  for (var prop in style) {
-	    var value = style[prop];
-	    prop = prop.replace(regExp, '-$1').toLowerCase();
-
-	    rule.style[prop] = value;
-	  }
+	    if (!style) return;
+	    rule.style = {};
+	    for (var prop in style) {
+	      var value = style[prop];
+	      prop = prop.replace(regExp, '-$1').toLowerCase();
+	      rule.style[prop] = value;
+	    }
+	  };
 	}
 
 	module.exports = exports['default'];

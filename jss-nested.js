@@ -57,6 +57,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	exports['default'] = jssNested;
 	var regExp = /&/gi;
 
@@ -64,20 +67,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Convert nested rules to separate, remove them from original styles.
 	 *
 	 * @param {Rule} rule
-	 * @api private
+	 * @api public
 	 */
 
-	function jssNested(rule) {
-	  var style = rule.style;
+	function jssNested() {
+	  return function (rule) {
+	    if (rule.type !== 'regular') return;
+	    var _rule$options = rule.options;
+	    var sheet = _rule$options.sheet;
+	    var jss = _rule$options.jss;
 
-	  for (var prop in style) {
-	    if (prop[0] === '&') {
-	      var selector = prop.replace(regExp, rule.selector);
-	      rule.addChild(selector, style[prop], { named: false });
+	    var container = sheet || jss;
+	    var options = rule.options;
 
-	      delete style[prop];
+	    for (var prop in rule.style) {
+	      if (prop[0] === '&') {
+	        if (options.named) options = _extends({}, options, { named: false });
+	        var selector = prop.replace(regExp, rule.selector);
+	        container.createRule(selector, rule.style[prop], options);
+	        delete rule.style[prop];
+	      }
 	    }
-	  }
+	  };
 	}
 
 	module.exports = exports['default'];
