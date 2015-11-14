@@ -1,26 +1,24 @@
-'use strict'
+import conf from '../conf'
 
-var conf = require('../conf')
+export const width = conf.canvas.width
+export const height = conf.height
+export const padding = 10
+export const contentWidth = width - padding * 2
 
-exports.width = conf.canvas.width
-exports.height = conf.height
-exports.padding = 10
-exports.contentWidth = exports.width - exports.padding * 2
-
-exports.rules = {
-    canvas: {
-        position: 'relative',
-        float: 'left',
-        width: exports.width + 'px',
-        height: exports.height + 'px',
-        background: '#ececec',
-        'border-left': '1px solid #d5d5d5',
-        'box-sizing': 'border-box'
-    },
-    content: {
-        position: 'absolute',
-        left: exports.padding + 'px',
-        width: exports.contentWidth + 'px',
-        height: exports.height + 'px'
-    }
+export const rules = {
+  canvas: {
+    position: 'relative',
+    float: 'left',
+    width,
+    height,
+    background: '#ececec',
+    borderLeft: '1px solid #d5d5d5',
+    boxSizing: 'border-box'
+  },
+  content: {
+    position: 'absolute',
+    left: padding,
+    width: contentWidth,
+    height
+  }
 }

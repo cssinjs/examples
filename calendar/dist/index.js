@@ -56,72 +56,53 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var Calendar = __webpack_require__(1);
-	var conf = __webpack_require__(16);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.createCalendar = createCalendar;
 
-	exports.Calendar = Calendar;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	exports.createCalendar = function () {
-	    return new Calendar(conf).create();
-	};
+	var _componentsConf = __webpack_require__(1);
+
+	var _componentsConf2 = _interopRequireDefault(_componentsConf);
+
+	var _componentsCalendar = __webpack_require__(2);
+
+	var _componentsCalendar2 = _interopRequireDefault(_componentsCalendar);
+
+	function createCalendar() {
+	  return new _componentsCalendar2['default'](_componentsConf2['default']).create();
+	}
 
 /***/ },
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var jss = __webpack_require__(2);
-	var utils = __webpack_require__(15);
-	var Canvas = __webpack_require__(17);
-	var Timeline = __webpack_require__(19);
-	var EventsManager = __webpack_require__(22);
-
-	var sheet = jss.createStyleSheet(__webpack_require__(27));
+/***/ function(module, exports) {
 
 	/**
-	 * Creates a new calendar view.
-	 */
-	function Calendar(options) {
-	    this.timeline = new Timeline(options.timeline);
-	    this.canvas = new Canvas();
-	    this.manager = new EventsManager(this.canvas);
-	    this.element = null;
-	}
-
-	module.exports = Calendar;
-
-	/**
-	 * Renders layout.
+	 * Configuration shared between all components.
 	 *
-	 * @return {Calendar}
+	 * @type {Object}
 	 */
-	Calendar.prototype.create = function () {
-	    sheet.attach();
-	    this.element = utils.element('div', {
-	        'class': sheet.classes.container
-	    });
+	"use strict";
 
-	    this.timeline.create();
-	    this.canvas.create();
-
-	    this.element.appendChild(this.timeline.element);
-	    this.element.appendChild(this.canvas.element);
-
-	    return this;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports["default"] = {
+	  fontSize: 16,
+	  height: 720,
+	  timeline: {
+	    width: 75,
+	    start: 540,
+	    end: 1290
+	  },
+	  canvas: {
+	    width: 620,
+	    padding: 10
+	  }
 	};
-
-	/**
-	 * Render main container.
-	 *
-	 * @param {Array} events
-	 * @return {Calendar}
-	 */
-	Calendar.prototype.renderDay = function (events) {
-	    this.manager.destroy().set(events).render();
-
-	    return this;
-	};
+	module.exports = exports["default"];
 
 /***/ },
 /* 2 */
@@ -129,10 +110,146 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = __webpack_require__(3);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _jss = __webpack_require__(3);
+
+	var _jss2 = _interopRequireDefault(_jss);
+
+	var _utils = __webpack_require__(28);
+
+	var utils = _interopRequireWildcard(_utils);
+
+	var _canvas = __webpack_require__(29);
+
+	var _canvas2 = _interopRequireDefault(_canvas);
+
+	var _Timeline = __webpack_require__(31);
+
+	var _Timeline2 = _interopRequireDefault(_Timeline);
+
+	var _eventsManager = __webpack_require__(34);
+
+	var _eventsManager2 = _interopRequireDefault(_eventsManager);
+
+	var _styles = __webpack_require__(39);
+
+	var _styles2 = _interopRequireDefault(_styles);
+
+	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
+
+	var Calendar = (function () {
+	  /**
+	   * Creates a new calendar view.
+	   */
+
+	  function Calendar(options) {
+	    _classCallCheck(this, Calendar);
+
+	    this.timeline = new _Timeline2['default'](options.timeline);
+	    this.canvas = new _canvas2['default']();
+	    this.manager = new _eventsManager2['default'](this.canvas);
+	    this.element = null;
+	  }
+
+	  /**
+	   * Renders layout.
+	   *
+	   * @return {Calendar}
+	   */
+
+	  _createClass(Calendar, [{
+	    key: 'create',
+	    value: function create() {
+	      sheet.attach();
+	      this.element = utils.createElement('div', {
+	        'class': sheet.classes.container
+	      });
+	      this.timeline.create();
+	      this.canvas.create();
+	      this.element.appendChild(this.timeline.element);
+	      this.element.appendChild(this.canvas.element);
+	      return this;
+	    }
+
+	    /**
+	     * Render main container.
+	     *
+	     * @param {Array} events
+	     * @return {Calendar}
+	     */
+	  }, {
+	    key: 'renderDay',
+	    value: function renderDay(events) {
+	      this.manager.destroy().set(events).render();
+	      return this;
+	    }
+	  }]);
+
+	  return Calendar;
+	})();
+
+	exports['default'] = Calendar;
+	module.exports = exports['default'];
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Setup jss plugins.
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _jss = __webpack_require__(4);
+
+	var _jssExtend = __webpack_require__(18);
+
+	var _jssExtend2 = _interopRequireDefault(_jssExtend);
+
+	var _jssNested = __webpack_require__(19);
+
+	var _jssNested2 = _interopRequireDefault(_jssNested);
+
+	var _jssCamelCase = __webpack_require__(20);
+
+	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
+
+	var _jssPx = __webpack_require__(21);
+
+	var _jssPx2 = _interopRequireDefault(_jssPx);
+
+	var _jssVendorPrefixer = __webpack_require__(22);
+
+	var _jssVendorPrefixer2 = _interopRequireDefault(_jssVendorPrefixer);
+
+	var jss = (0, _jss.create)();
+
+	jss.use((0, _jssExtend2['default'])());
+	jss.use((0, _jssNested2['default'])());
+	jss.use((0, _jssCamelCase2['default'])());
+	jss.use((0, _jssPx2['default'])());
+	jss.use((0, _jssVendorPrefixer2['default'])());
+
+	exports['default'] = jss;
+	module.exports = exports['default'];
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -149,7 +266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _Jss = __webpack_require__(4);
+	var _Jss = __webpack_require__(5);
 
 	var _Jss2 = _interopRequireDefault(_Jss);
 
@@ -157,12 +274,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -170,11 +289,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _StyleSheet = __webpack_require__(5);
+	var _StyleSheet = __webpack_require__(6);
 
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
-	var _PluginsRegistry = __webpack_require__(14);
+	var _PluginsRegistry = __webpack_require__(17);
 
 	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
@@ -185,6 +304,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _createRule2 = __webpack_require__(7);
 
 	var _createRule3 = _interopRequireDefault(_createRule2);
+
+	var _findRenderer = __webpack_require__(14);
+
+	var _findRenderer2 = _interopRequireDefault(_findRenderer);
 
 	/**
 	 * Main Jss class.
@@ -218,11 +341,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @api public
 	   */
 
-	  Jss.prototype.createStyleSheet = function createStyleSheet(rules) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-	    options.jss = this;
-	    return new _StyleSheet2['default'](rules, options);
+	  Jss.prototype.createStyleSheet = function createStyleSheet(rules, options) {
+	    return new _StyleSheet2['default'](rules, _extends({}, options, { jss: this }));
 	  };
 
 	  /**
@@ -239,9 +359,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      style = selector;
 	      selector = null;
 	    }
-	    if (!options) options = {};
-	    options.jss = this;
-	    var rule = _createRule3['default'](selector, style, options);
+	    var rule = _createRule3['default'](selector, style, _extends({}, options, {
+	      jss: this,
+	      Renderer: _findRenderer2['default'](options)
+	    }));
 	    this.plugins.run(rule);
 	    return rule;
 	  };
@@ -265,29 +386,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var _dom = __webpack_require__(6);
-
-	var dom = _interopRequireWildcard(_dom);
 
 	var _createRule2 = __webpack_require__(7);
 
 	var _createRule3 = _interopRequireDefault(_createRule2);
 
+	var _findRenderer = __webpack_require__(14);
+
+	var _findRenderer2 = _interopRequireDefault(_findRenderer);
+
 	/**
-	 * StyleSheet abstraction, contains rules, injects stylesheet into dom.
+	 * StyleSheet model.
 	 *
 	 * Options:
 	 *
@@ -295,9 +416,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *  - 'title' style element attribute
 	 *  - 'type' style element attribute
 	 *  - 'named' true by default - keys are names, selectors will be generated,
-	 *    if false - keys are global selectors.
-	 *  - 'link' link jss Rule instances with DOM CSSRule instances so that styles,
-	 *  can be modified dynamically, false by default because it has some performance cost.
+	 *    if false - keys are global selectors
+	 *  - 'link' link renderable CSS rules with their corresponding models, false
+	 *    by default because fast by default
 	 *
 	 * @param {Object} [rules] object with selectors and declarations
 	 * @param {Object} [options]
@@ -305,31 +426,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	var StyleSheet = (function () {
-	  function StyleSheet(rules) {
-	    var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
+	  function StyleSheet(rules, options) {
 	    _classCallCheck(this, StyleSheet);
 
-	    if (options.named == null) options.named = true;
-	    this.options = options;
-	    this.element = null;
+	    this.options = _extends({}, options);
+	    if (this.options.named == null) this.options.named = true;
+	    this.rules = Object.create(null);
+	    this.classes = Object.create(null);
 	    this.attached = false;
-	    this.media = options.media;
-	    this.type = options.type;
-	    this.title = options.title;
-	    this.rules = {};
-	    // Only when options.named: true.
-	    this.classes = {};
 	    this.deployed = false;
 	    this.linked = false;
-	    this.element = dom.createStyle(this);
+
+	    var Renderer = _findRenderer2['default'](this.options);
+	    this.options.Renderer = Renderer;
+	    this.renderer = new Renderer({
+	      media: this.options.media,
+	      type: this.options.type,
+	      title: this.options.title
+	    });
+
 	    for (var _name in rules) {
 	      this.createRule(_name, rules[_name]);
 	    }
 	  }
 
 	  /**
-	   * Insert stylesheet element to render tree.
+	   * Attach renderable to the render tree.
 	   *
 	   * @api public
 	   * @return {StyleSheet}
@@ -338,15 +460,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  StyleSheet.prototype.attach = function attach() {
 	    if (this.attached) return this;
 	    if (!this.deployed) this.deploy();
-	    dom.appendStyle(this.element);
-	    // Before element is attached to the dom rules are not created.
+	    this.renderer.attach();
 	    if (!this.linked && this.options.link) this.link();
 	    this.attached = true;
 	    return this;
 	  };
 
 	  /**
-	   * Remove stylesheet element from render tree.
+	   * Remove renderable from render tree.
 	   *
 	   * @return {StyleSheet}
 	   * @api public
@@ -354,7 +475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  StyleSheet.prototype.detach = function detach() {
 	    if (!this.attached) return this;
-	    dom.removeElement(this.element);
+	    this.renderer.detach();
 	    this.attached = false;
 	    return this;
 	  };
@@ -374,8 +495,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Don't insert rule directly if there is no stringified version yet.
 	    // It will be inserted all together when .attach is called.
 	    if (this.deployed) {
-	      var DOMRule = dom.insertCssRule(this.element, rule.toString());
-	      if (this.options.link) rule.DOMRule = DOMRule;
+	      var renderable = this.renderer.insertRule(rule);
+	      if (this.options.link) rule.renderable = renderable;
 	    }
 	    return rule;
 	  };
@@ -409,7 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Convert rules to a css string.
+	   * Convert rules to a CSS string.
 	   *
 	   * @param {Object} options
 	   * @return {String}
@@ -417,10 +538,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  StyleSheet.prototype.toString = function toString(options) {
-	    var str = '';
 	    var rules = this.rules;
 
-	    var stringified = {};
+	    var stringified = Object.create(null);
+	    var str = '';
 	    for (var _name3 in rules) {
 	      var rule = rules[_name3];
 	      // We have the same rule referenced twice if using named rules.
@@ -443,13 +564,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @api private
 	   */
 
-	  StyleSheet.prototype.createRule = function createRule(name, style) {
-	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
+	  StyleSheet.prototype.createRule = function createRule(name, style, options) {
+	    options = _extends({}, options, {
+	      sheet: this,
+	      jss: this.options.jss,
+	      Renderer: this.options.Renderer
+	    });
 	    // Scope options overwrite instance options.
 	    if (options.named == null) options.named = this.options.named;
-	    options.sheet = this;
-	    options.jss = this.options.jss;
 	    var rule = _createRule3['default'](name, style, options);
 	    // Register conditional rule, it will stringify it's child rules properly.
 	    if (rule.type === 'conditional') {
@@ -472,33 +594,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * Deploy styles to the element.
+	   * Deploy pure CSS string to a renderable.
 	   *
 	   * @return {StyleSheet}
 	   * @api private
 	   */
 
 	  StyleSheet.prototype.deploy = function deploy() {
-	    if (!this.element) return this;
-	    this.element.innerHTML = '\n' + this.toString() + '\n';
+	    this.renderer.deploy(this);
 	    this.deployed = true;
 	    return this;
 	  };
 
 	  /**
-	   * Find CSSRule objects in the DOM and link them in the corresponding Rule instance.
+	   * Link renderable CSS rules with their corresponding models.
 	   *
 	   * @return {StyleSheet}
 	   * @api private
 	   */
 
 	  StyleSheet.prototype.link = function link() {
-	    var cssRules = dom.getCssRules(this.element);
-	    if (!cssRules) return this;
-	    for (var i = 0; i < cssRules.length; i++) {
-	      var DOMRule = cssRules[i];
-	      var rule = this.rules[DOMRule.selectorText];
-	      if (rule) rule.DOMRule = DOMRule;
+	    var renderables = this.renderer.getRules();
+	    for (var selector in renderables) {
+	      var rule = this.rules[selector];
+	      if (rule) rule.renderable = renderables[selector];
 	    }
 	    this.linked = true;
 	    return this;
@@ -509,96 +628,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports['default'] = StyleSheet;
 	module.exports = exports['default'];
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	exports.__esModule = true;
-	exports.createStyle = createStyle;
-	exports.appendStyle = appendStyle;
-	exports.getCssRules = getCssRules;
-	exports.insertCssRule = insertCssRule;
-	exports.removeElement = removeElement;
-	var sheetAttrs = ['title', 'type', 'media'];
-
-	/**
-	 * Create style element, add attributes.
-	 *
-	 * @param {StyleSheet} sheet
-	 * @return {Element}
-	 * @api private
-	 */
-
-	function createStyle(sheet) {
-	  var element = document.createElement('style');
-	  sheetAttrs.forEach(function (name) {
-	    if (sheet[name]) element.setAttribute(name, sheet[name]);
-	  });
-	  return element;
-	}
-
-	/**
-	 * Insert style element into head.
-	 *
-	 * @param {Element} element
-	 * @api private
-	 */
-
-	function appendStyle(element) {
-	  document.head.appendChild(element);
-	}
-
-	/**
-	 * Get cssRules collection from a sheet
-	 *
-	 * @param {Element} element
-	 * @return {CSSRules}
-	 * @api private
-	 */
-
-	function getCssRules(element) {
-	  return element && element.sheet && element.sheet.cssRules;
-	}
-
-	/**
-	 * Insert a rule string into a style element.
-	 *
-	 * @param {Element} element
-	 * @param {String} ruleStr
-	 * @return {CSSRule}
-	 * @api private
-	 */
-
-	function insertCssRule(element, ruleStr) {
-	  var rules = getCssRules(element);
-	  var nextIndex = rules.length;
-	  element.sheet.insertRule(ruleStr, nextIndex);
-	  return rules[nextIndex];
-	}
-
-	/**
-	 * Remove element from the dom tree.
-	 *
-	 * @param {Element} element
-	 * @api private
-	 */
-
-	function removeElement(element) {
-	  element.parentNode.removeChild(element);
-	}
-
-	function noDOM() {}
-	// For serverside rendering all functions will return undefined.
-	if (typeof document == 'undefined') {
-	  for (var _name in exports) {
-	    if (typeof exports[_name] == 'function') {
-	      exports[_name] = noDOM;
-	    }
-	  }
-	}
 
 /***/ },
 /* 7 */
@@ -736,6 +765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.className = options.className || namespacePrefix + '-' + this.id;
 	      this.selector = '.' + this.className;
 	    }
+	    this.originalStyle = style;
 	    // We expect style to be plain object.
 	    this.style = _clone2['default'](style);
 	  }
@@ -761,17 +791,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Rule.prototype.prop = function prop(name, value) {
+	    var style = this.options.Renderer.style;
+
 	    // Its a setter.
 	    if (value != null) {
 	      this.style[name] = value;
-	      // If linked option in StyleSheet is not passed, DOMRule is not defined.
-	      if (this.DOMRule) this.DOMRule.style[name] = value;
+	      // If linked option in StyleSheet is not passed, renderable is not defined.
+	      if (this.renderable) style(this.renderable, name, value);
 	      return this;
 	    }
 	    // Its a getter, read the value from the DOM if its not cached.
-	    if (this.DOMRule && this.style[name] == null) {
+	    if (this.renderable && this.style[name] == null) {
 	      // Cache the value after we have got it from the DOM once.
-	      this.style[name] = this.DOMRule.style[name];
+	      this.style[name] = style(this.renderable, name);
 	    }
 	    return this.style[name];
 	  };
@@ -779,19 +811,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Apply rule to an element inline.
 	   *
-	   * @param {Element} element
+	   * @param {Element} renderable
 	   * @return {Rule}
 	   * @api public
 	   */
 
-	  Rule.prototype.applyTo = function applyTo(element) {
+	  Rule.prototype.applyTo = function applyTo(renderable) {
 	    for (var prop in this.style) {
 	      var value = this.style[prop];
+	      var style = this.options.Renderer.style;
+
 	      if (Array.isArray(value)) {
-	        for (var i = 0; i < value.length; i++) {
-	          element.style[prop] = value[i];
+	        for (var index = 0; index < value.length; index++) {
+	          style(renderable, prop, value[index]);
 	        }
-	      } else element.style[prop] = value;
+	      } else style(renderable, prop, value);
 	    }
 	    return this;
 	  };
@@ -805,7 +839,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Rule.prototype.toJSON = function toJSON() {
-	    var style = {};
+	    var style = Object.create(null);
 	    for (var prop in this.style) {
 	      if (typeof this.style[prop] != 'object') {
 	        style[prop] = this.style[prop];
@@ -817,27 +851,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Generates a CSS string.
 	   *
+	   * @param {Object} options
 	   * @return {String}
 	   * @api private
 	   */
 
 	  Rule.prototype.toString = function toString() {
-	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? { indentationLevel: 0 } : arguments[0];
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	    var indentationLevel = _ref.indentationLevel;
-
-	    var str = indent(indentationLevel, this.selector + ' {');
-	    indentationLevel++;
+	    var selector = options.selector == null ? true : options.selector;
+	    var indentationLevel = options.indentationLevel || 0;
+	    var str = '';
+	    if (selector) {
+	      str += indent(indentationLevel, this.selector + ' {');
+	      indentationLevel++;
+	    }
 	    for (var prop in this.style) {
 	      var value = this.style[prop];
 	      // We want to generate multiple style with identical property names.
 	      if (Array.isArray(value)) {
-	        for (var i = 0; i < value.length; i++) {
-	          str += '\n' + indent(indentationLevel, prop + ': ' + value[i] + ';');
+	        for (var index = 0; index < value.length; index++) {
+	          str += '\n' + indent(indentationLevel, prop + ': ' + value[index] + ';');
 	        }
 	      } else str += '\n' + indent(indentationLevel, prop + ': ' + value + ';');
 	    }
-	    str += '\n' + indent(--indentationLevel, '}');
+	    if (selector) str += '\n' + indent(--indentationLevel, '}');
 	    return str;
 	  };
 
@@ -847,7 +885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = Rule;
 	function indent(level, str) {
 	  var indentStr = '';
-	  for (var i = 0; i < level; i++) {
+	  for (var index = 0; index < level; index++) {
 	    indentStr += indentWith;
 	  }return indentStr + str;
 	}
@@ -995,7 +1033,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  KeyframeRule.prototype.formatFrames = function formatFrames(frames) {
-	    var newFrames = {};
+	    var newFrames = Object.create(null);
 	    for (var _name in frames) {
 	      var options = _extends({}, this.options, { named: false, parent: this });
 	      newFrames[_name] = this.options.jss.createRule(_name, frames[_name], options);
@@ -1049,7 +1087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.type = 'conditional';
 	    this.selector = selector;
-	    this.options = options;
+	    this.options = _extends({}, options, { parent: this });
 	    this.rules = this.createChildRules(styles);
 	  }
 
@@ -1062,18 +1100,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  ConditionalRule.prototype.createChildRules = function createChildRules(styles) {
-	    var rules = {};
-	    var options = _extends({}, this.options, { parent: this });
-	    var sheet = options.sheet;
-	    var jss = options.jss;
+	    var rules = Object.create(null);
+	    var _options = this.options;
+	    var sheet = _options.sheet;
+	    var jss = _options.jss;
 
 	    for (var _name in styles) {
-	      var localOptions = options;
+	      var localOptions = this.options;
 	      // We have already a rule in the current style sheet with this name,
 	      // This new rule is supposed to overwrite the first one, for this we need
 	      // to ensure it will have the same className/selector.
-	      var ruleToOverwrite = options.sheet && options.sheet.getRule(_name);
-	      if (ruleToOverwrite) localOptions = _extends({}, options, { className: ruleToOverwrite.className });
+	      var ruleToOverwrite = this.options.sheet && this.options.sheet.getRule(_name);
+	      if (ruleToOverwrite) localOptions = _extends({}, this.options, { className: ruleToOverwrite.className });
 	      rules[_name] = (sheet || jss).createRule(_name, styles[_name], localOptions);
 	    }
 	    return rules;
@@ -1104,6 +1142,196 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = findRenderer;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _DomRenderer = __webpack_require__(15);
+
+	var _DomRenderer2 = _interopRequireDefault(_DomRenderer);
+
+	var _VirtualRenderer = __webpack_require__(16);
+
+	var _VirtualRenderer2 = _interopRequireDefault(_VirtualRenderer);
+
+	/**
+	 * Find proper renderer.
+	 * Option `virtual` is used to force use of VirtualRenderer even if DOM is
+	 * detected, used for testing only.
+	 *
+	 * @param {Object} options
+	 * @return {Renderer}
+	 * @api private
+	 */
+
+	function findRenderer() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  if (options.Renderer) return options.Renderer;
+	  return options.virtual || typeof document == 'undefined' ? _VirtualRenderer2['default'] : _DomRenderer2['default'];
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	/**
+	 * DOM rendering backend for StyleSheet.
+	 *
+	 * @api private
+	 */
+	'use strict';
+
+	exports.__esModule = true;
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var DomRenderer = (function () {
+	  DomRenderer.style = function style(element, name, value) {
+	    try {
+	      if (value == null) return element.style[name];
+	      element.style[name] = value;
+	    } catch (err) {
+	      // IE8 may throw if property is unknown.
+	    }
+	  };
+
+	  function DomRenderer(attrs) {
+	    _classCallCheck(this, DomRenderer);
+
+	    this.head = document.head || document.getElementsByTagName('head')[0];
+	    this.element = document.createElement('style');
+	    // IE8 will not have `styleSheet` prop without `type and `styleSheet.cssText`
+	    // is the only way to render on IE8.
+	    this.element.type = 'text/css';
+	    for (var _name in attrs) {
+	      if (attrs[_name]) this.element.setAttribute(_name, attrs[_name]);
+	    }
+	  }
+
+	  /**
+	   * Insert style element into render tree.
+	   *
+	   * @api private
+	   */
+
+	  DomRenderer.prototype.attach = function attach() {
+	    this.head.appendChild(this.element);
+	  };
+
+	  /**
+	   * Remove style element from render tree.
+	   *
+	   * @api private
+	   */
+
+	  DomRenderer.prototype.detach = function detach() {
+	    this.element.parentNode.removeChild(this.element);
+	  };
+
+	  /**
+	   * Inject CSS string into element.
+	   *
+	   * @param {String} cssStr
+	   * @api private
+	   */
+
+	  DomRenderer.prototype.deploy = function deploy(sheet) {
+	    var css = '\n' + sheet.toString() + '\n';
+	    if ('sheet' in this.element) this.element.innerHTML = css;
+	    // On IE8 the only way to render is `styleSheet.cssText`
+	    else if ('styleSheet' in this.element) this.element.styleSheet.cssText = css;
+	  };
+
+	  /**
+	   * Insert a rule into element.
+	   *
+	   * @param {Rule} rule
+	   * @return {CSSStyleRule}
+	   * @api private
+	   */
+
+	  DomRenderer.prototype.insertRule = function insertRule(rule) {
+	    // IE8 has only `styleSheet` and `styleSheet.rules`
+	    var sheet = this.element.sheet || this.element.styleSheet;
+	    var cssRules = sheet.cssRules || sheet.rules;
+	    var nextIndex = cssRules.length;
+	    if (sheet.insertRule) sheet.insertRule(rule.toString(), nextIndex);else sheet.addRule(rule.selector, rule.toString({ selector: false }), nextIndex);
+	    return cssRules[nextIndex];
+	  };
+
+	  /**
+	   * Get all rules elements.
+	   *
+	   * @return {Object} rules map, where key is selector, CSSStyleRule is value.
+	   * @api private
+	   */
+
+	  DomRenderer.prototype.getRules = function getRules() {
+	    // IE8 has only `styleSheet` and `styleSheet.rules`
+	    var sheet = this.element.sheet || this.element.styleSheet;
+	    var cssRules = sheet.rules || sheet.cssRules;
+	    var rules = Object.create(null);
+	    for (var index = 0; index < cssRules.length; index++) {
+	      var CSSRule = cssRules[index];
+	      rules[CSSRule.selectorText] = CSSRule;
+	    }
+	    return rules;
+	  };
+
+	  return DomRenderer;
+	})();
+
+	exports['default'] = DomRenderer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	/**
+	 * Rendering backend to do nothing in nodejs.
+	 */
+	"use strict";
+
+	exports.__esModule = true;
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var VirtualRenderer = (function () {
+	  function VirtualRenderer() {
+	    _classCallCheck(this, VirtualRenderer);
+	  }
+
+	  VirtualRenderer.style = function style() {};
+
+	  VirtualRenderer.prototype.attach = function attach() {};
+
+	  VirtualRenderer.prototype.detach = function detach() {};
+
+	  VirtualRenderer.prototype.deploy = function deploy() {};
+
+	  VirtualRenderer.prototype.insertRule = function insertRule() {};
+
+	  VirtualRenderer.prototype.getRules = function getRules() {
+	    return {};
+	  };
+
+	  return VirtualRenderer;
+	})();
+
+	exports["default"] = VirtualRenderer;
+	module.exports = exports["default"];
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1141,8 +1369,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  PluginsRegistry.prototype.run = function run(rule) {
-	    for (var i = 0; i < this.registry.length; i++) {
-	      this.registry[i](rule);
+	    for (var index = 0; index < this.registry.length; index++) {
+	      this.registry[index](rule);
 	    }
 	  };
 
@@ -1153,12 +1381,491 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 15 */
+/* 18 */
+/***/ function(module, exports) {
+
+	/**
+	 * Handle `extend` property.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = jssExtend;
+
+	function jssExtend() {
+	  return function (rule) {
+	    if (!rule.style || !rule.style.extend) return;
+
+	    function extend(newStyle, style) {
+	      if (typeof style.extend == 'string') {
+	        if (rule.options && rule.options.sheet) {
+	          var refRule = rule.options.sheet.getRule(style.extend);
+	          if (refRule) extend(newStyle, refRule.originalStyle);
+	        }
+	      } else if (Array.isArray(style.extend)) {
+	        for (var index = 0; index < style.extend.length; index++) {
+	          extend(newStyle, style.extend[index]);
+	        }
+	      } else {
+	        for (var prop in style.extend) {
+	          if (prop === 'extend') extend(newStyle, style.extend.extend);else newStyle[prop] = style.extend[prop];
+	        }
+	      }
+
+	      // Copy base style.
+	      for (var prop in style) {
+	        if (prop !== 'extend') newStyle[prop] = style[prop];
+	      }
+
+	      return newStyle;
+	    }
+
+	    rule.style = extend({}, rule.style);
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	exports['default'] = jssNested;
+	var regExp = /&/gi;
+
+	/**
+	 * Convert nested rules to separate, remove them from original styles.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+
+	function jssNested() {
+	  return function (rule) {
+	    if (rule.type !== 'regular') return;
+	    var _rule$options = rule.options;
+	    var sheet = _rule$options.sheet;
+	    var jss = _rule$options.jss;
+
+	    var container = sheet || jss;
+	    var options = rule.options;
+
+	    for (var prop in rule.style) {
+	      if (prop[0] === '&') {
+	        if (options.named) options = _extends({}, options, { named: false });
+	        var selector = prop.replace(regExp, rule.selector);
+	        container.createRule(selector, rule.style[prop], options);
+	        delete rule.style[prop];
+	      }
+	    }
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = jssCamelCase;
+	var regExp = /([A-Z])/g;
+
+	/**
+	 * Allow camel cased property names by converting them back to dasherized.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+
+	function jssCamelCase() {
+	  return function (rule) {
+	    var style = rule.style;
+
+	    if (!style) return;
+	    rule.style = {};
+	    for (var prop in style) {
+	      var value = style[prop];
+	      prop = prop.replace(regExp, '-$1').toLowerCase();
+	      rule.style[prop] = value;
+	    }
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	// Don't automatically add 'px' to these possibly-unitless properties.
+	// Borrowed from jquery.
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = jssPx;
+	var cssNumber = {
+	  'animation-iteration-count': true,
+	  'box-ordinal-group': true,
+	  'column-count': true,
+	  'fill-opacity': true,
+	  'flex': true,
+	  'flex-grow': true,
+	  'flex-order': true,
+	  'flex-shrink': true,
+	  'font-weight': true,
+	  'line-height': true,
+	  'opacity': true,
+	  'order': true,
+	  'orphans': true,
+	  'stop-opacity': true,
+	  'tab-size': 1,
+	  'widows': true,
+	  'z-index': true,
+	  'zoom': true
+	};
+
+	/**
+	 * Add px to numeric values.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+
+	function jssPx() {
+	  return function (rule) {
+	    var style = rule.style;
+
+	    if (!style) return;
+	    for (var prop in style) {
+	      if (!cssNumber[prop] && typeof style[prop] == 'number') {
+	        style[prop] += 'px';
+	      }
+	    }
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var conf = __webpack_require__(16);
+	exports.__esModule = true;
+	exports['default'] = jssVendorPrefixer;
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	var _cssVendor = __webpack_require__(23);
+
+	var vendor = _interopRequireWildcard(_cssVendor);
+
+	/**
+	 * Add vendor prefix to a property name when needed.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+
+	function jssVendorPrefixer() {
+	  return function (rule) {
+	    if (rule.type === 'keyframe') {
+	      rule.selector = '@' + vendor.prefix.css + 'keyframes' + rule.selector.substr(10);
+	      return;
+	    }
+
+	    if (rule.type !== 'regular') return;
+
+	    for (var prop in rule.style) {
+	      var value = rule.style[prop];
+
+	      var changeProp = false;
+	      var supportedProp = vendor.supportedProperty(prop);
+	      if (supportedProp && supportedProp !== prop) changeProp = true;
+
+	      var changeValue = false;
+	      var supportedValue = vendor.supportedValue(supportedProp, value);
+	      if (supportedValue && supportedValue !== value) changeValue = true;
+
+	      if (changeProp || changeValue) {
+	        if (changeProp) delete rule.style[prop];
+	        rule.style[supportedProp] = supportedValue;
+	      }
+	    }
+	  };
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * CSS Vendor prefix detection and property feature testing.
+	 *
+	 * @copyright Oleg Slobodskoi 2015
+	 * @website https://github.com/jsstyles/css-vendor
+	 * @license MIT
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _prefix2 = __webpack_require__(24);
+
+	var _prefix3 = _interopRequireDefault(_prefix2);
+
+	exports.prefix = _prefix3['default'];
+
+	var _supportedProperty2 = __webpack_require__(25);
+
+	var _supportedProperty3 = _interopRequireDefault(_supportedProperty2);
+
+	exports.supportedProperty = _supportedProperty3['default'];
+
+	var _supportedValue2 = __webpack_require__(27);
+
+	var _supportedValue3 = _interopRequireDefault(_supportedValue2);
+
+	exports.supportedValue = _supportedValue3['default'];
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	/**
+	 * Export javascript style and css style vendor prefixes.
+	 * Based on "transform" support test.
+	 */
+
+	'use strict';
+
+	exports.__esModule = true;
+	var js = '';
+	var css = '';
+
+	// We should not do anything if required serverside.
+	if (typeof document != 'undefined') {
+	  var jsCssMap = {
+	    Webkit: '-webkit-',
+	    Moz: '-moz-',
+	    // IE did it wrong again ...
+	    ms: '-ms-',
+	    O: '-o-'
+	  };
+	  var style = document.createElement('p').style;
+	  var testProp = 'Transform';
+
+	  for (var key in jsCssMap) {
+	    if (key + testProp in style) {
+	      js = key;
+	      css = jsCssMap[key];
+	      break;
+	    }
+	  }
+	}
+
+	/**
+	 * Vendor prefix string for the current browser.
+	 *
+	 * @type {{js: String, css: String}}
+	 * @api public
+	 */
+	exports['default'] = { js: js, css: css };
+	module.exports = exports['default'];
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = supportedProperty;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _prefix = __webpack_require__(24);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	var _camelize = __webpack_require__(26);
+
+	var _camelize2 = _interopRequireDefault(_camelize);
+
+	var el = undefined;
+	var cache = {};
+
+	if (typeof document != 'undefined') {
+	  el = document.createElement('p');
+
+	  /**
+	   * We test every property on vendor prefix requirement.
+	   * Once tested, result is cached. It gives us up to 70% perf boost.
+	   * http://jsperf.com/element-style-object-access-vs-plain-object
+	   *
+	   * Prefill cache with known css properties to reduce amount of
+	   * properties we need to feature test at runtime.
+	   * http://davidwalsh.name/vendor-prefix
+	   */
+	  var computed = window.getComputedStyle(document.documentElement, '');
+	  for (var key in computed) {
+	    cache[computed[key]] = computed[key];
+	  }
+	}
+
+	/**
+	 * Test if a property is supported, returns supported property with vendor
+	 * prefix if required. Returns `false` if not supported.
+	 *
+	 * @param {String} prop dash separated
+	 * @return {String|Boolean}
+	 * @api public
+	 */
+
+	function supportedProperty(prop) {
+	  // We have not tested this prop yet, lets do the test.
+	  if (cache[prop] != null) return cache[prop];
+
+	  // Camelization is required because we can't test using
+	  // css syntax for e.g. in FF.
+	  // Test if property is supported as it is.
+	  if (_camelize2['default'](prop) in el.style) {
+	    cache[prop] = prop;
+	    // Test if property is supported with vendor prefix.
+	  } else if (_prefix2['default'].js + _camelize2['default']('-' + prop) in el.style) {
+	      cache[prop] = _prefix2['default'].css + prop;
+	    } else {
+	      cache[prop] = false;
+	    }
+
+	  return cache[prop];
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = camelize;
+	var regExp = /[-\s]+(.)?/g;
+
+	/**
+	 * Convert dash separated strings to camel cased.
+	 *
+	 * @param {String} str
+	 * @return {String}
+	 */
+
+	function camelize(str) {
+	  return str.replace(regExp, toUpper);
+	}
+
+	function toUpper(match, c) {
+	  return c ? c.toUpperCase() : '';
+	}
+	module.exports = exports['default'];
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports['default'] = supportedValue;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _prefix = __webpack_require__(24);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	var cache = {};
+	var el = undefined;
+
+	if (typeof document != 'undefined') el = document.createElement('p');
+
+	/**
+	 * Returns prefixed value if needed. Returns `false` if value is not supported.
+	 *
+	 * @param {String} property
+	 * @param {String} value
+	 * @return {String|Boolean}
+	 * @api public
+	 */
+
+	function supportedValue(property, value) {
+	  if (typeof value != 'string' || !isNaN(parseInt(value, 10))) return value;
+
+	  var cacheKey = property + value;
+
+	  if (cache[cacheKey] != null) return cache[cacheKey];
+
+	  // Test value as it is.
+	  el.style[property] = value;
+
+	  // Value is supported as it is.
+	  if (el.style[property] === value) {
+	    cache[cacheKey] = value;
+	  } else {
+	    // Test value with vendor prefix.
+	    value = _prefix2['default'].css + value;
+
+	    // Hardcode test to convert "flex" to "-ms-flexbox" for IE10.
+	    if (value === '-ms-flex') value = '-ms-flexbox';
+
+	    el.style[property] = value;
+
+	    // Value is supported with vendor prefix.
+	    if (el.style[property] === value) cache[cacheKey] = value;
+	  }
+
+	  if (!cache[cacheKey]) cache[cacheKey] = false;
+
+	  return cache[cacheKey];
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.createElement = createElement;
+	exports.minToY = minToY;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _conf = __webpack_require__(1);
+
+	var _conf2 = _interopRequireDefault(_conf);
 
 	/**
 	 * Create DOM node, set attributes.
@@ -1167,15 +1874,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} [attrs]
 	 * @return Element
 	 */
-	exports.element = function (name, attrs) {
-	    var element = document.createElement(name);
 
-	    for (var name in attrs) {
-	        element.setAttribute(name, attrs[name]);
-	    }
+	function createElement(name, attrs) {
+	  var element = document.createElement(name);
 
-	    return element;
-	};
+	  for (var _name in attrs) {
+	    element.setAttribute(_name, attrs[_name]);
+	  }
+
+	  return element;
+	}
 
 	var MIN_IN_DAY = 12 * 60;
 
@@ -1185,206 +1893,263 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Number} min
 	 * @return {Number}
 	 */
-	exports.minToY = function (min) {
-	    return conf.height * min / MIN_IN_DAY;
-	};
 
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/**
-	 * Configuration shared between all components.
-	 *
-	 * @type {Object}
-	 */
-	module.exports = {
-	    fontSize: 16,
-	    height: 720,
-	    timeline: {
-	        width: 75,
-	        start: 540,
-	        end: 1290
-	    },
-	    canvas: {
-	        width: 620,
-	        padding: 10
-	    }
-	};
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var jss = __webpack_require__(2);
-	var utils = __webpack_require__(15);
-	var styles = __webpack_require__(18);
-
-	var sheet = jss.createStyleSheet(styles.rules);
-
-	/**
-	 * Canvas is a container view events can be added to.
-	 */
-	function Canvas() {
-	    this.element = null;
-	    this.contentElement = null;
+	function minToY(min) {
+	  return _conf2['default'].height * min / MIN_IN_DAY;
 	}
 
-	module.exports = Canvas;
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Create canvas elements.
-	 *
-	 * @return {Canvas}
-	 */
-	Canvas.prototype.create = function () {
-	    sheet.attach();
+	'use strict';
 
-	    this.element = utils.element('div', {
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _jss = __webpack_require__(3);
+
+	var _jss2 = _interopRequireDefault(_jss);
+
+	var _utils = __webpack_require__(28);
+
+	var utils = _interopRequireWildcard(_utils);
+
+	var _styles = __webpack_require__(30);
+
+	var styles = _interopRequireWildcard(_styles);
+
+	var sheet = _jss2['default'].createStyleSheet(styles.rules);
+
+	var Canvas = (function () {
+	  /**
+	   * Canvas is a container view events can be added to.
+	   */
+
+	  function Canvas() {
+	    _classCallCheck(this, Canvas);
+
+	    this.element = null;
+	    this.contentElement = null;
+	  }
+
+	  /**
+	   * Create canvas elements.
+	   *
+	   * @return {Canvas}
+	   */
+
+	  _createClass(Canvas, [{
+	    key: 'create',
+	    value: function create() {
+	      sheet.attach();
+	      this.element = utils.createElement('div', {
 	        'class': sheet.classes.canvas
-	    });
-	    this.contentElement = utils.element('div', {
+	      });
+	      this.contentElement = utils.createElement('div', {
 	        'class': sheet.classes.content
-	    });
-	    this.element.appendChild(this.contentElement);
-
-	    return this;
-	};
-
-	/**
-	 * Add event.
-	 *
-	 * @param {Event} event
-	 * @return {Canvas}
-	 */
-	Canvas.prototype.add = function (event) {
-	    this.contentElement.appendChild(event.element);
-
-	    return this;
-	};
-
-	/**
-	 * Get content width.
-	 *
-	 * @return {Number}
-	 */
-	Canvas.prototype.getContentWidth = function () {
-	    return styles.contentWidth;
-	};
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var conf = __webpack_require__(16);
-
-	exports.width = conf.canvas.width;
-	exports.height = conf.height;
-	exports.padding = 10;
-	exports.contentWidth = exports.width - exports.padding * 2;
-
-	exports.rules = {
-	    canvas: {
-	        position: 'relative',
-	        float: 'left',
-	        width: exports.width + 'px',
-	        height: exports.height + 'px',
-	        background: '#ececec',
-	        'border-left': '1px solid #d5d5d5',
-	        'box-sizing': 'border-box'
-	    },
-	    content: {
-	        position: 'absolute',
-	        left: exports.padding + 'px',
-	        width: exports.contentWidth + 'px',
-	        height: exports.height + 'px'
+	      });
+	      this.element.appendChild(this.contentElement);
+	      return this;
 	    }
-	};
+
+	    /**
+	     * Add event.
+	     *
+	     * @param {Event} event
+	     * @return {Canvas}
+	     */
+	  }, {
+	    key: 'add',
+	    value: function add(event) {
+	      this.contentElement.appendChild(event.element);
+	      return this;
+	    }
+
+	    /**
+	     * Get content width.
+	     *
+	     * @return {Number}
+	     */
+	  }, {
+	    key: 'getContentWidth',
+	    value: function getContentWidth() {
+	      return styles.contentWidth;
+	    }
+	  }]);
+
+	  return Canvas;
+	})();
+
+	exports['default'] = Canvas;
+	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var jss = __webpack_require__(2);
-	var utils = __webpack_require__(15);
-	var markerTpl = __webpack_require__(20);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 
-	var sheet = jss.createStyleSheet(__webpack_require__(21));
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	/**
-	 * Creates a timeline view.
-	 */
-	function Timeline(options) {
+	var _conf = __webpack_require__(1);
+
+	var _conf2 = _interopRequireDefault(_conf);
+
+	var width = _conf2['default'].canvas.width;
+	exports.width = width;
+	var height = _conf2['default'].height;
+	exports.height = height;
+	var padding = 10;
+	exports.padding = padding;
+	var contentWidth = width - padding * 2;
+
+	exports.contentWidth = contentWidth;
+	var rules = {
+	  canvas: {
+	    position: 'relative',
+	    float: 'left',
+	    width: width,
+	    height: height,
+	    background: '#ececec',
+	    borderLeft: '1px solid #d5d5d5',
+	    boxSizing: 'border-box'
+	  },
+	  content: {
+	    position: 'absolute',
+	    left: padding,
+	    width: contentWidth,
+	    height: height
+	  }
+	};
+	exports.rules = rules;
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _jss = __webpack_require__(3);
+
+	var _jss2 = _interopRequireDefault(_jss);
+
+	var _utils = __webpack_require__(28);
+
+	var utils = _interopRequireWildcard(_utils);
+
+	var _markerTpl = __webpack_require__(32);
+
+	var markerTpl = _interopRequireWildcard(_markerTpl);
+
+	var _styles = __webpack_require__(33);
+
+	var _styles2 = _interopRequireDefault(_styles);
+
+	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
+
+	var Timeline = (function () {
+	  /**
+	   * Creates a timeline view.
+	   */
+
+	  function Timeline(options) {
+	    _classCallCheck(this, Timeline);
+
 	    this.element = null;
 	    this.start = options.start;
 	    this.end = options.end;
-	}
+	  }
 
-	module.exports = Timeline;
+	  /**
+	   * Get PM/AM suffix.
+	   *
+	   * @param {Number} min
+	   * @return {String}
+	   */
 
-	/**
-	 * Creates timeline elements.
-	 *
-	 * @return {Timeline}
-	 */
-	Timeline.prototype.create = function () {
-	    sheet.attach();
-	    this.element = utils.element('div', {
+	  /**
+	   * Creates timeline elements.
+	   *
+	   * @return {Timeline}
+	   */
+
+	  _createClass(Timeline, [{
+	    key: 'create',
+	    value: function create() {
+	      sheet.attach();
+	      this.element = utils.createElement('div', {
 	        'class': sheet.classes.timeline
-	    });
+	      });
 
-	    var fragment = document.createDocumentFragment();
-	    for (var min = this.start; min < this.end; min += 30) {
+	      var fragment = document.createDocumentFragment();
+	      for (var min = this.start; min < this.end; min += 30) {
 	        fragment.appendChild(this.createMarker({
-	            suffix: getSuffix(min),
-	            time: formatTime(min),
-	            min: min
+	          suffix: getSuffix(min),
+	          time: formatTime(min),
+	          min: min
 	        }));
+	      }
+	      this.element.appendChild(fragment);
+	      return this;
 	    }
-	    this.element.appendChild(fragment);
 
-	    return this;
-	};
-
-	/**
-	 * Create time marker element.
-	 *
-	 * @param {Obejct} options
-	 * @return {Element}
-	 */
-	Timeline.prototype.createMarker = function (options) {
-	    var element = utils.element('div', {
+	    /**
+	     * Create time marker element.
+	     *
+	     * @param {Obejct} options
+	     * @return {Element}
+	     */
+	  }, {
+	    key: 'createMarker',
+	    value: function createMarker(options) {
+	      var element = utils.createElement('div', {
 	        'class': sheet.classes.timeContainer
-	    });
-	    element.style.top = utils.minToY(options.min - this.start) + 'px';
-	    element.innerHTML = markerTpl.compile({
+	      });
+	      element.style.top = utils.minToY(options.min - this.start) + 'px';
+	      element.innerHTML = markerTpl.compile({
 	        time: options.time,
 	        classes: sheet.classes,
 	        suffix: options.suffix
-	    });
+	      });
+	      return element;
+	    }
+	  }]);
 
-	    return element;
-	};
+	  return Timeline;
+	})();
 
-	/**
-	 * Get PM/AM suffix.
-	 *
-	 * @param {Number} min
-	 * @return {String}
-	 */
+	exports['default'] = Timeline;
 	function getSuffix(min) {
-	    var h = min / 60;
-	    if (!isInt(h)) return false;
-	    if (h < 12) return 'AM';
-	    return 'PM';
+	  var h = min / 60;
+	  if (!isInt(h)) return false;
+	  if (h < 12) return 'AM';
+	  return 'PM';
 	}
 
 	/**
@@ -1394,7 +2159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {Boolean}
 	 */
 	function isInt(n) {
-	    return n % 1 === 0;
+	  return n % 1 === 0;
 	}
 
 	/**
@@ -1404,17 +2169,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {String}
 	 */
 	function formatTime(min) {
-	    var h = min / 60;
-	    if (h > 12.5) h -= 12;
-
-	    return isInt(h) ? h + ':00' : Math.floor(h) + ':30';
+	  var h = min / 60;
+	  if (h > 12.5) h -= 12;
+	  return isInt(h) ? h + ':00' : Math.floor(h) + ':30';
 	}
+	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 32 */
 /***/ function(module, exports) {
-
-	'use strict';
 
 	/**
 	 * Returns compiled template. Some template engine should be used in production
@@ -1423,136 +2186,209 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} data
 	 * @return {String}
 	 */
-	exports.compile = function (data) {
-	    var timeClass = data.classes[data.suffix ? 'timeWithSuffix' : 'time'];
-	    var html = '<span class="' + timeClass + '">' + data.time + '</span>';
-	    if (data.suffix) {
-	        html += '<span class="' + data.classes.suffix + '">' + data.suffix + '</span>';
-	    }
+	'use strict';
 
-	    return html;
-	};
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports.compile = compile;
+
+	function compile(data) {
+	  var timeClass = data.classes[data.suffix ? 'timeWithSuffix' : 'time'];
+	  var html = '<span class="' + timeClass + '">' + data.time + '</span>';
+	  if (data.suffix) {
+	    html += '<span class="' + data.classes.time + '">' + data.suffix + '</span>';
+	  }
+	  return html;
+	}
 
 /***/ },
-/* 21 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var conf = __webpack_require__(16);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 
-	module.exports = {
-	    timeline: {
-	        position: 'relative',
-	        float: 'left',
-	        width: conf.timeline.width + 'px',
-	        height: conf.height + 'px',
-	        padding: '0 7px 0 0',
-	        'box-sizing': 'border-box',
-	        // Middle of the number should be the start.
-	        'margin-top': -conf.fontSize / 2 + 'px'
-	    },
-	    timeContainer: {
-	        position: 'absolute',
-	        width: '100%',
-	        'padding-right': '10px',
-	        'text-align': 'right',
-	        'box-sizing': 'border-box'
-	    },
-	    time: {
-	        'font-size': '10px',
-	        color: '#999'
-	    },
-	    timeWithSuffix: {
-	        'font-size': '13px',
-	        'font-weight': 'bold',
-	        'margin-right': '5px'
-	    },
-	    suffix: {
-	        'font-size': '10px',
-	        color: '#999'
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _conf = __webpack_require__(1);
+
+	var _conf2 = _interopRequireDefault(_conf);
+
+	exports['default'] = {
+	  timeline: {
+	    position: 'relative',
+	    float: 'left',
+	    width: _conf2['default'].timeline.width,
+	    height: _conf2['default'].height,
+	    padding: '0 7px 0 0',
+	    boxSizing: 'border-box',
+	    // Middle of the number should be the start.
+	    marginTop: -_conf2['default'].fontSize / 2
+	  },
+	  timeContainer: {
+	    position: 'absolute',
+	    width: '100%',
+	    paddingRight: 10,
+	    textAlign: 'right',
+	    boxSizing: 'border-box',
+	    cursor: 'pointer',
+	    '&:hover span': {
+	      color: '#4b6ea8'
 	    }
+	  },
+	  time: {
+	    fontSize: 10,
+	    color: '#999'
+	  },
+	  timeWithSuffix: {
+	    fontSize: 13,
+	    fontWeight: 'bold',
+	    marginRight: 5
+	  }
 	};
+	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Event = __webpack_require__(23);
-	var distribute = __webpack_require__(26);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _event = __webpack_require__(35);
+
+	var _event2 = _interopRequireDefault(_event);
+
+	var _distribute = __webpack_require__(38);
+
+	var _distribute2 = _interopRequireDefault(_distribute);
 
 	/**
 	 * Handles events creation and distribution.
 	 */
-	function EventsManager(canvas) {
+
+	var EventsManager = (function () {
+	  function EventsManager(canvas) {
+	    _classCallCheck(this, EventsManager);
+
 	    this.canvas = canvas;
 	    this.events = [];
-	}
+	  }
 
-	module.exports = EventsManager;
+	  /**
+	   * Destroy previously rendered events.
+	   *
+	   * @return {EventsManager}
+	   */
 
-	/**
-	 * Destroy previously rendered events.
-	 *
-	 * @return {EventsManager}
-	 */
-	EventsManager.prototype.destroy = function () {
-	    this.events.forEach(function (event) {
-	        event.destroy();
-	    });
+	  _createClass(EventsManager, [{
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.events.forEach(function (event) {
+	        return event.destroy();
+	      });
+	      return this;
+	    }
 
-	    return this;
-	};
+	    /**
+	     * Render events at the right position and the right size.
+	     *
+	     * @param {Array} events
+	     * @return {EventsManager}
+	     */
+	  }, {
+	    key: 'set',
+	    value: function set(events) {
+	      this.events = events.map(function (options) {
+	        return new _event2['default'](options);
+	      });
+	      return this;
+	    }
 
-	/**
-	 * Render events at the right position and the right size.
-	 *
-	 * @param {Array} events
-	 * @return {EventsManager}
-	 */
-	EventsManager.prototype.set = function (events) {
-	    this.events = events.map(function (options) {
-	        return new Event(options);
-	    });
+	    /**
+	     * Render events at the right position and the right size.
+	     *
+	     * @return {EventsManager}
+	     */
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this = this;
 
-	    return this;
-	};
-
-	/**
-	 * Render events at the right position and the right size.
-	 *
-	 * @return {EventsManager}
-	 */
-	EventsManager.prototype.render = function () {
-	    distribute(this.events, this.canvas).forEach(function (event) {
+	      (0, _distribute2['default'])(this.events, this.canvas).forEach(function (event) {
 	        event.create();
-	        this.canvas.add(event);
-	    }, this);
+	        _this.canvas.add(event);
+	      });
+	      return this;
+	    }
+	  }]);
 
-	    return this;
-	};
+	  return EventsManager;
+	})();
+
+	exports['default'] = EventsManager;
+	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var jss = __webpack_require__(2);
-	var utils = __webpack_require__(15);
-	var contentTpl = __webpack_require__(24);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 
-	var sheet = jss.createStyleSheet(__webpack_require__(25));
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var _jss = __webpack_require__(3);
+
+	var _jss2 = _interopRequireDefault(_jss);
+
+	var _utils = __webpack_require__(28);
+
+	var utils = _interopRequireWildcard(_utils);
+
+	var _contentTpl = __webpack_require__(36);
+
+	var contentTpl = _interopRequireWildcard(_contentTpl);
+
+	var _styles = __webpack_require__(37);
+
+	var _styles2 = _interopRequireDefault(_styles);
+
+	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
 
 	var uid = 0;
 
-	/**
-	 * Event view constructor.
-	 * @param {Object} options
-	 */
-	function Event(options) {
+	var Event = (function () {
+	  /**
+	   * Event view constructor.
+	   * @param {Object} options
+	   */
+
+	  function Event(options) {
+	    _classCallCheck(this, Event);
+
 	    this.id = ++uid;
 	    this.start = options.start;
 	    this.end = options.end;
@@ -1560,60 +2396,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.location = options.location || 'Sample Location';
 	    this.element = null;
 	    this.style = null;
-	}
+	  }
 
-	module.exports = Event;
+	  /**
+	   * Create elements.
+	   *
+	   * @return {Event}
+	   */
 
-	/**
-	 * Create elements.
-	 *
-	 * @return {Event}
-	 */
-	Event.prototype.create = function () {
-	    sheet.attach();
-	    this.element = utils.element('div', {
+	  _createClass(Event, [{
+	    key: 'create',
+	    value: function create() {
+	      sheet.attach();
+	      this.element = utils.createElement('div', {
 	        'class': sheet.classes.container
-	    });
-	    this.element.innerHTML = contentTpl.compile({
+	      });
+	      this.element.innerHTML = contentTpl.compile({
 	        classes: sheet.classes,
 	        title: this.title,
 	        location: this.location
-	    });
-
-	    for (var key in this.style) {
+	      });
+	      for (var key in this.style) {
 	        this.element.style[key] = this.style[key];
+	      }
+	      return this;
 	    }
 
-	    return this;
-	};
+	    /**
+	     * Destroy event.
+	     *
+	     * @return {Event}
+	     */
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      this.element.parentNode.removeChild(this.element);
+	      return this;
+	    }
 
-	/**
-	 * Destroy event.
-	 *
-	 * @return {Event}
-	 */
-	Event.prototype.destroy = function () {
-	    this.element.parentNode.removeChild(this.element);
+	    /**
+	     * Set inline styles.
+	     *
+	     * @return {Event}
+	     */
+	  }, {
+	    key: 'setStyle',
+	    value: function setStyle(style) {
+	      this.style = style;
+	      return this;
+	    }
+	  }]);
 
-	    return this;
-	};
+	  return Event;
+	})();
 
-	/**
-	 * Set inline styles.
-	 *
-	 * @return {Event}
-	 */
-	Event.prototype.setStyle = function (style) {
-	    this.style = style;
-
-	    return this;
-	};
+	exports['default'] = Event;
+	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 36 */
 /***/ function(module, exports) {
-
-	'use strict';
 
 	/**
 	 * Returns compiled html for event content.
@@ -1621,48 +2463,72 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} data
 	 * @return {String}
 	 */
-	exports.compile = function (data) {
-	    return '' + '<div class="' + data.classes.content + '">' + '<h3 class="' + data.classes.title + '">' + data.title + '</h3>' + '<div class="' + data.classes.location + '">' + data.location + '</div>' + '</div>';
-	};
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.compile = compile;
+
+	function compile(data) {
+	  return "\n    <div class=\"" + data.classes.content + "\">\n      <h3 class=\"" + data.classes.title + "\">" + data.title + "</h3>\n      <div class=\"" + data.classes.location + "\">" + data.location + "</div>\n    </div>\n  ";
+	}
 
 /***/ },
-/* 25 */
+/* 37 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	module.exports = {
-	    container: {
-	        position: 'absolute',
-	        background: '#fff',
-	        'border-left': '4px solid #4b6ea8',
-	        'box-sizing': 'border-box'
-	    },
-	    content: {
-	        padding: '7px',
-	        overflow: 'hidden',
-	        height: '100%',
-	        border: '1px solid #d5d5d5',
-	        'border-left': 'none',
-	        'box-sizing': 'border-box'
-	    },
-	    title: {
-	        color: '#4b6ea8',
-	        margin: 0,
-	        'font-size': '1em'
-	    },
-	    location: {
-	        'font-size': '0.8em'
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = {
+	  container: {
+	    position: 'absolute',
+	    background: '#fff',
+	    borderLeft: '4px solid #4b6ea8',
+	    boxSizing: 'border-box'
+	  },
+	  content: {
+	    padding: 7,
+	    overflow: 'hidden',
+	    height: '100%',
+	    border: '1px solid #d5d5d5',
+	    borderLeft: 'none',
+	    boxSizing: 'border-box',
+	    cursor: 'pointer',
+	    '&:hover': {
+	      borderColor: '#4b6ea8'
 	    }
+	  },
+	  title: {
+	    color: '#4b6ea8',
+	    margin: 0,
+	    fontSize: '1em'
+	  },
+	  location: {
+	    fontSize: '0.8em'
+	  }
 	};
+	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(15);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = distribute;
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	var _utils = __webpack_require__(28);
+
+	var utils = _interopRequireWildcard(_utils);
 
 	/**
 	 * Distribute events within canvas.
@@ -1676,29 +2542,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Canvas} canvas
 	 * @return {Array} events
 	 */
-	module.exports = function (events, canvas) {
-	    function setStyle(column, nr, columns) {
-	        var width = canvas.getContentWidth() / columns.length;
 
-	        column.forEach(function (event) {
-	            var top = utils.minToY(event.start);
-	            var height = utils.minToY(event.end) - top;
-
-	            event.setStyle({
-	                width: width + 'px',
-	                height: height + 'px',
-	                top: top + 'px',
-	                left: nr * width + 'px'
-	            });
-	        });
-	    }
-
-	    createGroups(events).forEach(function (group) {
-	        createColumns(group).forEach(setStyle);
+	function distribute(events, canvas) {
+	  function setStyle(column, nr, columns) {
+	    var width = canvas.getContentWidth() / columns.length;
+	    column.forEach(function (event) {
+	      var top = utils.minToY(event.start);
+	      var height = utils.minToY(event.end) - top;
+	      event.setStyle({
+	        width: width + 'px',
+	        height: height + 'px',
+	        top: top + 'px',
+	        left: nr * width + 'px'
+	      });
 	    });
+	  }
 
-	    return events;
-	};
+	  createGroups(events).forEach(function (group) {
+	    createColumns(group).forEach(setStyle);
+	  });
+
+	  return events;
+	}
 
 	/**
 	 * Create groups of events which do not overlap. Events within this groups
@@ -1708,28 +2573,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {Array}
 	 */
 	function createGroups(events) {
-	    var groups = [];
-	    var eventGroupMap = {};
+	  var groups = [];
+	  var eventGroupMap = {};
 
-	    events.forEach(function createGroup(event) {
-	        var group = eventGroupMap[event.id];
-	        if (!group) {
-	            group = eventGroupMap[event.id] = [event];
-	            groups.push(group);
+	  events.forEach(function (event) {
+	    var group = eventGroupMap[event.id];
+	    if (!group) {
+	      group = eventGroupMap[event.id] = [event];
+	      groups.push(group);
+	    }
+
+	    events.forEach(function (_event) {
+	      if (_event === event) return;
+	      if (collide(event, _event)) {
+	        if (!eventGroupMap[_event.id]) {
+	          eventGroupMap[_event.id] = group;
+	          group.push(_event);
 	        }
-
-	        events.forEach(function addToGroup(_event) {
-	            if (_event === event) return;
-	            if (collide(event, _event)) {
-	                if (!eventGroupMap[_event.id]) {
-	                    eventGroupMap[_event.id] = group;
-	                    group.push(_event);
-	                }
-	            }
-	        });
+	      }
 	    });
+	  });
 
-	    return groups;
+	  return groups;
 	}
 
 	/**
@@ -1739,28 +2604,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {Array}
 	 */
 	function createColumns(group) {
-	    var columns = [];
-	    var eventStackMap = {};
+	  var columns = [];
+	  var eventStackMap = {};
 
-	    group.forEach(function createColumn(event) {
-	        var column = eventStackMap[event.id];
-	        if (!column) {
-	            column = eventStackMap[event.id] = [event];
-	            columns.push(column);
+	  group.forEach(function (event) {
+	    var column = eventStackMap[event.id];
+	    if (!column) {
+	      column = eventStackMap[event.id] = [event];
+	      columns.push(column);
+	    }
+
+	    group.forEach(function (_event) {
+	      if (_event === event) return;
+	      if (!collide(event, _event)) {
+	        if (!eventStackMap[_event.id]) {
+	          eventStackMap[_event.id] = column;
+	          column.push(_event);
 	        }
-
-	        group.forEach(function addToColumn(_event) {
-	            if (_event === event) return;
-	            if (!collide(event, _event)) {
-	                if (!eventStackMap[_event.id]) {
-	                    eventStackMap[_event.id] = column;
-	                    column.push(_event);
-	                }
-	            }
-	        });
+	      }
 	    });
+	  });
 
-	    return columns;
+	  return columns;
 	}
 
 	/**
@@ -1771,26 +2636,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {Boolean}
 	 */
 	function collide(event1, event2) {
-	    var startInside = event1.start >= event2.start && event1.start <= event2.end;
-	    var endInside = event1.end <= event2.end && event1.end > event2.start;
-	    return startInside || endInside;
+	  var startInside = event1.start >= event2.start && event1.start <= event2.end;
+	  var endInside = event1.end <= event2.end && event1.end > event2.start;
+	  return startInside || endInside;
 	}
+	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var conf = __webpack_require__(16);
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 
-	module.exports = {
-	    container: {
-	        'font-size': conf.fontSize + 'px',
-	        color: '#686868',
-	        width: conf.timeline.width + conf.canvas.width + 'px'
-	    }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _conf = __webpack_require__(1);
+
+	var _conf2 = _interopRequireDefault(_conf);
+
+	exports['default'] = {
+	  container: {
+	    fontSize: _conf2['default'].fontSize,
+	    color: '#686868',
+	    width: _conf2['default'].timeline.width + _conf2['default'].canvas.width
+	  }
 	};
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

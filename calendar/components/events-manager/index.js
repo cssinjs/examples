@@ -1,56 +1,46 @@
-'use strict'
-
-var Event = require('../event')
-var distribute = require('./distribute')
+import Event from '../event'
+import distribute from './distribute'
 
 /**
  * Handles events creation and distribution.
  */
-function EventsManager(canvas) {
+export default class EventsManager {
+  constructor(canvas) {
     this.canvas = canvas
     this.events = []
-}
+  }
 
-module.exports = EventsManager
+  /**
+   * Destroy previously rendered events.
+   *
+   * @return {EventsManager}
+   */
+  destroy() {
+    this.events.forEach(event => event.destroy())
+    return this
+  }
 
-/**
- * Destroy previously rendered events.
- *
- * @return {EventsManager}
- */
-EventsManager.prototype.destroy = function () {
-    this.events.forEach(function (event) {
-        event.destroy()
+  /**
+   * Render events at the right position and the right size.
+   *
+   * @param {Array} events
+   * @return {EventsManager}
+   */
+  set(events) {
+    this.events = events.map(options => new Event(options))
+    return this
+  }
+
+  /**
+   * Render events at the right position and the right size.
+   *
+   * @return {EventsManager}
+   */
+  render() {
+    distribute(this.events, this.canvas).forEach(event => {
+      event.create()
+      this.canvas.add(event)
     })
-
     return this
+  }
 }
-
-/**
- * Render events at the right position and the right size.
- *
- * @param {Array} events
- * @return {EventsManager}
- */
-EventsManager.prototype.set = function (events) {
-    this.events = events.map(function (options) {
-        return new Event(options)
-    })
-
-    return this
-}
-
-/**
- * Render events at the right position and the right size.
- *
- * @return {EventsManager}
- */
-EventsManager.prototype.render = function () {
-    distribute(this.events, this.canvas).forEach(function (event) {
-        event.create()
-        this.canvas.add(event)
-    }, this)
-
-    return this
-}
-

@@ -70,9 +70,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!rule.style || !rule.style.extend) return;
 
 	    function extend(newStyle, style) {
-	      if (Array.isArray(style.extend)) {
-	        for (var i = 0; i < style.extend.length; i++) {
-	          extend(newStyle, style.extend[i]);
+	      if (typeof style.extend == 'string') {
+	        if (rule.options && rule.options.sheet) {
+	          var refRule = rule.options.sheet.getRule(style.extend);
+	          if (refRule) extend(newStyle, refRule.originalStyle);
+	        }
+	      } else if (Array.isArray(style.extend)) {
+	        for (var index = 0; index < style.extend.length; index++) {
+	          extend(newStyle, style.extend[index]);
 	        }
 	      } else {
 	        for (var prop in style.extend) {

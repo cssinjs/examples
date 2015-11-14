@@ -1,57 +1,52 @@
-'use strict'
+import jss from '../jss'
+import * as utils from '../utils'
+import * as styles from './styles'
 
-var jss = require('../jss')
-var utils = require('../utils')
-var styles = require('./styles')
+const sheet = jss.createStyleSheet(styles.rules)
 
-var sheet = jss.createStyleSheet(styles.rules)
-
-/**
- * Canvas is a container view events can be added to.
- */
-function Canvas() {
+export default class Canvas {
+  /**
+   * Canvas is a container view events can be added to.
+   */
+  constructor() {
     this.element = null
     this.contentElement = null
-}
+  }
 
-module.exports = Canvas
-
-/**
- * Create canvas elements.
- *
- * @return {Canvas}
- */
-Canvas.prototype.create = function () {
+  /**
+   * Create canvas elements.
+   *
+   * @return {Canvas}
+   */
+  create() {
     sheet.attach()
-
-    this.element = utils.element('div', {
-        class: sheet.classes.canvas
+    this.element = utils.createElement('div', {
+      class: sheet.classes.canvas
     })
-    this.contentElement = utils.element('div', {
-        class: sheet.classes.content
+    this.contentElement = utils.createElement('div', {
+      class: sheet.classes.content
     })
     this.element.appendChild(this.contentElement)
-
     return this
-}
+  }
 
-/**
- * Add event.
- *
- * @param {Event} event
- * @return {Canvas}
- */
-Canvas.prototype.add = function (event) {
+  /**
+   * Add event.
+   *
+   * @param {Event} event
+   * @return {Canvas}
+   */
+  add(event) {
     this.contentElement.appendChild(event.element)
-
     return this
-}
+  }
 
-/**
- * Get content width.
- *
- * @return {Number}
- */
-Canvas.prototype.getContentWidth = function () {
-    return styles.contentWidth;
+  /**
+   * Get content width.
+   *
+   * @return {Number}
+   */
+  getContentWidth() {
+    return styles.contentWidth
+  }
 }

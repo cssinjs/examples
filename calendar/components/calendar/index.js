@@ -1,57 +1,51 @@
-'use strict'
+import jss from '../jss'
+import * as utils from '../utils'
+import Canvas from '../canvas'
+import Timeline from '../Timeline'
+import EventsManager from '../events-manager'
+import styles from './styles'
 
-var jss = require('../jss')
-var utils = require('../utils')
-var Canvas = require('../canvas')
-var Timeline = require('../timeline')
-var EventsManager = require('../events-manager')
+const sheet = jss.createStyleSheet(styles)
 
-var sheet = jss.createStyleSheet(require('./styles'))
-
-/**
- * Creates a new calendar view.
- */
-function Calendar(options) {
+export default class Calendar {
+  /**
+   * Creates a new calendar view.
+   */
+  constructor(options) {
     this.timeline = new Timeline(options.timeline)
     this.canvas = new Canvas()
     this.manager = new EventsManager(this.canvas)
     this.element = null
-}
+  }
 
-module.exports = Calendar
-
-/**
- * Renders layout.
- *
- * @return {Calendar}
- */
-Calendar.prototype.create = function () {
+  /**
+   * Renders layout.
+   *
+   * @return {Calendar}
+   */
+  create() {
     sheet.attach()
-    this.element = utils.element('div', {
-        class: sheet.classes.container
+    this.element = utils.createElement('div', {
+      class: sheet.classes.container
     })
-
     this.timeline.create()
     this.canvas.create()
-
     this.element.appendChild(this.timeline.element)
     this.element.appendChild(this.canvas.element)
-
     return this
-}
+  }
 
-
-/**
- * Render main container.
- *
- * @param {Array} events
- * @return {Calendar}
- */
-Calendar.prototype.renderDay = function (events) {
+  /**
+   * Render main container.
+   *
+   * @param {Array} events
+   * @return {Calendar}
+   */
+  renderDay(events) {
     this.manager
-        .destroy()
-        .set(events)
-        .render()
-
+      .destroy()
+      .set(events)
+      .render()
     return this
+  }
 }

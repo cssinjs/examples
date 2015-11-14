@@ -1,11 +1,9 @@
-'use strict'
+import conf from '../conf'
 
-var conf = require('../conf')
-
-module.exports = {
-    container: {
-        'font-size': conf.fontSize + 'px',
-        color: '#686868',
-        width: conf.timeline.width + conf.canvas.width + 'px'
-    }
+export default {
+  container: {
+    fontSize: conf.fontSize,
+    color: '#686868',
+    width: conf.timeline.width + conf.canvas.width
+  }
 }

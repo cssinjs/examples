@@ -1,18 +1,18 @@
-'use strict'
+import jss from '../jss'
+import * as utils from '../utils'
+import * as contentTpl from './content-tpl'
+import styles from './styles'
 
-var jss = require('../jss')
-var utils = require('../utils')
-var contentTpl = require('./content-tpl')
+const sheet = jss.createStyleSheet(styles)
 
-var sheet = jss.createStyleSheet(require('./styles'))
+let uid = 0
 
-var uid = 0
-
-/**
- * Event view constructor.
- * @param {Object} options
- */
-function Event(options) {
+export default class Event {
+  /**
+   * Event view constructor.
+   * @param {Object} options
+   */
+  constructor(options) {
     this.id = ++uid
     this.start = options.start
     this.end = options.end
@@ -20,51 +20,46 @@ function Event(options) {
     this.location = options.location || 'Sample Location'
     this.element = null
     this.style = null
-}
+  }
 
-module.exports = Event
-
-/**
- * Create elements.
- *
- * @return {Event}
- */
-Event.prototype.create = function () {
+  /**
+   * Create elements.
+   *
+   * @return {Event}
+   */
+  create() {
     sheet.attach()
-    this.element = utils.element('div', {
-        class: sheet.classes.container
+    this.element = utils.createElement('div', {
+      class: sheet.classes.container
     })
     this.element.innerHTML = contentTpl.compile({
-        classes: sheet.classes,
-        title: this.title,
-        location: this.location
+      classes: sheet.classes,
+      title: this.title,
+      location: this.location
     })
-
-    for (var key in this.style) {
-        this.element.style[key] = this.style[key]
+    for (const key in this.style) {
+      this.element.style[key] = this.style[key]
     }
-
     return this
-}
+  }
 
-/**
- * Destroy event.
- *
- * @return {Event}
- */
-Event.prototype.destroy = function () {
+  /**
+   * Destroy event.
+   *
+   * @return {Event}
+   */
+  destroy() {
     this.element.parentNode.removeChild(this.element)
-
     return this
-}
+  }
 
-/**
- * Set inline styles.
- *
- * @return {Event}
- */
-Event.prototype.setStyle = function (style) {
+  /**
+   * Set inline styles.
+   *
+   * @return {Event}
+   */
+  setStyle(style) {
     this.style = style
-
     return this
+  }
 }

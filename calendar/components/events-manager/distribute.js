@@ -1,6 +1,4 @@
-'use strict'
-
-var utils = require('../utils')
+import * as utils from '../utils'
 
 /**
  * Distribute events within canvas.
@@ -14,28 +12,26 @@ var utils = require('../utils')
  * @param {Canvas} canvas
  * @return {Array} events
  */
-module.exports = function (events, canvas) {
-    function setStyle(column, nr, columns) {
-        var width = canvas.getContentWidth() / columns.length
-
-        column.forEach(function (event) {
-            var top = utils.minToY(event.start)
-            var height = utils.minToY(event.end) - top
-
-            event.setStyle({
-                width: width + 'px',
-                height: height + 'px',
-                top: top + 'px',
-                left: nr * width + 'px'
-            })
-        })
-    }
-
-    createGroups(events).forEach(function (group) {
-        createColumns(group).forEach(setStyle)
+export default function distribute (events, canvas) {
+  function setStyle(column, nr, columns) {
+    const width = canvas.getContentWidth() / columns.length
+    column.forEach(event => {
+      const top = utils.minToY(event.start)
+      const height = utils.minToY(event.end) - top
+      event.setStyle({
+        width: width + 'px',
+        height: height + 'px',
+        top: top + 'px',
+        left: nr * width + 'px'
+      })
     })
+  }
 
-    return events
+  createGroups(events).forEach(function (group) {
+    createColumns(group).forEach(setStyle)
+  })
+
+  return events
 }
 
 /**
@@ -46,28 +42,28 @@ module.exports = function (events, canvas) {
  * @return {Array}
  */
 function createGroups(events) {
-    var groups = []
-    var eventGroupMap = {}
+  const groups = []
+  const eventGroupMap = {}
 
-    events.forEach(function createGroup(event) {
-        var group = eventGroupMap[event.id]
-        if (!group) {
-            group = eventGroupMap[event.id] = [event]
-            groups.push(group)
+  events.forEach(event => {
+    let group = eventGroupMap[event.id]
+    if (!group) {
+      group = eventGroupMap[event.id] = [event]
+      groups.push(group)
+    }
+
+    events.forEach(_event => {
+      if (_event === event) return
+      if (collide(event, _event)) {
+        if (!eventGroupMap[_event.id]) {
+          eventGroupMap[_event.id] = group
+          group.push(_event)
         }
-
-        events.forEach(function addToGroup(_event) {
-            if (_event === event) return
-            if (collide(event, _event)) {
-                if (!eventGroupMap[_event.id]) {
-                    eventGroupMap[_event.id] = group
-                    group.push(_event)
-                }
-            }
-        })
+      }
     })
+  })
 
-    return groups
+  return groups
 }
 
 /**
@@ -77,28 +73,28 @@ function createGroups(events) {
  * @return {Array}
  */
 function createColumns(group) {
-    var columns = []
-    var eventStackMap = {}
+  const columns = []
+  const eventStackMap = {}
 
-    group.forEach(function createColumn(event) {
-        var column = eventStackMap[event.id]
-        if (!column) {
-            column = eventStackMap[event.id] = [event]
-            columns.push(column)
+  group.forEach(event => {
+    let column = eventStackMap[event.id]
+    if (!column) {
+      column = eventStackMap[event.id] = [event]
+      columns.push(column)
+    }
+
+    group.forEach(_event => {
+      if (_event === event) return
+      if (!collide(event, _event)) {
+        if (!eventStackMap[_event.id]) {
+          eventStackMap[_event.id] = column
+          column.push(_event)
         }
-
-        group.forEach(function addToColumn(_event) {
-            if (_event === event) return
-            if (!collide(event, _event)) {
-                if (!eventStackMap[_event.id]) {
-                    eventStackMap[_event.id] = column
-                    column.push(_event)
-                }
-            }
-        })
+      }
     })
+  })
 
-    return columns
+  return columns
 }
 
 /**
@@ -109,7 +105,7 @@ function createColumns(group) {
  * @return {Boolean}
  */
 function collide(event1, event2) {
-    var startInside = event1.start >= event2.start && event1.start <= event2.end
-    var endInside = event1.end <= event2.end && event1.end > event2.start
-    return startInside || endInside
+  const startInside = event1.start >= event2.start && event1.start <= event2.end
+  const endInside = event1.end <= event2.end && event1.end > event2.start
+  return startInside || endInside
 }

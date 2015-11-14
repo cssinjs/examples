@@ -1,6 +1,4 @@
-'use strict'
-
-var conf = require('../conf')
+import conf from '../conf'
 
 /**
  * Create DOM node, set attributes.
@@ -9,17 +7,17 @@ var conf = require('../conf')
  * @param {Object} [attrs]
  * @return Element
  */
-exports.element = function (name, attrs) {
-    var element = document.createElement(name)
+export function createElement(name, attrs) {
+  const element = document.createElement(name)
 
-    for (var name in attrs) {
-        element.setAttribute(name, attrs[name])
-    }
+  for (const name in attrs) {
+    element.setAttribute(name, attrs[name])
+  }
 
-    return element
+  return element
 }
 
-var MIN_IN_DAY = 12 * 60
+const MIN_IN_DAY = 12 * 60
 
 /**
  * Converts minutes to Y offset in px.
@@ -27,6 +25,6 @@ var MIN_IN_DAY = 12 * 60
  * @param {Number} min
  * @return {Number}
  */
-exports.minToY = function (min) {
-    return conf.height * min / MIN_IN_DAY
+export function minToY(min) {
+  return conf.height * min / MIN_IN_DAY
 }
