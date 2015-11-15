@@ -5,10 +5,11 @@
  * @return {String}
  */
 export function compile(data) {
+  const {classes} = data
   return `
-    <div class="${data.classes.content}">
-      <h3 class="${data.classes.title}">${data.title}</h3>
-      <div class="${data.classes.location}">${data.location}</div>
+    <div class="${classes.content}">
+      <h3 class="${classes.title}">${data.title}</h3>
+      <div class="${classes.location}">${data.location}</div>
     </div>
   `
 }

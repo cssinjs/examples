@@ -1,8 +1,8 @@
 import jss from '../jss'
 import * as utils from '../utils'
-import * as styles from './styles'
+import * as style from './style'
 
-const sheet = jss.createStyleSheet(styles.rules)
+const sheet = jss.createStyleSheet(style.rules)
 
 export default class Canvas {
   /**
@@ -47,6 +47,6 @@ export default class Canvas {
    * @return {Number}
    */
   getContentWidth() {
-    return styles.contentWidth
+    return this.contentElement.offsetWidth
   }
 }

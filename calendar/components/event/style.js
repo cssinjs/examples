@@ -1,5 +1,5 @@
 export default {
-  container: {
+  event: {
     position: 'absolute',
     background: '#fff',
     borderLeft: '4px solid #4b6ea8',
@@ -24,5 +24,18 @@ export default {
   },
   location: {
     fontSize: '0.8em'
+  },
+  '@media (max-width: 600px)': {
+    event: {
+      borderColor: 'green'
+    },
+    content: {
+      '&:hover': {
+        borderColor: 'green'
+      }
+    },
+    title: {
+      color: 'green'
+    },
   }
 }

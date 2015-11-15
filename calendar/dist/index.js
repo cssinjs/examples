@@ -93,13 +93,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  fontSize: 16,
 	  height: 720,
 	  timeline: {
-	    width: 75,
 	    start: 540,
 	    end: 1290
-	  },
-	  canvas: {
-	    width: 620,
-	    padding: 10
 	  }
 	};
 	module.exports = exports["default"];
@@ -122,31 +117,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _jss = __webpack_require__(3);
+	var _lodashFunctionDebounce = __webpack_require__(3);
+
+	var _lodashFunctionDebounce2 = _interopRequireDefault(_lodashFunctionDebounce);
+
+	var _jss = __webpack_require__(10);
 
 	var _jss2 = _interopRequireDefault(_jss);
 
-	var _utils = __webpack_require__(28);
+	var _utils = __webpack_require__(36);
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _canvas = __webpack_require__(29);
+	var _canvas = __webpack_require__(37);
 
 	var _canvas2 = _interopRequireDefault(_canvas);
 
-	var _Timeline = __webpack_require__(31);
+	var _timeline = __webpack_require__(39);
 
-	var _Timeline2 = _interopRequireDefault(_Timeline);
+	var _timeline2 = _interopRequireDefault(_timeline);
 
-	var _eventsManager = __webpack_require__(34);
+	var _eventsManager = __webpack_require__(42);
 
 	var _eventsManager2 = _interopRequireDefault(_eventsManager);
 
-	var _styles = __webpack_require__(39);
+	var _style = __webpack_require__(47);
 
-	var _styles2 = _interopRequireDefault(_styles);
+	var _style2 = _interopRequireDefault(_style);
 
-	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
+	var sheet = _jss2['default'].createStyleSheet(_style2['default']);
 
 	var Calendar = (function () {
 	  /**
@@ -156,7 +155,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Calendar(options) {
 	    _classCallCheck(this, Calendar);
 
-	    this.timeline = new _Timeline2['default'](options.timeline);
+	    this.timeline = new _timeline2['default'](options.timeline);
 	    this.canvas = new _canvas2['default']();
 	    this.manager = new _eventsManager2['default'](this.canvas);
 	    this.element = null;
@@ -173,12 +172,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function create() {
 	      sheet.attach();
 	      this.element = utils.createElement('div', {
-	        'class': sheet.classes.container
+	        'class': sheet.classes.calendar
 	      });
 	      this.timeline.create();
 	      this.canvas.create();
 	      this.element.appendChild(this.timeline.element);
 	      this.element.appendChild(this.canvas.element);
+	      window.addEventListener('resize', (0, _lodashFunctionDebounce2['default'])(this.onResizeWindow.bind(this), 50));
 	      return this;
 	    }
 
@@ -194,6 +194,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.manager.destroy().set(events).render();
 	      return this;
 	    }
+	  }, {
+	    key: 'onResizeWindow',
+	    value: function onResizeWindow() {
+	      this.manager.destroy().render();
+	    }
 	  }]);
 
 	  return Calendar;
@@ -206,6 +211,395 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var isObject = __webpack_require__(4),
+	    now = __webpack_require__(5);
+
+	/** Used as the `TypeError` message for "Functions" methods. */
+	var FUNC_ERROR_TEXT = 'Expected a function';
+
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * Creates a debounced function that delays invoking `func` until after `wait`
+	 * milliseconds have elapsed since the last time the debounced function was
+	 * invoked. The debounced function comes with a `cancel` method to cancel
+	 * delayed invocations. Provide an options object to indicate that `func`
+	 * should be invoked on the leading and/or trailing edge of the `wait` timeout.
+	 * Subsequent calls to the debounced function return the result of the last
+	 * `func` invocation.
+	 *
+	 * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
+	 * on the trailing edge of the timeout only if the the debounced function is
+	 * invoked more than once during the `wait` timeout.
+	 *
+	 * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
+	 * for details over the differences between `_.debounce` and `_.throttle`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Function
+	 * @param {Function} func The function to debounce.
+	 * @param {number} [wait=0] The number of milliseconds to delay.
+	 * @param {Object} [options] The options object.
+	 * @param {boolean} [options.leading=false] Specify invoking on the leading
+	 *  edge of the timeout.
+	 * @param {number} [options.maxWait] The maximum time `func` is allowed to be
+	 *  delayed before it's invoked.
+	 * @param {boolean} [options.trailing=true] Specify invoking on the trailing
+	 *  edge of the timeout.
+	 * @returns {Function} Returns the new debounced function.
+	 * @example
+	 *
+	 * // avoid costly calculations while the window size is in flux
+	 * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+	 *
+	 * // invoke `sendMail` when the click event is fired, debouncing subsequent calls
+	 * jQuery('#postbox').on('click', _.debounce(sendMail, 300, {
+	 *   'leading': true,
+	 *   'trailing': false
+	 * }));
+	 *
+	 * // ensure `batchLog` is invoked once after 1 second of debounced calls
+	 * var source = new EventSource('/stream');
+	 * jQuery(source).on('message', _.debounce(batchLog, 250, {
+	 *   'maxWait': 1000
+	 * }));
+	 *
+	 * // cancel a debounced call
+	 * var todoChanges = _.debounce(batchLog, 1000);
+	 * Object.observe(models.todo, todoChanges);
+	 *
+	 * Object.observe(models, function(changes) {
+	 *   if (_.find(changes, { 'user': 'todo', 'type': 'delete'})) {
+	 *     todoChanges.cancel();
+	 *   }
+	 * }, ['delete']);
+	 *
+	 * // ...at some point `models.todo` is changed
+	 * models.todo.completed = true;
+	 *
+	 * // ...before 1 second has passed `models.todo` is deleted
+	 * // which cancels the debounced `todoChanges` call
+	 * delete models.todo;
+	 */
+	function debounce(func, wait, options) {
+	  var args,
+	      maxTimeoutId,
+	      result,
+	      stamp,
+	      thisArg,
+	      timeoutId,
+	      trailingCall,
+	      lastCalled = 0,
+	      maxWait = false,
+	      trailing = true;
+
+	  if (typeof func != 'function') {
+	    throw new TypeError(FUNC_ERROR_TEXT);
+	  }
+	  wait = wait < 0 ? 0 : (+wait || 0);
+	  if (options === true) {
+	    var leading = true;
+	    trailing = false;
+	  } else if (isObject(options)) {
+	    leading = !!options.leading;
+	    maxWait = 'maxWait' in options && nativeMax(+options.maxWait || 0, wait);
+	    trailing = 'trailing' in options ? !!options.trailing : trailing;
+	  }
+
+	  function cancel() {
+	    if (timeoutId) {
+	      clearTimeout(timeoutId);
+	    }
+	    if (maxTimeoutId) {
+	      clearTimeout(maxTimeoutId);
+	    }
+	    lastCalled = 0;
+	    maxTimeoutId = timeoutId = trailingCall = undefined;
+	  }
+
+	  function complete(isCalled, id) {
+	    if (id) {
+	      clearTimeout(id);
+	    }
+	    maxTimeoutId = timeoutId = trailingCall = undefined;
+	    if (isCalled) {
+	      lastCalled = now();
+	      result = func.apply(thisArg, args);
+	      if (!timeoutId && !maxTimeoutId) {
+	        args = thisArg = undefined;
+	      }
+	    }
+	  }
+
+	  function delayed() {
+	    var remaining = wait - (now() - stamp);
+	    if (remaining <= 0 || remaining > wait) {
+	      complete(trailingCall, maxTimeoutId);
+	    } else {
+	      timeoutId = setTimeout(delayed, remaining);
+	    }
+	  }
+
+	  function maxDelayed() {
+	    complete(trailing, timeoutId);
+	  }
+
+	  function debounced() {
+	    args = arguments;
+	    stamp = now();
+	    thisArg = this;
+	    trailingCall = trailing && (timeoutId || !leading);
+
+	    if (maxWait === false) {
+	      var leadingCall = leading && !timeoutId;
+	    } else {
+	      if (!maxTimeoutId && !leading) {
+	        lastCalled = stamp;
+	      }
+	      var remaining = maxWait - (stamp - lastCalled),
+	          isCalled = remaining <= 0 || remaining > maxWait;
+
+	      if (isCalled) {
+	        if (maxTimeoutId) {
+	          maxTimeoutId = clearTimeout(maxTimeoutId);
+	        }
+	        lastCalled = stamp;
+	        result = func.apply(thisArg, args);
+	      }
+	      else if (!maxTimeoutId) {
+	        maxTimeoutId = setTimeout(maxDelayed, remaining);
+	      }
+	    }
+	    if (isCalled && timeoutId) {
+	      timeoutId = clearTimeout(timeoutId);
+	    }
+	    else if (!timeoutId && wait !== maxWait) {
+	      timeoutId = setTimeout(delayed, wait);
+	    }
+	    if (leadingCall) {
+	      isCalled = true;
+	      result = func.apply(thisArg, args);
+	    }
+	    if (isCalled && !timeoutId && !maxTimeoutId) {
+	      args = thisArg = undefined;
+	    }
+	    return result;
+	  }
+	  debounced.cancel = cancel;
+	  return debounced;
+	}
+
+	module.exports = debounce;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(1);
+	 * // => false
+	 */
+	function isObject(value) {
+	  // Avoid a V8 JIT bug in Chrome 19-20.
+	  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+	  var type = typeof value;
+	  return !!value && (type == 'object' || type == 'function');
+	}
+
+	module.exports = isObject;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getNative = __webpack_require__(6);
+
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeNow = getNative(Date, 'now');
+
+	/**
+	 * Gets the number of milliseconds that have elapsed since the Unix epoch
+	 * (1 January 1970 00:00:00 UTC).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Date
+	 * @example
+	 *
+	 * _.defer(function(stamp) {
+	 *   console.log(_.now() - stamp);
+	 * }, _.now());
+	 * // => logs the number of milliseconds it took for the deferred function to be invoked
+	 */
+	var now = nativeNow || function() {
+	  return new Date().getTime();
+	};
+
+	module.exports = now;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isNative = __webpack_require__(7);
+
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = object == null ? undefined : object[key];
+	  return isNative(value) ? value : undefined;
+	}
+
+	module.exports = getNative;
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isFunction = __webpack_require__(8),
+	    isObjectLike = __webpack_require__(9);
+
+	/** Used to detect host constructors (Safari > 5). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to resolve the decompiled source of functions. */
+	var fnToString = Function.prototype.toString;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+
+	/**
+	 * Checks if `value` is a native function.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (value == null) {
+	    return false;
+	  }
+	  if (isFunction(value)) {
+	    return reIsNative.test(fnToString.call(value));
+	  }
+	  return isObjectLike(value) && reIsHostCtor.test(value);
+	}
+
+	module.exports = isNative;
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isObject = __webpack_require__(4);
+
+	/** `Object#toString` result references. */
+	var funcTag = '[object Function]';
+
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+
+	/**
+	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var objToString = objectProto.toString;
+
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction(value) {
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in older versions of Chrome and Safari which return 'function' for regexes
+	  // and Safari 8 which returns 'object' for typed array constructors.
+	  return isObject(value) && objToString.call(value) == funcTag;
+	}
+
+	module.exports = isFunction;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return !!value && typeof value == 'object';
+	}
+
+	module.exports = isObjectLike;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
 	// Setup jss plugins.
 	'use strict';
 
@@ -215,27 +609,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _jss = __webpack_require__(4);
+	var _jss = __webpack_require__(11);
 
-	var _jssExtend = __webpack_require__(18);
+	var _jssExtend = __webpack_require__(25);
 
 	var _jssExtend2 = _interopRequireDefault(_jssExtend);
 
-	var _jssNested = __webpack_require__(19);
+	var _jssNested = __webpack_require__(26);
 
 	var _jssNested2 = _interopRequireDefault(_jssNested);
 
-	var _jssCamelCase = __webpack_require__(20);
+	var _jssCamelCase = __webpack_require__(27);
 
 	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
 
-	var _jssPx = __webpack_require__(21);
+	var _jssPx = __webpack_require__(28);
 
 	var _jssPx2 = _interopRequireDefault(_jssPx);
 
-	var _jssVendorPrefixer = __webpack_require__(22);
+	var _jssVendorPrefixer = __webpack_require__(29);
 
 	var _jssVendorPrefixer2 = _interopRequireDefault(_jssVendorPrefixer);
+
+	var _jssDebug = __webpack_require__(35);
+
+	var _jssDebug2 = _interopRequireDefault(_jssDebug);
 
 	var jss = (0, _jss.create)();
 
@@ -244,12 +642,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	jss.use((0, _jssCamelCase2['default'])());
 	jss.use((0, _jssPx2['default'])());
 	jss.use((0, _jssVendorPrefixer2['default'])());
+	jss.use((0, _jssDebug2['default'])());
 
 	exports['default'] = jss;
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -266,7 +665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _Jss = __webpack_require__(5);
+	var _Jss = __webpack_require__(12);
 
 	var _Jss2 = _interopRequireDefault(_Jss);
 
@@ -274,7 +673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -289,23 +688,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _StyleSheet = __webpack_require__(6);
+	var _StyleSheet = __webpack_require__(13);
 
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
-	var _PluginsRegistry = __webpack_require__(17);
+	var _PluginsRegistry = __webpack_require__(24);
 
 	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
-	var _uid = __webpack_require__(9);
+	var _uid = __webpack_require__(16);
 
 	var uid = _interopRequireWildcard(_uid);
 
-	var _createRule2 = __webpack_require__(7);
+	var _createRule2 = __webpack_require__(14);
 
 	var _createRule3 = _interopRequireDefault(_createRule2);
 
-	var _findRenderer = __webpack_require__(14);
+	var _findRenderer = __webpack_require__(21);
 
 	var _findRenderer2 = _interopRequireDefault(_findRenderer);
 
@@ -386,7 +785,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -399,11 +798,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _createRule2 = __webpack_require__(7);
+	var _createRule2 = __webpack_require__(14);
 
 	var _createRule3 = _interopRequireDefault(_createRule2);
 
-	var _findRenderer = __webpack_require__(14);
+	var _findRenderer = __webpack_require__(21);
 
 	var _findRenderer2 = _interopRequireDefault(_findRenderer);
 
@@ -630,7 +1029,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 7 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -643,19 +1042,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _Rule = __webpack_require__(8);
+	var _Rule = __webpack_require__(15);
 
 	var _Rule2 = _interopRequireDefault(_Rule);
 
-	var _SimpleRule = __webpack_require__(11);
+	var _SimpleRule = __webpack_require__(18);
 
 	var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
 
-	var _KeyframeRule = __webpack_require__(12);
+	var _KeyframeRule = __webpack_require__(19);
 
 	var _KeyframeRule2 = _interopRequireDefault(_KeyframeRule);
 
-	var _ConditionalRule = __webpack_require__(13);
+	var _ConditionalRule = __webpack_require__(20);
 
 	var _ConditionalRule2 = _interopRequireDefault(_ConditionalRule);
 
@@ -708,7 +1107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 8 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -721,11 +1120,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _uid = __webpack_require__(9);
+	var _uid = __webpack_require__(16);
 
 	var uid = _interopRequireWildcard(_uid);
 
-	var _clone = __webpack_require__(10);
+	var _clone = __webpack_require__(17);
 
 	var _clone2 = _interopRequireDefault(_clone);
 
@@ -892,7 +1291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -931,7 +1330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 10 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -958,7 +1357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 11 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1000,7 +1399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -1065,7 +1464,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -1141,7 +1540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 14 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1151,11 +1550,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _DomRenderer = __webpack_require__(15);
+	var _DomRenderer = __webpack_require__(22);
 
 	var _DomRenderer2 = _interopRequireDefault(_DomRenderer);
 
-	var _VirtualRenderer = __webpack_require__(16);
+	var _VirtualRenderer = __webpack_require__(23);
 
 	var _VirtualRenderer2 = _interopRequireDefault(_VirtualRenderer);
 
@@ -1179,7 +1578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/**
@@ -1293,7 +1692,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/**
@@ -1331,7 +1730,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 17 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/**
@@ -1381,7 +1780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 18 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/**
@@ -1430,7 +1829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1473,7 +1872,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1506,7 +1905,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 28 */
 /***/ function(module, exports) {
 
 	// Don't automatically add 'px' to these possibly-unitless properties.
@@ -1559,7 +1958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 22 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1569,7 +1968,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-	var _cssVendor = __webpack_require__(23);
+	var _cssVendor = __webpack_require__(30);
 
 	var vendor = _interopRequireWildcard(_cssVendor);
 
@@ -1611,7 +2010,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 23 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1628,26 +2027,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _prefix2 = __webpack_require__(24);
+	var _prefix2 = __webpack_require__(31);
 
 	var _prefix3 = _interopRequireDefault(_prefix2);
 
 	exports.prefix = _prefix3['default'];
 
-	var _supportedProperty2 = __webpack_require__(25);
+	var _supportedProperty2 = __webpack_require__(32);
 
 	var _supportedProperty3 = _interopRequireDefault(_supportedProperty2);
 
 	exports.supportedProperty = _supportedProperty3['default'];
 
-	var _supportedValue2 = __webpack_require__(27);
+	var _supportedValue2 = __webpack_require__(34);
 
 	var _supportedValue3 = _interopRequireDefault(_supportedValue2);
 
 	exports.supportedValue = _supportedValue3['default'];
 
 /***/ },
-/* 24 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/**
@@ -1692,7 +2091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 25 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1702,11 +2101,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _prefix = __webpack_require__(24);
+	var _prefix = __webpack_require__(31);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _camelize = __webpack_require__(26);
+	var _camelize = __webpack_require__(33);
 
 	var _camelize2 = _interopRequireDefault(_camelize);
 
@@ -1762,7 +2161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 26 */
+/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1788,7 +2187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1798,7 +2197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _prefix = __webpack_require__(24);
+	var _prefix = __webpack_require__(31);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
@@ -1850,7 +2249,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
+/* 35 */
+/***/ function(module, exports) {
+
+	/**
+	 * Add rule name to the class name for debugging purposes.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	"use strict";
+
+	exports.__esModule = true;
+	exports["default"] = jssDebug;
+
+	function jssDebug() {
+	  return function (rule) {
+	    var name = rule.name;
+
+	    if (!rule.options.named || !name) return;
+	    rule.className += " jss:" + name;
+	    if (rule.options.sheet) {
+	      rule.options.sheet.classes[name] = rule.className;
+	    }
+	  };
+	}
+
+	module.exports = exports["default"];
+
+/***/ },
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1899,7 +2327,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 29 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1916,19 +2344,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _jss = __webpack_require__(3);
+	var _jss = __webpack_require__(10);
 
 	var _jss2 = _interopRequireDefault(_jss);
 
-	var _utils = __webpack_require__(28);
+	var _utils = __webpack_require__(36);
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _styles = __webpack_require__(30);
+	var _style = __webpack_require__(38);
 
-	var styles = _interopRequireWildcard(_styles);
+	var style = _interopRequireWildcard(_style);
 
-	var sheet = _jss2['default'].createStyleSheet(styles.rules);
+	var sheet = _jss2['default'].createStyleSheet(style.rules);
 
 	var Canvas = (function () {
 	  /**
@@ -1983,7 +2411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getContentWidth',
 	    value: function getContentWidth() {
-	      return styles.contentWidth;
+	      return this.contentElement.offsetWidth;
 	    }
 	  }]);
 
@@ -1994,7 +2422,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 30 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2009,36 +2437,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _conf2 = _interopRequireDefault(_conf);
 
-	var width = _conf2['default'].canvas.width;
-	exports.width = width;
-	var height = _conf2['default'].height;
-	exports.height = height;
-	var padding = 10;
-	exports.padding = padding;
-	var contentWidth = width - padding * 2;
-
-	exports.contentWidth = contentWidth;
 	var rules = {
 	  canvas: {
+	    flex: 1,
 	    position: 'relative',
-	    float: 'left',
-	    width: width,
-	    height: height,
+	    height: _conf2['default'].height,
 	    background: '#ececec',
 	    borderLeft: '1px solid #d5d5d5',
 	    boxSizing: 'border-box'
 	  },
 	  content: {
 	    position: 'absolute',
-	    left: padding,
-	    width: contentWidth,
-	    height: height
+	    left: 10,
+	    right: 10,
+	    top: 0,
+	    bottom: 0
 	  }
 	};
 	exports.rules = rules;
 
 /***/ },
-/* 31 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2055,23 +2474,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _jss = __webpack_require__(3);
+	var _jss = __webpack_require__(10);
 
 	var _jss2 = _interopRequireDefault(_jss);
 
-	var _utils = __webpack_require__(28);
+	var _utils = __webpack_require__(36);
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _markerTpl = __webpack_require__(32);
+	var _markerTpl = __webpack_require__(40);
 
 	var markerTpl = _interopRequireWildcard(_markerTpl);
 
-	var _styles = __webpack_require__(33);
+	var _style = __webpack_require__(41);
 
-	var _styles2 = _interopRequireDefault(_styles);
-
-	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
+	var sheet = _jss2['default'].createStyleSheet(_style.rules);
 
 	var Timeline = (function () {
 	  /**
@@ -2176,7 +2593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/**
@@ -2194,16 +2611,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.compile = compile;
 
 	function compile(data) {
-	  var timeClass = data.classes[data.suffix ? 'timeWithSuffix' : 'time'];
+	  var classes = data.classes;
+
+	  var timeClass = classes[data.suffix ? 'timeWithSuffix' : 'time'];
 	  var html = '<span class="' + timeClass + '">' + data.time + '</span>';
 	  if (data.suffix) {
-	    html += '<span class="' + data.classes.time + '">' + data.suffix + '</span>';
+	    html += '<span class="' + classes.time + '">' + data.suffix + '</span>';
 	  }
 	  return html;
 	}
 
 /***/ },
-/* 33 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2218,11 +2637,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _conf2 = _interopRequireDefault(_conf);
 
-	exports['default'] = {
+	var width = 75;
+
+	exports.width = width;
+	var rules = {
 	  timeline: {
 	    position: 'relative',
-	    float: 'left',
-	    width: _conf2['default'].timeline.width,
+	    flexShrink: 0,
+	    width: width,
 	    height: _conf2['default'].height,
 	    padding: '0 7px 0 0',
 	    boxSizing: 'border-box',
@@ -2250,10 +2672,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    marginRight: 5
 	  }
 	};
-	module.exports = exports['default'];
+	exports.rules = rules;
 
 /***/ },
-/* 34 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2268,11 +2690,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _event = __webpack_require__(35);
+	var _event = __webpack_require__(43);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	var _distribute = __webpack_require__(38);
+	var _distribute = __webpack_require__(46);
 
 	var _distribute2 = _interopRequireDefault(_distribute);
 
@@ -2343,7 +2765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 35 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2360,23 +2782,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _jss = __webpack_require__(3);
+	var _jss = __webpack_require__(10);
 
 	var _jss2 = _interopRequireDefault(_jss);
 
-	var _utils = __webpack_require__(28);
+	var _utils = __webpack_require__(36);
 
 	var utils = _interopRequireWildcard(_utils);
 
-	var _contentTpl = __webpack_require__(36);
+	var _contentTpl = __webpack_require__(44);
 
 	var contentTpl = _interopRequireWildcard(_contentTpl);
 
-	var _styles = __webpack_require__(37);
+	var _style = __webpack_require__(45);
 
-	var _styles2 = _interopRequireDefault(_styles);
+	var _style2 = _interopRequireDefault(_style);
 
-	var sheet = _jss2['default'].createStyleSheet(_styles2['default']);
+	var sheet = _jss2['default'].createStyleSheet(_style2['default']);
 
 	var uid = 0;
 
@@ -2409,7 +2831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function create() {
 	      sheet.attach();
 	      this.element = utils.createElement('div', {
-	        'class': sheet.classes.container
+	        'class': sheet.classes.event
 	      });
 	      this.element.innerHTML = contentTpl.compile({
 	        classes: sheet.classes,
@@ -2435,7 +2857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Set inline styles.
+	     * Set inline style.
 	     *
 	     * @return {Event}
 	     */
@@ -2454,7 +2876,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 36 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/**
@@ -2471,11 +2893,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.compile = compile;
 
 	function compile(data) {
-	  return "\n    <div class=\"" + data.classes.content + "\">\n      <h3 class=\"" + data.classes.title + "\">" + data.title + "</h3>\n      <div class=\"" + data.classes.location + "\">" + data.location + "</div>\n    </div>\n  ";
+	  var classes = data.classes;
+
+	  return "\n    <div class=\"" + classes.content + "\">\n      <h3 class=\"" + classes.title + "\">" + data.title + "</h3>\n      <div class=\"" + classes.location + "\">" + data.location + "</div>\n    </div>\n  ";
 	}
 
 /***/ },
-/* 37 */
+/* 45 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2484,7 +2908,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	exports['default'] = {
-	  container: {
+	  event: {
 	    position: 'absolute',
 	    background: '#fff',
 	    borderLeft: '4px solid #4b6ea8',
@@ -2509,12 +2933,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  location: {
 	    fontSize: '0.8em'
+	  },
+	  '@media (max-width: 600px)': {
+	    event: {
+	      borderColor: 'green'
+	    },
+	    content: {
+	      '&:hover': {
+	        borderColor: 'green'
+	      }
+	    },
+	    title: {
+	      color: 'green'
+	    }
 	  }
 	};
 	module.exports = exports['default'];
 
 /***/ },
-/* 38 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2526,7 +2963,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
-	var _utils = __webpack_require__(28);
+	var _utils = __webpack_require__(36);
 
 	var utils = _interopRequireWildcard(_utils);
 
@@ -2643,7 +3080,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 39 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2659,10 +3096,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _conf2 = _interopRequireDefault(_conf);
 
 	exports['default'] = {
-	  container: {
+	  calendar: {
+	    display: 'flex',
 	    fontSize: _conf2['default'].fontSize,
-	    color: '#686868',
-	    width: _conf2['default'].timeline.width + _conf2['default'].canvas.width
+	    color: '#686868'
 	  }
 	};
 	module.exports = exports['default'];

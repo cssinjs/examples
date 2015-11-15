@@ -1,11 +1,12 @@
+import debounce from 'lodash/function/debounce'
 import jss from '../jss'
 import * as utils from '../utils'
 import Canvas from '../canvas'
-import Timeline from '../Timeline'
+import Timeline from '../timeline'
 import EventsManager from '../events-manager'
-import styles from './styles'
+import style from './style'
 
-const sheet = jss.createStyleSheet(styles)
+const sheet = jss.createStyleSheet(style)
 
 export default class Calendar {
   /**
@@ -26,12 +27,13 @@ export default class Calendar {
   create() {
     sheet.attach()
     this.element = utils.createElement('div', {
-      class: sheet.classes.container
+      class: sheet.classes.calendar
     })
     this.timeline.create()
     this.canvas.create()
     this.element.appendChild(this.timeline.element)
     this.element.appendChild(this.canvas.element)
+    window.addEventListener('resize', debounce(::this.onResizeWindow, 50))
     return this
   }
 
@@ -47,5 +49,9 @@ export default class Calendar {
       .set(events)
       .render()
     return this
+  }
+
+  onResizeWindow() {
+    this.manager.destroy().render()
   }
 }

@@ -1,10 +1,12 @@
 import conf from '../conf'
 
-export default {
+export const width = 75
+
+export const rules = {
   timeline: {
     position: 'relative',
-    float: 'left',
-    width: conf.timeline.width,
+    flexShrink: 0,
+    width,
     height: conf.height,
     padding: '0 7px 0 0',
     boxSizing: 'border-box',

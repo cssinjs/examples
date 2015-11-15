@@ -1,9 +1,9 @@
 import jss from '../jss'
 import * as utils from '../utils'
 import * as markerTpl from './marker-tpl'
-import styles from './styles'
+import {rules} from './style'
 
-const sheet = jss.createStyleSheet(styles)
+const sheet = jss.createStyleSheet(rules)
 
 export default class Timeline {
   /**

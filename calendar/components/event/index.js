@@ -1,9 +1,9 @@
 import jss from '../jss'
 import * as utils from '../utils'
 import * as contentTpl from './content-tpl'
-import styles from './styles'
+import style from './style'
 
-const sheet = jss.createStyleSheet(styles)
+const sheet = jss.createStyleSheet(style)
 
 let uid = 0
 
@@ -30,7 +30,7 @@ export default class Event {
   create() {
     sheet.attach()
     this.element = utils.createElement('div', {
-      class: sheet.classes.container
+      class: sheet.classes.event
     })
     this.element.innerHTML = contentTpl.compile({
       classes: sheet.classes,
@@ -54,7 +54,7 @@ export default class Event {
   }
 
   /**
-   * Set inline styles.
+   * Set inline style.
    *
    * @return {Event}
    */
