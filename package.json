@@ -24,7 +24,7 @@
     "jss-debug": "^1.0.0",
     "jss-extend": "^1.1.0",
     "jss-props-sort": "^1.0.0",
-    "jss-px": "^1.0.0",
+    "jss-default-unit": "^2.0.1",
     "jss-vendor-prefixer": "^1.0.0",
     "lodash": "^3.10.1",
     "parallelshell": "^2.0.0",
@@ -36,13 +36,13 @@
     "build:calendar": "webpack ./calendar/index.js ./calendar/dist/index.js --config ./calendar/webpack.config.js",
     "jss:all": "parallelshell 'npm run jss -s' 'npm run jss:plugins -s'",
     "jss": "cpy ./node_modules/jss/dist/jss.js ./",
-    "jss:plugins": "parallelshell 'npm run jss:camel-case -s' 'npm run jss:debug -s' 'npm run jss:extend -s' 'npm run jss:nested -s' 'npm run jss:props-sort -s' 'npm run jss:px -s' 'npm run jss:vendor-prefixer -s'",
+    "jss:plugins": "parallelshell 'npm run jss:camel-case -s' 'npm run jss:debug -s' 'npm run jss:extend -s' 'npm run jss:nested -s' 'npm run jss:props-sort -s' 'npm run jss:default-unit -s' 'npm run jss:vendor-prefixer -s'",
     "jss:camel-case": "cpy ./node_modules/jss-camel-case/dist/jss-camel-case.js ./",
     "jss:debug": "cpy ./node_modules/jss-debug/dist/jss-debug.js ./",
     "jss:extend": "cpy ./node_modules/jss-extend/dist/jss-extend.js ./",
     "jss:nested": "cpy ./node_modules/jss-nested/dist/jss-nested.js ./",
     "jss:props-sort": "cpy ./node_modules/jss-props-sort/dist/jss-props-sort.js ./",
-    "jss:px": "cpy ./node_modules/jss-px/dist/jss-px.js ./",
+    "jss:default-unit": "cpy ./node_modules/jss-default-unit/dist/jss-default-unit.js ./",
     "jss:vendor-prefixer": "cpy ./node_modules/jss-vendor-prefixer/dist/jss-vendor-prefixer.js ./"
   }
 }

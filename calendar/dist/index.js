@@ -623,9 +623,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
 
-	var _jssPx = __webpack_require__(28);
+	var _jssDefaultUnit = __webpack_require__(28);
 
-	var _jssPx2 = _interopRequireDefault(_jssPx);
+	var _jssDefaultUnit2 = _interopRequireDefault(_jssDefaultUnit);
 
 	var _jssVendorPrefixer = __webpack_require__(29);
 
@@ -640,7 +640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	jss.use((0, _jssExtend2['default'])());
 	jss.use((0, _jssNested2['default'])());
 	jss.use((0, _jssCamelCase2['default'])());
-	jss.use((0, _jssPx2['default'])());
+	jss.use((0, _jssDefaultUnit2['default'])());
 	jss.use((0, _jssVendorPrefixer2['default'])());
 	jss.use((0, _jssDebug2['default'])());
 
@@ -1908,12 +1908,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 28 */
 /***/ function(module, exports) {
 
-	// Don't automatically add 'px' to these possibly-unitless properties.
-	// Borrowed from jquery.
+	// Don't automatically add unit to these possibly-unitless properties.
 	'use strict';
 
 	exports.__esModule = true;
-	exports['default'] = jssPx;
+	exports['default'] = defaultUnit;
 	var cssNumber = {
 	  'animation-iteration-count': true,
 	  'box-ordinal-group': true,
@@ -1929,27 +1928,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'order': true,
 	  'orphans': true,
 	  'stop-opacity': true,
-	  'tab-size': 1,
+	  'tab-size': true,
 	  'widows': true,
 	  'z-index': true,
 	  'zoom': true
 	};
 
 	/**
-	 * Add px to numeric values.
+	 * Add unit to numeric values.
 	 *
 	 * @param {Rule} rule
 	 * @api public
 	 */
 
-	function jssPx() {
+	function defaultUnit() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? { unit: 'px' } : arguments[0];
+
 	  return function (rule) {
 	    var style = rule.style;
 
 	    if (!style) return;
 	    for (var prop in style) {
 	      if (!cssNumber[prop] && typeof style[prop] == 'number') {
-	        style[prop] += 'px';
+	        style[prop] += options.unit;
 	      }
 	    }
 	  };

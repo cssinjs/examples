@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["jssPx"] = factory();
+		exports["jssDefaultUnit"] = factory();
 	else
-		root["jssPx"] = factory();
+		root["jssDefaultUnit"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -54,12 +54,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-	// Don't automatically add 'px' to these possibly-unitless properties.
-	// Borrowed from jquery.
+	// Don't automatically add unit to these possibly-unitless properties.
 	'use strict';
 
 	exports.__esModule = true;
-	exports['default'] = jssPx;
+	exports['default'] = defaultUnit;
 	var cssNumber = {
 	  'animation-iteration-count': true,
 	  'box-ordinal-group': true,
@@ -75,27 +74,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'order': true,
 	  'orphans': true,
 	  'stop-opacity': true,
-	  'tab-size': 1,
+	  'tab-size': true,
 	  'widows': true,
 	  'z-index': true,
 	  'zoom': true
 	};
 
 	/**
-	 * Add px to numeric values.
+	 * Add unit to numeric values.
 	 *
 	 * @param {Rule} rule
 	 * @api public
 	 */
 
-	function jssPx() {
+	function defaultUnit() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? { unit: 'px' } : arguments[0];
+
 	  return function (rule) {
 	    var style = rule.style;
 
 	    if (!style) return;
 	    for (var prop in style) {
 	      if (!cssNumber[prop] && typeof style[prop] == 'number') {
-	        style[prop] += 'px';
+	        style[prop] += options.unit;
 	      }
 	    }
 	  };
