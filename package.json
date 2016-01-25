@@ -23,9 +23,11 @@
     "jss-camel-case": "^1.0.0",
     "jss-debug": "^1.0.0",
     "jss-extend": "^1.1.0",
+    "jss-nested": "^1.0.0",
     "jss-props-sort": "^1.0.0",
     "jss-default-unit": "^2.0.1",
     "jss-vendor-prefixer": "^1.0.0",
+    "perdido": "^1.0.0",
     "lodash": "^3.10.1",
     "parallelshell": "^2.0.0",
     "webpack": "^1.11.0"
@@ -43,6 +45,7 @@
     "jss:nested": "cpy ./node_modules/jss-nested/dist/jss-nested.js ./",
     "jss:props-sort": "cpy ./node_modules/jss-props-sort/dist/jss-props-sort.js ./",
     "jss:default-unit": "cpy ./node_modules/jss-default-unit/dist/jss-default-unit.js ./",
-    "jss:vendor-prefixer": "cpy ./node_modules/jss-vendor-prefixer/dist/jss-vendor-prefixer.js ./"
+    "jss:vendor-prefixer": "cpy ./node_modules/jss-vendor-prefixer/dist/jss-vendor-prefixer.js ./",
+    "jss:perdido": "cpy ./node_modules/perdido/dist/perdido.js ./"
   }
 }
