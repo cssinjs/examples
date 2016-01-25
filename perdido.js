@@ -79,32 +79,102 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _column = __webpack_require__(2);
+	var _align2 = __webpack_require__(2);
 
-	var _column2 = _interopRequireDefault(_column);
+	var _align3 = _interopRequireDefault(_align2);
 
-	var _row = __webpack_require__(8);
+	var _center2 = __webpack_require__(8);
 
-	var _row2 = _interopRequireDefault(_row);
+	var _center3 = _interopRequireDefault(_center2);
 
-	var _flexContainer = __webpack_require__(9);
+	var _column2 = __webpack_require__(9);
+
+	var _column3 = _interopRequireDefault(_column2);
+
+	var _flexContainer = __webpack_require__(10);
 
 	var _flexContainer2 = _interopRequireDefault(_flexContainer);
 
-	var _utils = __webpack_require__(10);
+	var _row2 = __webpack_require__(11);
 
-	var Perdido = function Perdido() {
-	  _classCallCheck(this, Perdido);
+	var _row3 = _interopRequireDefault(_row2);
 
-	  this.column = _column2['default'];
-	  this.row = _row2['default'];
-	  this.flexContainer = _flexContainer2['default'];
-	  this.utils = { clearFix: _utils.clearFix, edit: _utils.edit };
-	};
+	var _offset2 = __webpack_require__(12);
+
+	var _offset3 = _interopRequireDefault(_offset2);
+
+	var _utils = __webpack_require__(13);
+
+	var _defaults = __webpack_require__(3);
+
+	var Perdido = (function () {
+	  function Perdido() {
+	    var cycle = arguments.length <= 0 || arguments[0] === undefined ? _defaults.CYCLE : arguments[0];
+	    var gutter = arguments.length <= 1 || arguments[1] === undefined ? _defaults.GUTTER : arguments[1];
+	    var flex = arguments.length <= 2 || arguments[2] === undefined ? _defaults.FLEX : arguments[2];
+	    var offsetDir = arguments.length <= 3 || arguments[3] === undefined ? _defaults.OFFSET_DIR : arguments[3];
+
+	    _classCallCheck(this, Perdido);
+
+	    // Set the default values.
+	    this.cycle = cycle;
+	    this.gutter = gutter;
+	    this.flex = flex;
+	    this.offsetDir = offsetDir;
+
+	    this.flexContainer = _flexContainer2['default'];
+	    this.utils = { clearFix: _utils.clearFix, edit: _utils.edit };
+	  }
+
+	  _createClass(Perdido, [{
+	    key: 'align',
+	    value: function align(alignment) {
+	      var flex = arguments.length <= 1 || arguments[1] === undefined ? this.flex : arguments[1];
+
+	      return (0, _align3['default'])(alignment, flex);
+	    }
+	  }, {
+	    key: 'center',
+	    value: function center(maxWidth, padding) {
+	      var flex = arguments.length <= 2 || arguments[2] === undefined ? this.flex : arguments[2];
+
+	      return (0, _center3['default'])(maxWidth, padding, flex);
+	    }
+	  }, {
+	    key: 'column',
+	    value: function column(columnVal) {
+	      var cycle = arguments.length <= 1 || arguments[1] === undefined ? this.cycle : arguments[1];
+	      var gutter = arguments.length <= 2 || arguments[2] === undefined ? this.gutter : arguments[2];
+	      var flex = arguments.length <= 3 || arguments[3] === undefined ? this.flex : arguments[3];
+
+	      return (0, _column3['default'])(columnVal, cycle, gutter, flex);
+	    }
+	  }, {
+	    key: 'row',
+	    value: function row(rowVal) {
+	      var gutter = arguments.length <= 1 || arguments[1] === undefined ? this.gutter : arguments[1];
+	      var flex = arguments.length <= 2 || arguments[2] === undefined ? this.flex : arguments[2];
+
+	      return (0, _row3['default'])(rowVal, gutter, flex);
+	    }
+	  }, {
+	    key: 'offset',
+	    value: function offset(offsetVal) {
+	      var direction = arguments.length <= 1 || arguments[1] === undefined ? this.offsetDir : arguments[1];
+	      var gutter = arguments.length <= 2 || arguments[2] === undefined ? this.gutter : arguments[2];
+
+	      return (0, _offset3['default'])(offsetVal, direction, gutter);
+	    }
+	  }]);
+
+	  return Perdido;
+	})();
 
 	exports['default'] = Perdido;
 	module.exports = exports['default'];
@@ -118,63 +188,127 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	exports['default'] = column;
+	exports['default'] = align;
 
 	var _defaults = __webpack_require__(3);
 
-	function column(columnVal) {
-	  var cycle = arguments.length <= 1 || arguments[1] === undefined ? _defaults.CYCLE : arguments[1];
-	  var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
-	  var flex = arguments.length <= 3 || arguments[3] === undefined ? _defaults.FLEX : arguments[3];
+	function alignProps(position, top, right, bottom, left, trans) {
+	  return {
+	    position: position,
+	    top: top,
+	    right: right,
+	    bottom: bottom,
+	    left: left,
+	    trans: trans
+	  };
+	}
 
-	  var style = {},
-	      cycleVal = cycle;
+	function align(alignment) {
+	  var flex = arguments.length <= 1 || arguments[1] === undefined ? _defaults.FLEX : arguments[1];
 
-	  if (cycle === 'auto' || flex === 'flex' || flex === 'no-flex') {
-	    cycleVal = columnVal.split('/')[1];
-	  } else {
-	    cycleVal = cycle;
-	  }
+	  var style = {};
 
-	  if (flex === 'flex') {
-	    style = (0, _defaults.addFlex)(flex, style);
+	  if (flex !== 'flex') {
+	    if (alignment === 'reset') {
+	      style.position = 'static';
 
-	    if (cycle !== 0) {
-	      style['&:nth-child(' + cycleVal + 'n)'] = {
-	        marginRight: '0'
-	      };
+	      style['& > *'] = alignProps('static', 'auto', 'auto', 'auto', 'translate(0, 0)');
+	    } else {
+	      style.position = 'relative';
+
+	      if (alignment === 'horizontal') {
+	        style['& > *'] = alignProps('absolute', 'auto', 'auto', 'auto', '50%', 'translate(-50%, 0)');
+	      } else if (alignment === 'vertical') {
+	        style['& > *'] = alignProps('absolute', '50%', 'auto', 'auto', 'auto', 'translate(0, -50%)');
+	      } else if (alignment === 'top-left') {
+	        style['& > *'] = alignProps('absolute', '0', 'auto', 'auto', '0', 'translate(0, 0)');
+	      } else if (alignment === 'top-center' || alignment === 'top') {
+	        style['& > *'] = alignProps('absolute', '0', 'auto', 'auto', '50%', 'translate(-50%, 0)');
+	      } else if (alignment === 'top-right') {
+	        style['& > *'] = alignProps('absolute', '0', '0', 'auto', 'auto', 'translate(0, 0)');
+	      } else if (alignment === 'middle-left' || alignment === 'left') {
+	        style['& > *'] = alignProps('absolute', '50%', 'auto', 'auto', '0', 'translate(0, -50%)');
+	      } else if (alignment === 'middle-center' || alignment === 'center') {
+	        style['& > *'] = alignProps('absolute', '50%', 'auto', 'auto', '50%', 'translate(-50%, -50%)');
+	      } else if (alignment === 'middle-right' || alignment === 'right') {
+	        style['& > *'] = alignProps('absolute', '50%', '0', 'auto', 'auto', 'translate(0, -50%)');
+	      } else if (alignment === 'bottom-left') {
+	        style['& > *'] = alignProps('absolute', 'auto', 'auto', '0', '0', 'translate(0, 0)');
+	      } else if (alignment === 'bottom-center' || alignment === 'bottom') {
+	        style['& > *'] = alignProps('absolute', 'auto', 'auto', '0', '50%', 'translate(-50%, 0)');
+	      } else if (alignment === 'bottom-right') {
+	        style['& > *'] = alignProps('absolute', 'auto', '0', '0', 'auto', 'translate(0, 0)');
+	      }
 	    }
-
-	    style['&:last-child'] = {
-	      marginRight: '0'
-	    };
-
-	    style['&:nth-child(n)'] = {
-	      marginRight: gutter
-	    };
 	  } else {
-	    if (cycle !== 0) {
-	      style['&:nth-child(' + cycleVal + 'n + 1)'] = {
-	        clear: 'left'
-	      };
+	    if (alignment === 'reset') {
+	      style.display = 'initial';
 
-	      style['&:nth-child(' + cycleVal + 'n)'] = {
-	        marginRight: '0'
+	      style['& > *'] = {
+	        justifyContent: 'inherit',
+	        alignItems: 'inherit'
 	      };
+	    } else {
+	      style.display = 'flex';
+
+	      if (alignment === 'horizontal') {
+	        style['& > *'] = {
+	          justifyContent: 'center',
+	          alignItems: 'inherit'
+	        };
+	      } else if (alignment === 'vertical') {
+	        style['& > *'] = {
+	          justifyContent: 'inherit',
+	          alignItems: 'center'
+	        };
+	      } else if (alignment === 'top-left') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-start',
+	          alignItems: 'flex-start'
+	        };
+	      } else if (alignment === 'top-center' || alignment === 'top') {
+	        style['& > *'] = {
+	          justifyContent: 'center',
+	          alignItems: 'flex-start'
+	        };
+	      } else if (alignment === 'top-right') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-end',
+	          alignItems: 'flex-start'
+	        };
+	      } else if (alignment === 'middle-left' || alignment === 'left') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-start',
+	          alignItems: 'center'
+	        };
+	      } else if (alignment === 'middle-center' || alignment === 'center') {
+	        style['& > *'] = {
+	          justifyContent: 'center',
+	          alignItems: 'center'
+	        };
+	      } else if (alignment === 'middle-right' || alignment === 'right') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-end',
+	          alignItems: 'center'
+	        };
+	      } else if (alignment === 'bottom-left') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-start',
+	          alignItems: 'flex-end'
+	        };
+	      } else if (alignment === 'bottom-center' || alignment === 'bottom') {
+	        style['& > *'] = {
+	          justifyContent: 'center',
+	          alignItems: 'flex-end'
+	        };
+	      } else if (alignment === 'bottom-right') {
+	        style['& > *'] = {
+	          justifyContent: 'flex-end',
+	          alignItems: 'flex-end'
+	        };
+	      }
 	    }
-
-	    style['&:last-child'] = {
-	      marginRight: '0'
-	    };
-
-	    style['&:nth-child(n)'] = {
-	      float: 'left',
-	      marginRight: gutter,
-	      clear: 'none'
-	    };
 	  }
-
-	  style.width = (0, _defaults.calcDimension)(columnVal, gutter);
 
 	  return style;
 	}
@@ -204,8 +338,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var FLEX = 'no-flex';
 	exports.FLEX = FLEX;
 	var CYCLE = 'auto';
-
 	exports.CYCLE = CYCLE;
+	var OFFSET_DIR = 'row';
+
+	exports.OFFSET_DIR = OFFSET_DIR;
 
 	function calcDimension(val, gutter) {
 	  if (gutter !== 0) {
@@ -531,6 +667,194 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	exports['default'] = center;
+
+	var _defaults = __webpack_require__(3);
+
+	function center(maxWidth, padding) {
+	  var flex = arguments.length <= 2 || arguments[2] === undefined ? _defaults.FLEX : arguments[2];
+
+	  var style = {
+	    maxWidth: maxWidth,
+	    marginLeft: 'auto',
+	    marginRight: 'auto'
+	  };
+
+	  if (padding !== undefined) {
+	    style.paddingLeft = padding;
+	    style.paddingRight = padding;
+	  }
+
+	  if (flex === 'no-flex') {
+	    style['*zoom'] = '1';
+
+	    style['&:after'] = {
+	      content: '""',
+	      display: 'table'
+	    };
+
+	    style['&:before'] = {
+	      content: '""',
+	      display: 'table'
+	    };
+	  } else {
+	    style.display = 'flex';
+	    style.flexFlow = 'row wrap';
+	  }
+
+	  return style;
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = column;
+
+	var _defaults = __webpack_require__(3);
+
+	function column(columnVal) {
+	  var cycle = arguments.length <= 1 || arguments[1] === undefined ? _defaults.CYCLE : arguments[1];
+	  var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
+	  var flex = arguments.length <= 3 || arguments[3] === undefined ? _defaults.FLEX : arguments[3];
+
+	  var style = {},
+	      cycleVal = cycle;
+
+	  if (columnVal !== 'none') {
+	    if (cycle === 'auto' || flex === 'flex' || flex === 'no-flex') {
+	      cycleVal = columnVal.split('/')[1];
+	    } else {
+	      cycleVal = cycle;
+	    }
+
+	    style.width = (0, _defaults.calcDimension)(columnVal, gutter);
+
+	    if (flex === 'flex') {
+	      style = (0, _defaults.addFlex)(flex, style);
+
+	      style['&:nth-child(n)'] = {
+	        marginRight: gutter
+	      };
+
+	      style['&:last-child'] = {
+	        marginRight: '0'
+	      };
+
+	      style['&:nth-child(' + cycleVal + 'n)'] = {
+	        float: 'right'
+	      };
+
+	      if (cycle !== 0) {
+	        style['&:nth-child(' + cycleVal + 'n)'] = {
+	          marginRight: '0'
+	        };
+	      }
+	    } else {
+	      style['&:nth-child(n)'] = {
+	        float: 'left',
+	        marginRight: gutter,
+	        clear: 'none'
+	      };
+
+	      style['&:last-child'] = {
+	        marginRight: '0'
+	      };
+
+	      style['&:nth-child(' + cycleVal + 'n)'] = {
+	        float: 'right'
+	      };
+
+	      if (cycle !== 0) {
+	        style['&:nth-child(' + cycleVal + 'n)'] = {
+	          marginRight: '0'
+	        };
+
+	        style['&:nth-child(' + cycleVal + 'n + 1)'] = {
+	          clear: 'left'
+	        };
+	      }
+	    }
+	  } else {
+	    style.width = 'auto';
+
+	    style['&:last-child'] = {
+	      float: 'none',
+	      clear: 'none',
+	      marginRight: '0',
+	      width: 'auto'
+	    };
+
+	    style['&:nth-child(n)'] = {
+	      float: 'none',
+	      clear: 'none',
+	      marginRight: '0',
+	      width: 'auto'
+	    };
+
+	    style['&:nth-child(1n +1)'] = {
+	      float: 'none',
+	      clear: 'none',
+	      marginRight: '0',
+	      width: 'auto'
+	    };
+
+	    style['&:nth-child(1n)'] = {
+	      float: 'none',
+	      clear: 'none',
+	      marginRight: '0',
+	      width: 'auto'
+	    };
+	  }
+
+	  return style;
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	exports['default'] = flexContainer;
+
+	function flexContainer(direction) {
+	  var style = {
+	    display: 'flex'
+	  };
+
+	  if (direction === 'column') {
+	    style['flex-flow'] = 'column nowrap';
+	  } else {
+	    style['flex-flow'] = 'row wrap';
+	  }
+
+	  return style;
+	}
+
+	module.exports = exports['default'];
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
 	exports['default'] = row;
 
 	var _defaults = __webpack_require__(3);
@@ -559,25 +883,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
-/***/ function(module, exports) {
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
-	exports['default'] = flexContainer;
+	exports['default'] = offset;
 
-	function flexContainer(direction) {
-	  var style = {
-	    display: 'flex'
-	  };
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _reduceCssCalc = __webpack_require__(4);
+
+	var _reduceCssCalc2 = _interopRequireDefault(_reduceCssCalc);
+
+	var _defaults = __webpack_require__(3);
+
+	function offset(offsetVal) {
+	  var direction = arguments.length <= 1 || arguments[1] === undefined ? _defaults.OFFSET_DIR : arguments[1];
+	  var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
+
+	  var style = {},
+	      numerator = offsetVal.split('/')[0];
 
 	  if (direction === 'column') {
-	    style['flex-flow'] = 'column nowrap';
+	    if (numerator > 0) {
+	      if (gutter !== '0') {
+	        style.marginBottom = (0, _reduceCssCalc2['default'])('calc(99.99% * ' + offsetVal + ' - (' + gutter + ' - ' + gutter + ' * ' + offsetVal + ') + (' + gutter + ' * 2)) !important', 10);
+	      } else {
+	        style.marginBottom = (0, _reduceCssCalc2['default'])('calc(99.999999% * ' + offsetVal + ') !important', 10);
+	      }
+	    } else if (numerator < 0) {
+	      if (gutter !== '0') {
+	        style.marginTop = (0, _reduceCssCalc2['default'])('calc(99.99% * (' + offsetVal + ' * -1) - (' + gutter + ' - ' + gutter + ' * (' + offsetVal + ' * -1)) + ' + gutter + ') !important', 10);
+	      } else {
+	        style.marginTop = (0, _reduceCssCalc2['default'])('calc(99.999999% * ' + offsetVal + ') !important', 10);
+	      }
+	    } else {
+	      style.marginTop = '0 !important';
+	      style.marginBottom = gutter + ' !important';
+	    }
 	  } else {
-	    style['flex-flow'] = 'row wrap';
+	    if (numerator > 0) {
+	      if (gutter !== '0') {
+	        style.marginRight = (0, _reduceCssCalc2['default'])('calc(99.99% * ' + offsetVal + ' - (' + gutter + ' - ' + gutter + ' * ' + offsetVal + ') + (' + gutter + ' * 2)) !important', 10);
+	      } else {
+	        style.marginRight = (0, _reduceCssCalc2['default'])('calc(99.999999% * ' + offsetVal + ') !important', 10);
+	      }
+	    } else if (numerator < 0) {
+	      if (offsetVal !== '0') {
+	        style.marginLeft = (0, _reduceCssCalc2['default'])('calc(99.99% * (' + offsetVal + ' * -1) - (' + gutter + ' - ' + gutter + ' * (' + offsetVal + ' * -1)) + ' + gutter + ') !important', 10);
+	      } else {
+	        style.marginLeft = (0, _reduceCssCalc2['default'])('calc(99.999999% * ' + offsetVal + ') !important', 10);
+	      }
+	    } else {
+	      style.marginLeft = '0 !important';
+	      style.marginRight = gutter + ' !important';
+	    }
 	  }
 
 	  return style;
@@ -586,7 +950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -594,32 +958,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	var clearFix = {
+	  '*zoom': '1',
+	  '&:after': {
+	    content: '""',
+	    display: 'table',
+	    clear: 'both'
+	  },
+
+	  '&:before': {
+	    content: '""',
+	    display: 'table'
+	  }
+	};
+
 	exports.clearFix = clearFix;
+	var edit = {
+	  '&*:not(input):not(textarea):not(select)': {
+	    backgroundColor: 'rgba(0, 0, 255, 0.1)'
+	  }
+	};
 	exports.edit = edit;
-
-	function clearFix() {
-	  return {
-	    '*zoom': '1',
-	    '&:after': {
-	      content: '""',
-	      display: 'table',
-	      clear: 'both'
-	    },
-
-	    '&:before': {
-	      content: '""',
-	      display: 'table'
-	    }
-	  };
-	}
-
-	function edit() {
-	  return {
-	    '&*:not(input):not(textarea):not(select)': {
-	      backgroundColor: 'rgba(0, 0, 255, 0.1)'
-	    }
-	  };
-	}
 
 /***/ }
 /******/ ])
