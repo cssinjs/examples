@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["Perdido"] = factory();
+		exports["perdido"] = factory();
 	else
-		root["Perdido"] = factory();
+		root["perdido"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -192,14 +192,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _defaults = __webpack_require__(3);
 
-	function alignProps(position, top, right, bottom, left, trans) {
+	function alignProps(position, top, right, bottom, left, transform) {
 	  return {
 	    position: position,
 	    top: top,
 	    right: right,
 	    bottom: bottom,
 	    left: left,
-	    trans: trans
+	    transform: transform
 	  };
 	}
 
@@ -729,7 +729,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      cycleVal = cycle;
 
 	  if (columnVal !== 'none') {
-	    if (cycle === 'auto' || flex === 'flex' || flex === 'no-flex') {
+	    if (cycle === 'auto') {
 	      cycleVal = columnVal.split('/')[1];
 	    } else {
 	      cycleVal = cycle;
@@ -773,9 +773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      if (cycle !== 0) {
-	        style['&:nth-child(' + cycleVal + 'n)'] = {
-	          marginRight: '0'
-	        };
+	        style['&:nth-child(' + cycleVal + 'n)'].marginRight = '0';
 
 	        style['&:nth-child(' + cycleVal + 'n + 1)'] = {
 	          clear: 'left'

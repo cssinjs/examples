@@ -5,23 +5,55 @@
       jssCamelCase = window.jssCamelCase,
       jssDefaultUnit = window.jssDefaultUnit,
       jssVendorPrefixer = window.jssVendorPrefixer,
-      Perdido = window.Perdido
+      jssPropsSort = window.jssPropsSort,
+      perdido = window.perdido
 
   jss.use(jssExtend())
   jss.use(jssNested())
   jss.use(jssCamelCase())
   jss.use(jssDefaultUnit())
   jss.use(jssVendorPrefixer())
+  jss.use(jssPropsSort())
 
   var blockMar = 30;
 
   jss.createStyleSheet({
+    '*, *:after, *:before': {
+      boxSizing: 'border-box',
+      padding: '0',
+      margin: '0'
+    },
+
     html: {
       fontWeight: 'bold',
       color: '#FFFFFF',
       padding: blockMar,
-      height: 'auto'
+      height: 'auto',
+      overflowY: 'scroll',
+      overflowX: 'hidden',
     },
+
+    body: {
+      width: '100%',
+      overflowX: 'hidden',
+      margin: '0',
+      '*zoom': '1',
+
+      '&:after, :before': {
+        content: '""',
+        display: 'table',
+      },
+
+      '&:after': {
+        clear: 'both'
+      }
+    },
+
+    header: {
+      textAlign: 'center',
+      margin: '30px 0 60px'
+    },
+
     article: {
       height: '100px',
       lineHeight: '100px',
@@ -34,8 +66,12 @@
         marginBottom: 0,
       }
     },
+
     section: {
-      extend: Perdido.center('1140px'),
+      extend: perdido.center('1140px'),
+      marginTop: blockMar,
+      marginBottom: blockMar,
+
       '&:last-of-type': {
         marginBottom: '0',
       },
@@ -45,7 +81,7 @@
         background: '#42CAFD',
         '& article': {
             background: '#22C1FD',
-            extend: Perdido.column('1/4'),
+            extend: perdido.column('1/4'),
         },
       },
 
@@ -54,9 +90,9 @@
         background: '#66B3BA',
         '& article': {
           background: '#52A9B1',
-          extend: Perdido.column('1/3'),
+          extend: perdido.column('1/3'),
           '&:first-child': {
-            extend: Perdido.offset('1/3')
+            extend: perdido.offset('1/3')
           }
         }
       },
@@ -65,11 +101,11 @@
       '&:nth-of-type(3)': {
         background: '#8EB19D',
         '& article': {
-          extend: Perdido.column('1/3'),
+          extend: perdido.column('1/3'),
           background: '#7BA48D',
 
           '& article': {
-            extend: Perdido.column('1/2'),
+            extend: perdido.column('1/2'),
             background: '#68977C',
           }
         }
@@ -77,16 +113,61 @@
 
       // Alignment
       '&:nth-of-type(4)': {
-        extend: Perdido.align('center'),
+        extend: perdido.align('center'),
         background: '#F0D2D1',
         height: '300px',
         '& article': {
-          extend: Perdido.column('1/3'),
+          extend: perdido.column('1/3'),
           background: '#E5B1AF',
           marginTop: 0,
           marginBottom: 0,
         }
+      },
+
+      // Cycle
+      '&:nth-of-type(5)': {
+        background: '#F19A3E',
+
+        '& article': {
+          // extend: perdido.column('1/1'),
+          extend: perdido.column('2/8', cycle='4'),
+          height: 'auto',
+          lineHeight: '25px',
+          fontWeight: 'normal',
+          padding: `${blockMar / 2}px`,
+          background: '#EF8B22'
+        }
+      },
+
+      // Vertical Grid
+      '&:nth-of-type(6)': {
+        background: '#1E90FF',
+
+        '& article': {
+          extend: perdido.row('1/3'),
+          marginTop: 0,
+          background: '#0182FF',
+          padding: '30px'
+        }
       }
     },
+
+    // '@media (min-width: 500px)': {
+    //   'section:nth-of-type(5) article': {
+    //     extend: perdido.column('2/4', cycle='2')
+    //   }
+    // },
+
+    // '@media (min-width: 800px)': {
+    //   'section:nth-of-type(5) article': {
+    //     extend: perdido.column('2/6', cycle='3')
+    //   }
+    // },
+
+    // '@media (min-width: 1100px)': {
+    //   'section:nth-of-type(5) article': {
+    //     extend: perdido.column('2/8', cycle='4')
+    //   }
+    // }
   }, {named: false}).attach()
 }())
