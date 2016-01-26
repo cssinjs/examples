@@ -18,6 +18,7 @@
   var blockMar = 30;
 
   jss.createStyleSheet({
+    // Reset code
     '*, *:after, *:before': {
       boxSizing: 'border-box',
       padding: '0',
@@ -67,6 +68,8 @@
       }
     },
 
+    // Grid examples
+
     section: {
       extend: perdido.center('1140px'),
       marginTop: `${blockMar}px`,
@@ -78,18 +81,18 @@
 
       // Simple 1/4
       '&:nth-of-type(1)': {
-        background: '#42CAFD',
+        background: '#FD7442',
         '& article': {
-            background: '#22C1FD',
+            background: '#FD5C22',
             extend: perdido.column('1/4'),
         },
       },
 
       // Offset
       '&:nth-of-type(2)': {
-        background: '#66B3BA',
+        background: '#BA6D66',
         '& article': {
-          background: '#52A9B1',
+          background: '#B15A52',
           extend: perdido.column('1/3'),
           '&:first-child': {
             extend: perdido.offset('1/3')
@@ -99,14 +102,14 @@
 
       // Nesting
       '&:nth-of-type(3)': {
-        background: '#8EB19D',
+        background: '#B18EA2',
         '& article': {
           extend: perdido.column('1/3'),
-          background: '#7BA48D',
+          background: '#A47B92',
 
           '& article': {
             extend: perdido.column('1/2'),
-            background: '#68977C',
+            background: '#976883',
           }
         }
       },
@@ -114,11 +117,11 @@
       // Alignment
       '&:nth-of-type(4)': {
         extend: perdido.align('center'),
-        background: '#F0D2D1',
+        background: '#D1EFF0',
         height: '300px',
         '& article': {
           extend: perdido.column('1/3'),
-          background: '#E5B1AF',
+          background: '#AFE3E5',
           marginTop: 0,
           marginBottom: 0,
         }
@@ -126,37 +129,36 @@
 
       // Cycle
       '&:nth-of-type(5)': {
-        background: '#F19A3E',
+        background: '#3E95F1',
 
         '& article': {
-          // extend: perdido.column('1/1'),
           extend: perdido.column('2/8', cycle='4'),
           height: 'auto',
           lineHeight: '25px',
           fontWeight: 'normal',
           padding: `${blockMar / 2}px`,
-          background: '#EF8B22'
+          background: '#2285ef'
         }
       },
 
       // Vertical Grid
       '&:nth-of-type(6)': {
-        background: '#1E90FF',
+        background: '#FF8F1E',
 
         '& article': {
           extend: perdido.row('1/3'),
           marginTop: 0,
-          background: '#0182FF',
+          background: '#FF8001',
           padding: '30px'
         }
       },
 
       // Waffle Grid
       '&:nth-of-type(7)': {
-        background: '#FF6347',
+        background: '#47E3FF',
 
         '& article': {
-        background: '#FF4726',
+        background: '#26DEFF',
           extend: perdido.waffle('1/3'),
           marginTop: '0',
           lineHeight: 'inherit',
@@ -166,10 +168,10 @@
 
       // Varying Sizes
       '&:nth-of-type(8)': {
-        background: '#00FF7F',
+        background: '#FF0080',
 
         '& article': {
-          background: '#00E672',
+          background: '#E60073',
 
           '&:first-child': {
             extend: perdido.column('1/3')
@@ -182,10 +184,10 @@
 
       // Source Ordering
       '&:nth-of-type(9)': {
-        background: '#5F9EA0',
+        background: '#A0615F',
 
         '& article': {
-          background: '#568E90',
+          background: '#905856',
           extend: perdido.column('1/2'),
 
           '&:first-child': {
