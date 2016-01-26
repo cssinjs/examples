@@ -27,7 +27,7 @@
     html: {
       fontWeight: 'bold',
       color: '#FFFFFF',
-      padding: blockMar,
+      padding: `${blockMar}px`,
       height: 'auto',
       overflowY: 'scroll',
       overflowX: 'hidden',
@@ -69,8 +69,8 @@
 
     section: {
       extend: perdido.center('1140px'),
-      marginTop: blockMar,
-      marginBottom: blockMar,
+      marginTop: `${blockMar}px`,
+      marginBottom: `${blockMar}px`,
 
       '&:last-of-type': {
         marginBottom: '0',
@@ -148,6 +148,52 @@
           marginTop: 0,
           background: '#0182FF',
           padding: '30px'
+        }
+      },
+
+      // Waffle Grid
+      '&:nth-of-type(7)': {
+        background: '#FF6347',
+
+        '& article': {
+        background: '#FF4726',
+          extend: perdido.waffle('1/3'),
+          marginTop: '0',
+          lineHeight: 'inherit',
+          padding: `${blockMar}px`
+        }
+      },
+
+      // Varying Sizes
+      '&:nth-of-type(8)': {
+        background: '#00FF7F',
+
+        '& article': {
+          background: '#00E672',
+
+          '&:first-child': {
+            extend: perdido.column('1/3')
+          },
+          '&:last-child': {
+            extend: perdido.column('2/3')
+          }
+        }
+      },
+
+      // Source Ordering
+      '&:nth-of-type(9)': {
+        background: '#5F9EA0',
+
+        '& article': {
+          background: '#568E90',
+          extend: perdido.column('1/2'),
+
+          '&:first-child': {
+            extend: perdido.move('1/2')
+          },
+          '&:last-child': {
+            extend: perdido.move('-1/2')
+          }
         }
       }
     },
