@@ -132,7 +132,7 @@
         background: '#3E95F1',
 
         '& article': {
-          extend: perdido.column('2/8', cycle='4'),
+          extend: perdido.column('2/8', cycle=4),
           height: 'auto',
           lineHeight: '25px',
           fontWeight: 'normal',
