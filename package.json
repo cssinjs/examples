@@ -38,7 +38,7 @@
     "build:calendar": "webpack ./calendar/index.js ./calendar/dist/index.js --config ./calendar/webpack.config.js",
     "jss:all": "parallelshell 'npm run jss -s' 'npm run jss:plugins -s'",
     "jss": "cpy ./node_modules/jss/dist/jss.js ./",
-    "jss:plugins": "parallelshell 'npm run jss:camel-case -s' 'npm run jss:debug -s' 'npm run jss:extend -s' 'npm run jss:nested -s' 'npm run jss:props-sort -s' 'npm run jss:default-unit -s' 'npm run jss:vendor-prefixer -s'",
+    "jss:plugins": "parallelshell 'npm run jss:camel-case -s' 'npm run jss:debug -s' 'npm run jss:extend -s' 'npm run jss:nested -s' 'npm run jss:props-sort -s' 'npm run jss:default-unit -s' 'npm run jss:vendor-prefixer -s' 'npm run jss:perdido -s'",
     "jss:camel-case": "cpy ./node_modules/jss-camel-case/dist/jss-camel-case.js ./",
     "jss:debug": "cpy ./node_modules/jss-debug/dist/jss-debug.js ./",
     "jss:extend": "cpy ./node_modules/jss-extend/dist/jss-extend.js ./",
