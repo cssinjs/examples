@@ -163,10 +163,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.create = function create() {
-	    var gutter = arguments.length <= 0 || arguments[0] === undefined ? _defaults.GUTTER : arguments[0];
-	    var flex = arguments.length <= 1 || arguments[1] === undefined ? _defaults.FLEX : arguments[1];
-	    var cycle = arguments.length <= 2 || arguments[2] === undefined ? _defaults.CYCLE : arguments[2];
-	    var offsetDir = arguments.length <= 3 || arguments[3] === undefined ? _defaults.OFFSET_DIR : arguments[3];
+	    var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    var _ref$gutter = _ref.gutter;
+	    var gutter = _ref$gutter === undefined ? _defaults.GUTTER : _ref$gutter;
+	    var _ref$flex = _ref.flex;
+	    var flex = _ref$flex === undefined ? _defaults.FLEX : _ref$flex;
+	    var _ref$cycle = _ref.cycle;
+	    var cycle = _ref$cycle === undefined ? _defaults.CYCLE : _ref$cycle;
+	    var _ref$offsetDir = _ref.offsetDir;
+	    var offsetDir = _ref$offsetDir === undefined ? _defaults.OFFSET_DIR : _ref$offsetDir;
 
 	    return new Perdido(gutter, flex, cycle, offsetDir);
 	  };
@@ -179,7 +185,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.align = function align(alignment) {
-	    var flex = arguments.length <= 1 || arguments[1] === undefined ? _defaults.FLEX : arguments[1];
+	    var _ref2 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref2$flex = _ref2.flex;
+	    var flex = _ref2$flex === undefined ? this.flex : _ref2$flex;
 
 	    return _align3['default'](alignment, flex);
 	  };
@@ -191,8 +200,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @api public
 	   */
 
-	  Perdido.prototype.center = function center(maxWidth, padding) {
-	    var flex = arguments.length <= 2 || arguments[2] === undefined ? _defaults.FLEX : arguments[2];
+	  Perdido.prototype.center = function center(maxWidth) {
+	    var _ref3 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var padding = _ref3.padding;
+	    var _ref3$flex = _ref3.flex;
+	    var flex = _ref3$flex === undefined ? this.flex : _ref3$flex;
 
 	    return _center3['default'](maxWidth, padding, flex);
 	  };
@@ -205,9 +218,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.column = function column(columnVal) {
-	    var cycle = arguments.length <= 1 || arguments[1] === undefined ? _defaults.CYCLE : arguments[1];
-	    var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
-	    var flex = arguments.length <= 3 || arguments[3] === undefined ? _defaults.FLEX : arguments[3];
+	    var _ref4 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref4$cycle = _ref4.cycle;
+	    var cycle = _ref4$cycle === undefined ? this.cycle : _ref4$cycle;
+	    var _ref4$gutter = _ref4.gutter;
+	    var gutter = _ref4$gutter === undefined ? this.gutter : _ref4$gutter;
+	    var _ref4$flex = _ref4.flex;
+	    var flex = _ref4$flex === undefined ? this.flex : _ref4$flex;
 
 	    return _column3['default'](columnVal, cycle, gutter, flex);
 	  };
@@ -220,8 +238,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.masonryColumn = function masonryColumn(columnVal) {
-	    var gutter = arguments.length <= 1 || arguments[1] === undefined ? _defaults.GUTTER : arguments[1];
-	    var flex = arguments.length <= 2 || arguments[2] === undefined ? _defaults.FLEX : arguments[2];
+	    var _ref5 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref5$gutter = _ref5.gutter;
+	    var gutter = _ref5$gutter === undefined ? this.gutter : _ref5$gutter;
+	    var _ref5$flex = _ref5.flex;
+	    var flex = _ref5$flex === undefined ? this.flex : _ref5$flex;
 
 	    return _masonry.masonryColumn(columnVal, gutter, flex);
 	  };
@@ -235,8 +257,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.masonryWrap = function masonryWrap() {
-	    var flex = arguments.length <= 0 || arguments[0] === undefined ? _defaults.FLEX : arguments[0];
-	    var gutter = arguments.length <= 1 || arguments[1] === undefined ? _defaults.GUTTER : arguments[1];
+	    var _ref6 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    var _ref6$flex = _ref6.flex;
+	    var flex = _ref6$flex === undefined ? this.flex : _ref6$flex;
+	    var _ref6$gutter = _ref6.gutter;
+	    var gutter = _ref6$gutter === undefined ? this.gutter : _ref6$gutter;
 
 	    return _masonry.masonryWrap(flex, gutter);
 	  };
@@ -249,8 +275,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.move = function move(moveVal) {
-	    var direction = arguments.length <= 1 || arguments[1] === undefined ? _defaults.OFFSET_DIR : arguments[1];
-	    var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
+	    var _ref7 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref7$direction = _ref7.direction;
+	    var direction = _ref7$direction === undefined ? this.offsetDir : _ref7$direction;
+	    var _ref7$gutter = _ref7.gutter;
+	    var gutter = _ref7$gutter === undefined ? this.gutter : _ref7$gutter;
 
 	    return _move3['default'](moveVal, direction, gutter);
 	  };
@@ -263,8 +293,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.offset = function offset(offsetVal) {
-	    var direction = arguments.length <= 1 || arguments[1] === undefined ? _defaults.OFFSET_DIR : arguments[1];
-	    var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
+	    var _ref8 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref8$direction = _ref8.direction;
+	    var direction = _ref8$direction === undefined ? this.offsetDir : _ref8$direction;
+	    var _ref8$gutter = _ref8.gutter;
+	    var gutter = _ref8$gutter === undefined ? this.gutter : _ref8$gutter;
 
 	    return _offset3['default'](offsetVal, direction, gutter);
 	  };
@@ -277,8 +311,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.row = function row(rowVal) {
-	    var gutter = arguments.length <= 1 || arguments[1] === undefined ? _defaults.GUTTER : arguments[1];
-	    var flex = arguments.length <= 2 || arguments[2] === undefined ? _defaults.FLEX : arguments[2];
+	    var _ref9 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref9$gutter = _ref9.gutter;
+	    var gutter = _ref9$gutter === undefined ? this.gutter : _ref9$gutter;
+	    var _ref9$flex = _ref9.flex;
+	    var flex = _ref9$flex === undefined ? this.flex : _ref9$flex;
 
 	    return _row3['default'](rowVal, gutter, flex);
 	  };
@@ -291,9 +329,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 	  Perdido.prototype.waffle = function waffle(waffleVal) {
-	    var cycle = arguments.length <= 1 || arguments[1] === undefined ? _defaults.CYCLE : arguments[1];
-	    var gutter = arguments.length <= 2 || arguments[2] === undefined ? _defaults.GUTTER : arguments[2];
-	    var flex = arguments.length <= 3 || arguments[3] === undefined ? _defaults.FLEX : arguments[3];
+	    var _ref10 = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+	    var _ref10$cycle = _ref10.cycle;
+	    var cycle = _ref10$cycle === undefined ? this.cycle : _ref10$cycle;
+	    var _ref10$gutter = _ref10.gutter;
+	    var gutter = _ref10$gutter === undefined ? this.gutter : _ref10$gutter;
+	    var _ref10$flex = _ref10.flex;
+	    var flex = _ref10$flex === undefined ? this.flex : _ref10$flex;
 
 	    return _waffle3['default'](waffleVal, cycle, gutter, flex);
 	  };

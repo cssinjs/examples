@@ -27,7 +27,7 @@
     "jss-props-sort": "^1.0.0",
     "jss-default-unit": "^2.0.1",
     "jss-vendor-prefixer": "^1.0.0",
-    "perdido": "^1.0.0",
+    "perdido": "^2.0.0",
     "lodash": "^3.10.1",
     "parallelshell": "^2.0.0",
     "webpack": "^1.11.0"
