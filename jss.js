@@ -241,11 +241,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var Renderer = _findRenderer2['default'](this.options);
 	    this.options.Renderer = Renderer;
-	    this.renderer = new Renderer({
-	      media: this.options.media,
-	      type: this.options.type,
-	      title: this.options.title
-	    });
+	    this.renderer = new Renderer(this.options);
 	
 	    for (var _name in rules) {
 	      this.createRule(_name, rules[_name]);
@@ -378,6 +374,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Register conditional rule, it will stringify it's child rules properly.
 	    if (rule.type === 'conditional') {
 	      this.rules[rule.selector] = rule;
+	    } else if (rule.type === 'simple') {
+	      this.rules[rule.name] = rule;
 	    }
 	    // This is a rule which is a child of a condtional rule.
 	    // We need to register its class name only.
@@ -532,23 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _clone2 = _interopRequireDefault(_clone);
 	
 	/**
-	 * Class name prefix when generated.
-	 *
-	 * @type {String}
-	 * @api private
-	 */
-	var namespacePrefix = 'jss';
-	
-	/**
-	 * Indentation string for formatting toString output.
-	 *
-	 * @type {String}
-	 * @api private
-	 */
-	var indentWith = '  ';
-	
-	/**
-	 * Regular rule.
+	 * Regular rules and font-face.
 	 *
 	 * @api private
 	 */
@@ -557,14 +539,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Rule(selector, style, options) {
 	    _classCallCheck(this, Rule);
 	
-	    this.type = 'regular';
 	    this.id = uid.get();
+	    this.type = 'regular';
 	    this.options = options;
 	    this.selector = selector;
 	    if (options.named) {
-	      // Selector is a rule name, we need to ref it for e.g. for jss-debug.
 	      this.name = selector;
-	      this.className = options.className || namespacePrefix + '-' + this.id;
+	      this.className = options.className || (this.name ? this.name + '--' + this.id : this.id);
 	      this.selector = '.' + this.className;
 	    }
 	    this.originalStyle = style;
@@ -688,7 +669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function indent(level, str) {
 	  var indentStr = '';
 	  for (var index = 0; index < level; index++) {
-	    indentStr += indentWith;
+	    indentStr += '  ';
 	  }return indentStr + str;
 	}
 	module.exports = exports['default'];
@@ -703,11 +684,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.get = get;
 	exports.reset = reset;
 	var globalReference = typeof window == 'undefined' ? global : window;
-	var namespace = '__JSS_UID_PREFIX__';
+	var namespace = '__JSS_VERSION_COUNTER__';
 	if (globalReference[namespace] == null) globalReference[namespace] = 0;
 	
-	var prefix = globalReference[namespace]++;
-	var counter = 0;
+	// In case we have more than one jss version.
+	var versionCounter = globalReference[namespace]++;
+	var ruleCounter = 0;
 	
 	/**
 	 * Returns a uid.
@@ -718,7 +700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	function get() {
-	  return prefix + '-' + counter++;
+	  return 'jss-' + versionCounter + '-' + ruleCounter++;
 	}
 	
 	/**
@@ -728,7 +710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	function reset() {
-	  counter = 0;
+	  ruleCounter = 0;
 	}
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
@@ -761,27 +743,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	exports.__esModule = true;
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _uid = __webpack_require__(5);
+	
+	var uid = _interopRequireWildcard(_uid);
+	
 	/**
 	 * Rule like @charset, @import, @namespace.
 	 *
 	 * @api private
 	 */
-	'use strict';
-	
-	exports.__esModule = true;
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
 	var SimpleRule = (function () {
 	  function SimpleRule(name, value, options) {
 	    _classCallCheck(this, SimpleRule);
 	
+	    this.id = uid.get();
 	    this.type = 'simple';
-	    this.options = options;
 	    this.name = name;
 	    this.value = value;
+	    this.options = options;
 	  }
 	
 	  /**
@@ -803,25 +793,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Keyframe rule.
-	 *
-	 * @api private
-	 */
 	'use strict';
 	
 	exports.__esModule = true;
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _uid = __webpack_require__(5);
+	
+	var uid = _interopRequireWildcard(_uid);
+	
+	/**
+	 * Keyframe rule.
+	 *
+	 * @api private
+	 */
 	
 	var KeyframeRule = (function () {
 	  function KeyframeRule(selector, frames, options) {
 	    _classCallCheck(this, KeyframeRule);
 	
+	    this.id = uid.get();
 	    this.type = 'keyframe';
 	    this.selector = selector;
 	    this.options = options;
@@ -868,25 +866,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 9 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Conditional rule for @media, @supports
-	 *
-	 * @api private
-	 */
 	'use strict';
 	
 	exports.__esModule = true;
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var _uid = __webpack_require__(5);
+	
+	var uid = _interopRequireWildcard(_uid);
+	
+	/**
+	 * Conditional rule for @media, @supports
+	 *
+	 * @api private
+	 */
 	
 	var ConditionalRule = (function () {
 	  function ConditionalRule(selector, styles, options) {
 	    _classCallCheck(this, ConditionalRule);
 	
+	    this.id = uid.get();
 	    this.type = 'conditional';
 	    this.selector = selector;
 	    this.options = _extends({}, options, { parent: this });
@@ -1005,7 +1011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 	
-	  function DomRenderer(attrs) {
+	  function DomRenderer(options) {
 	    _classCallCheck(this, DomRenderer);
 	
 	    this.head = document.head || document.getElementsByTagName('head')[0];
@@ -1013,9 +1019,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // IE8 will not have `styleSheet` prop without `type and `styleSheet.cssText`
 	    // is the only way to render on IE8.
 	    this.element.type = 'text/css';
-	    for (var _name in attrs) {
-	      if (attrs[_name]) this.element.setAttribute(_name, attrs[_name]);
-	    }
+	    if (options.media) this.element.setAttribute('media', options.media);
+	    if (options.meta) this.element.setAttribute('data-meta', options.meta);
 	  }
 	
 	  /**
