@@ -75,12 +75,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    rule.style = {};
 	    for (var prop in style) {
 	      var value = style[prop];
-	      prop = prop.replace(regExp, '-$1').toLowerCase();
+	      prop = prop.replace(regExp, replace);
 	      rule.style[prop] = value;
 	    }
 	  };
 	}
 
+	function replace(c) {
+	  return '-' + c.toLowerCase();
+	}
 	module.exports = exports['default'];
 
 /***/ }
