@@ -4,8 +4,8 @@ window.setupStyles = {
   // Reset code
   '*, *:after, *:before': {
     boxSizing: 'border-box',
-    padding: '0',
-    margin: '0'
+    padding: 0,
+    margin: 0
   },
 
   html: {
@@ -20,8 +20,8 @@ window.setupStyles = {
   body: {
     width: '100%',
     overflowX: 'hidden',
-    margin: '0',
-    '*zoom': '1',
+    margin: 0,
+    '*zoom': 1,
 
     '&:after, :before': {
       content: '""',
@@ -34,7 +34,7 @@ window.setupStyles = {
   },
 
   'section:last-of-type': {
-    marginBottom: '0',
+    marginBottom: 0,
   },
 }
 
@@ -128,7 +128,7 @@ window.styles = {
       lineHeight: '25px',
       fontWeight: 'normal',
       padding: blockMar / 2,
-      background: '#2285ef'
+      background: '#2285EF'
     }
   },
 
@@ -149,7 +149,7 @@ window.styles = {
     background: '#47E3FF',
 
     '& article': {
-    background: '#26DEFF',
+      background: '#26DEFF',
       extend: perdido.waffle('1/3'),
       marginTop: 0,
       lineHeight: 'inherit',
