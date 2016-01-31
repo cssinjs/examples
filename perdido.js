@@ -529,7 +529,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    marginRight: 'auto'
 	  };
 
-	  if (padding !== null) {
+	  if (padding) {
 	    style.paddingLeft = padding;
 	    style.paddingRight = padding;
 	  }
@@ -733,7 +733,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function masonryColumn(columnVal, gutter, flex) {
 	  var style = {},
-	      unit = gutter.match(/\D/g).join('');
+	      unit = gutter.match(/\D/g);
+
+	  if (unit !== null) {
+	    unit = unit.join('');
+	  }
 
 	  if (flex === true) {
 	    style.flex = '0 0 auto';
@@ -747,8 +751,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    style.marginRight = '' + parseInt(gutter, 10) / 2 + unit;
 	  } else {
 	    style.width = 'calc(99.99% * ' + columnVal + ')';
-	    style.marginLeft = '' + parseInt(gutter, 10) / 2 + unit;
-	    style.marginRight = '' + parseInt(gutter, 10) / 2 + unit;
 	  }
 
 	  return style;
@@ -887,7 +889,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        style.marginRight = 'calc(99.999999% * ' + offsetVal + ') !important';
 	      }
 	    } else if (numerator < 0) {
-	      if (offsetVal !== '0') {
+	      if (gutter !== '0') {
 	        style.marginLeft = ['calc(99.99% * (' + offsetVal + ' * -1) - ', '(' + gutter + ' - ' + gutter + ' * (' + offsetVal + ' * -1))', ' + ' + gutter + ') !important'].join('');
 	      } else {
 	        style.marginLeft = 'calc(99.999999% * ' + offsetVal + ') !important';

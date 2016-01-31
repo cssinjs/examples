@@ -99,11 +99,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 	
-	var _uid = __webpack_require__(5);
+	var _uid = __webpack_require__(6);
 	
 	var uid = _interopRequireWildcard(_uid);
 	
-	var _createRule2 = __webpack_require__(3);
+	var _createRule2 = __webpack_require__(4);
 	
 	var _createRule3 = _interopRequireDefault(_createRule2);
 	
@@ -172,12 +172,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Register plugin. Passed function will be invoked with a rule instance.
 	   *
-	   * @param {Function} fn
+	   * @param {Function} plugins
 	   * @api public
 	   */
 	
-	  Jss.prototype.use = function use(fn) {
-	    this.plugins.use(fn);
+	  Jss.prototype.use = function use() {
+	    var _this = this;
+	
+	    for (var _len = arguments.length, plugins = Array(_len), _key = 0; _key < _len; _key++) {
+	      plugins[_key] = arguments[_key];
+	    }
+	
+	    plugins.forEach(function (plugin) {
+	      return _this.plugins.use(plugin);
+	    });
 	    return this;
 	  };
 	
@@ -201,7 +209,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _createRule2 = __webpack_require__(3);
+	var _utils = __webpack_require__(3);
+	
+	var _createRule2 = __webpack_require__(4);
 	
 	var _createRule3 = _interopRequireDefault(_createRule2);
 	
@@ -347,8 +357,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (stringified[rule.id]) {
 	        continue;
 	      }
+	
+	      if (rule.style && _utils.isEmptyObject(rule.style)) {
+	        continue;
+	      }
+	
+	      if (rule.rules && _utils.isEmptyObject(rule.rules)) {
+	        continue;
+	      }
+	
 	      if (str) str += '\n';
-	      str += rules[_name3].toString(options);
+	
+	      str += rule.toString(options);
 	      stringified[rule.id] = true;
 	    }
 	    return str;
@@ -431,6 +451,45 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	exports.__esModule = true;
+	exports.clone = clone;
+	exports.isEmptyObject = isEmptyObject;
+	var stringify = JSON.stringify;
+	var parse = JSON.parse;
+	
+	/**
+	 * Deeply clone object using serialization.
+	 * Expects object to be plain and without cyclic dependencies.
+	 *
+	 * http://jsperf.com/lodash-deepclone-vs-jquery-extend-deep/6
+	 *
+	 * @type {Object} obj
+	 * @return {Object}
+	 */
+	
+	function clone(obj) {
+	  return parse(stringify(obj));
+	}
+	
+	/*
+	 * Determine whether an object is empty or not.
+	 * More performant than a `Object.keys(obj).length > 0`
+	 */
+	
+	function isEmptyObject(obj) {
+	  for (var key in obj) {
+	    return false;
+	  } // eslint-disable-line no-unused-vars
+	
+	  return true;
+	}
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -443,7 +502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _Rule = __webpack_require__(4);
+	var _Rule = __webpack_require__(5);
 	
 	var _Rule2 = _interopRequireDefault(_Rule);
 	
@@ -508,31 +567,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	exports.__esModule = true;
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _uid = __webpack_require__(5);
+	var _uid = __webpack_require__(6);
 	
 	var uid = _interopRequireWildcard(_uid);
 	
-	var _clone = __webpack_require__(6);
-	
-	var _clone2 = _interopRequireDefault(_clone);
+	var _utils = __webpack_require__(3);
 	
 	/**
 	 * Regular rules and font-face.
 	 *
-	 * @api private
+	 * @api public
 	 */
 	
 	var Rule = (function () {
@@ -550,7 +605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    this.originalStyle = style;
 	    // We expect style to be plain object.
-	    this.style = _clone2['default'](style);
+	    this.style = _utils.clone(style);
 	  }
 	
 	  /**
@@ -634,9 +689,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Generates a CSS string.
 	   *
+	   * Options:
+	   * - `selector` to get a rule without selector
+	   * - `indentationLevel` level of indentation
+	   *
 	   * @param {Object} options
 	   * @return {String}
-	   * @api private
+	   * @api public
 	   */
 	
 	  Rule.prototype.toString = function toString() {
@@ -675,7 +734,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -715,33 +774,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	"use strict";
-	
-	exports.__esModule = true;
-	exports["default"] = clone;
-	var stringify = JSON.stringify;
-	var parse = JSON.parse;
-	
-	/**
-	 * Deeply clone object using serialization.
-	 * Expects object to be plain and without cyclic dependencies.
-	 *
-	 * http://jsperf.com/lodash-deepclone-vs-jquery-extend-deep/6
-	 *
-	 * @type {Object} obj
-	 * @return {Object}
-	 */
-	
-	function clone(obj) {
-	  return parse(stringify(obj));
-	}
-	
-	module.exports = exports["default"];
-
-/***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -753,14 +785,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _uid = __webpack_require__(5);
+	var _uid = __webpack_require__(6);
 	
 	var uid = _interopRequireWildcard(_uid);
 	
 	/**
 	 * Rule like @charset, @import, @namespace.
 	 *
-	 * @api private
+	 * @api public
 	 */
 	
 	var SimpleRule = (function () {
@@ -778,7 +810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Generates a CSS string.
 	   *
 	   * @return {String}
-	   * @api private
+	   * @api public
 	   */
 	
 	  SimpleRule.prototype.toString = function toString() {
@@ -805,7 +837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _uid = __webpack_require__(5);
+	var _uid = __webpack_require__(6);
 	
 	var uid = _interopRequireWildcard(_uid);
 	
@@ -878,14 +910,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _uid = __webpack_require__(5);
+	var _utils = __webpack_require__(3);
+	
+	var _uid = __webpack_require__(6);
 	
 	var uid = _interopRequireWildcard(_uid);
 	
 	/**
 	 * Conditional rule for @media, @supports
 	 *
-	 * @api private
+	 * @api public
 	 */
 	
 	var ConditionalRule = (function () {
@@ -896,7 +930,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.type = 'conditional';
 	    this.selector = selector;
 	    this.options = _extends({}, options, { parent: this });
-	    this.rules = this.createChildRules(styles);
+	    this.rules = Object.create(null);
+	    for (var _name in styles) {
+	      this.createRule(_name, styles[_name]);
+	    }
 	  }
 	
 	  /**
@@ -904,38 +941,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *
 	   * @param {Object} styles
 	   * @return {Array} rules
-	   * @api private
+	   * @api public
 	   */
 	
-	  ConditionalRule.prototype.createChildRules = function createChildRules(styles) {
-	    var rules = Object.create(null);
-	    var _options = this.options;
-	    var sheet = _options.sheet;
-	    var jss = _options.jss;
+	  ConditionalRule.prototype.createRule = function createRule(name, style, options) {
+	    var newOptions = this.options;
+	    var _newOptions = newOptions;
+	    var sheet = _newOptions.sheet;
+	    var jss = _newOptions.jss;
 	
-	    for (var _name in styles) {
-	      var localOptions = this.options;
-	      // We have already a rule in the current style sheet with this name,
-	      // This new rule is supposed to overwrite the first one, for this we need
-	      // to ensure it will have the same className/selector.
-	      var ruleToOverwrite = this.options.sheet && this.options.sheet.getRule(_name);
-	      if (ruleToOverwrite) localOptions = _extends({}, this.options, { className: ruleToOverwrite.className });
-	      rules[_name] = (sheet || jss).createRule(_name, styles[_name], localOptions);
+	    // We have already a rule in the current style sheet with this name,
+	    // This new rule is supposed to overwrite the first one, for this we need
+	    // to ensure it will have the same className/selector.
+	    var existingRule = sheet && sheet.getRule(name);
+	    var className = existingRule ? existingRule.className : null;
+	    if (className || options) {
+	      newOptions = _extends({}, newOptions, { className: className }, options);
 	    }
-	    return rules;
+	    var rule = (sheet || jss).createRule(name, style, newOptions);
+	    this.rules[name] = rule;
+	    return rule;
 	  };
 	
 	  /**
 	   * Generates a CSS string.
 	   *
 	   * @return {String}
-	   * @api private
+	   * @api public
 	   */
 	
 	  ConditionalRule.prototype.toString = function toString() {
 	    var str = this.selector + ' {\n';
 	    for (var _name2 in this.rules) {
-	      var ruleStr = this.rules[_name2].toString({ indentationLevel: 1 });
+	      var rule = this.rules[_name2];
+	      if (rule.style && _utils.isEmptyObject(rule.style)) {
+	        continue;
+	      }
+	      var ruleStr = rule.toString({ indentationLevel: 1 });
 	      str += ruleStr + '\n';
 	    }
 	    str += '}';

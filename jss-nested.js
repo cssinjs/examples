@@ -61,7 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	exports['default'] = jssNested;
-	var regExp = /&/gi;
+	var regExp = /&/g;
 
 	/**
 	 * Convert nested rules to separate, remove them from original styles.
@@ -76,15 +76,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var _rule$options = rule.options;
 	    var sheet = _rule$options.sheet;
 	    var jss = _rule$options.jss;
+	    var parent = _rule$options.parent;
 
 	    var container = sheet || jss;
-	    var options = rule.options;
+	    var options = undefined;
+
+	    if (parent && parent.type === 'conditional') {
+	      container = parent;
+	    }
 
 	    for (var prop in rule.style) {
 	      if (prop[0] === '&') {
-	        if (options.named) options = _extends({}, options, { named: false });
-	        var selector = prop.replace(regExp, rule.selector);
-	        container.createRule(selector, rule.style[prop], options);
+	        if (!options) options = _extends({}, rule.options, { named: false });
+	        var _name = prop.replace(regExp, rule.selector);
+	        container.createRule(_name, rule.style[prop], options);
 	        delete rule.style[prop];
 	      }
 	    }
