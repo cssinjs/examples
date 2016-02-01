@@ -79,40 +79,6 @@ window.styles = {
     },
   },
 
-  '@media (min-width: 500px)': {
-    fourUp: {
-      '& article': {
-        extend: perdido.column('1/2'),
-      }
-    }
-  },
-
-  '@media (min-width: 800px)': {
-    fourUp: {
-      '& article': {
-        extend: perdido.column('1/3'),
-      }
-    },
-    reordered: {
-      '& article': {
-        '&:first-child': {
-          extend: perdido.move('1/2')
-        },
-        '&:last-child': {
-          extend: perdido.move('-1/2')
-        }
-      }
-    },
-  },
-
-  '@media (min-width: 1100px)': {
-    fourUp: {
-      '& article': {
-        extend: perdido.column('1/4'),
-      }
-    }
-  },
-
   // Offset
   offset: {
     background: '#BA6D66',
@@ -214,6 +180,41 @@ window.styles = {
     '& article': {
       background: '#905856',
       extend: perdido.column('1/2'),
+    }
+  },
+
+  // Media Queries
+  '@media (min-width: 500px)': {
+    fourUp: {
+      '& article': {
+        extend: perdido.column('1/2'),
+      }
+    }
+  },
+
+  '@media (min-width: 800px)': {
+    fourUp: {
+      '& article': {
+        extend: perdido.column('1/3'),
+      }
+    },
+    reordered: {
+      '& article': {
+        '&:first-child': {
+          extend: perdido.move('1/2')
+        },
+        '&:last-child': {
+          extend: perdido.move('-1/2')
+        }
+      }
+    },
+  },
+
+  '@media (min-width: 1100px)': {
+    fourUp: {
+      '& article': {
+        extend: perdido.column('1/4'),
+      }
     }
   },
 }
