@@ -56,11 +56,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	exports['default'] = jssNested;
+	exports.default = jssNested;
 	var regExp = /&/g;
 
 	/**
@@ -69,7 +71,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Rule} rule
 	 * @api public
 	 */
-
 	function jssNested() {
 	  return function (rule) {
 	    if (rule.type !== 'regular') return;
@@ -79,7 +80,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var parent = _rule$options.parent;
 
 	    var container = sheet || jss;
-	    var options = undefined;
+	    var options = void 0;
 
 	    if (parent && parent.type === 'conditional') {
 	      container = parent;
@@ -88,15 +89,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (var prop in rule.style) {
 	      if (prop[0] === '&') {
 	        if (!options) options = _extends({}, rule.options, { named: false });
-	        var _name = prop.replace(regExp, rule.selector);
-	        container.createRule(_name, rule.style[prop], options);
+	        var name = prop.replace(regExp, rule.selector);
+	        container.createRule(name, rule.style[prop], options);
 	        delete rule.style[prop];
 	      }
 	    }
 	  };
 	}
-
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

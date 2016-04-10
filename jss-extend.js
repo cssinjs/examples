@@ -54,50 +54,48 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = jssExtend;
 	/**
 	 * Handle `extend` property.
 	 *
 	 * @param {Rule} rule
 	 * @api public
 	 */
-	'use strict';
-
-	exports.__esModule = true;
-	exports['default'] = jssExtend;
-
 	function jssExtend() {
-	  return function (rule) {
-	    if (!rule.style || !rule.style.extend) return;
-
-	    function extend(newStyle, style) {
-	      if (typeof style.extend == 'string') {
-	        if (rule.options && rule.options.sheet) {
-	          var refRule = rule.options.sheet.getRule(style.extend);
-	          if (refRule) extend(newStyle, refRule.originalStyle);
-	        }
-	      } else if (Array.isArray(style.extend)) {
-	        for (var index = 0; index < style.extend.length; index++) {
-	          extend(newStyle, style.extend[index]);
-	        }
-	      } else {
-	        for (var prop in style.extend) {
-	          if (prop === 'extend') extend(newStyle, style.extend.extend);else newStyle[prop] = style.extend[prop];
-	        }
+	  function extend(rule, newStyle, style) {
+	    if (typeof style.extend == 'string') {
+	      if (rule.options && rule.options.sheet) {
+	        var refRule = rule.options.sheet.getRule(style.extend);
+	        if (refRule) extend(rule, newStyle, refRule.originalStyle);
 	      }
-
-	      // Copy base style.
-	      for (var prop in style) {
-	        if (prop !== 'extend') newStyle[prop] = style[prop];
+	    } else if (Array.isArray(style.extend)) {
+	      for (var index = 0; index < style.extend.length; index++) {
+	        extend(rule, newStyle, style.extend[index]);
 	      }
-
-	      return newStyle;
+	    } else {
+	      for (var prop in style.extend) {
+	        if (prop === 'extend') extend(rule, newStyle, style.extend.extend);else newStyle[prop] = style.extend[prop];
+	      }
 	    }
 
-	    rule.style = extend({}, rule.style);
+	    // Copy base style.
+	    for (var _prop in style) {
+	      if (_prop !== 'extend') newStyle[_prop] = style[_prop];
+	    }
+
+	    return newStyle;
+	  }
+
+	  return function (rule) {
+	    if (!rule.style || !rule.style.extend) return;
+	    rule.style = extend(rule, {}, rule.style);
 	  };
 	}
-
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

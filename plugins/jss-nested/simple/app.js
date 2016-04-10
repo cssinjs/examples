@@ -1,3 +1,3 @@
 // Application
-jss.use(jssNested())
-jss.createStyleSheet(window.styles, {named: false}).attach()
+jss.default.use(jssNested.default())
+jss.default.createStyleSheet(window.styles, {named: false}).attach()
