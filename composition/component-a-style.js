@@ -1,5 +1,5 @@
 window.componentA = {
-    button: {
-        background: 'red'
-    }
+  button: {
+    background: 'red'
+  }
 }

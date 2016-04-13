@@ -1,13 +1,29 @@
-(function () {
-    var ss = jss.createStyleSheet(window.styles, {named: false}).attach()
+// Styles
+var styles = {
+  '.square': {
+    float: 'left',
+    width: '100px',
+    height: '100px',
+    background: 'red'
+  }
+}
 
-    var buttons = document.getElementsByTagName('button')
+// Application logic.
+var sheet = jss.createStyleSheet(styles, {named: false}).attach()
 
-    buttons[0].addEventListener('click', function() {
-        ss.detach()
-    })
+document.body.innerHTML = '\
+  <div class="square">\
+    <button>Detach</button>\
+    <button>Attach</button>\
+  </div>\
+'
 
-    buttons[1].addEventListener('click', function() {
-        ss.attach()
-    })
-}())
+var buttons = document.getElementsByTagName('button')
+
+buttons[0].addEventListener('click', function() {
+  sheet.detach()
+})
+
+buttons[1].addEventListener('click', function() {
+  sheet.attach()
+})
