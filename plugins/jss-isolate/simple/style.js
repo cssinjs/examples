@@ -1,7 +1,6 @@
 (function() {
   window.styles = {
     'button': {
-      'font-size': '20px',
       'background-color': '#50ee50',
       'color': '#fff',
       'border-radius': '3px',
