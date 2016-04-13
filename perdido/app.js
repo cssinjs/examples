@@ -1,13 +1,13 @@
 (function() {
   //Setup JSS
-  var jss = window.jss,
-      jssExtend = window.jssExtend,
-      jssNested = window.jssNested,
-      jssCamelCase = window.jssCamelCase,
-      jssDefaultUnit = window.jssDefaultUnit,
+  var jss = window.jss.default,
+      jssExtend = window.jssExtend.default,
+      jssNested = window.jssNested.default,
+      jssCamelCase = window.jssCamelCase.default,
+      jssDefaultUnit = window.jssDefaultUnit.default,
       jssVendorPrefixer = window.jssVendorPrefixer,
-      jssPropsSort = window.jssPropsSort,
-      perdido = window.perdido
+      jssPropsSort = window.jssPropsSort.default,
+      perdido = window.perdido.default
 
   jss.use(jssExtend())
   jss.use(jssNested())

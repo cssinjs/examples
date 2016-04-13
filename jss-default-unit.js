@@ -54,11 +54,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-	// Don't automatically add unit to these possibly-unitless properties.
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = defaultUnit;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = defaultUnit;
+	// Don't automatically add unit to these possibly-unitless properties.
 	var cssNumber = {
 	  'animation-iteration-count': true,
 	  'box-ordinal-group': true,
@@ -86,7 +88,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Rule} rule
 	 * @api public
 	 */
-
 	function defaultUnit() {
 	  var options = arguments.length <= 0 || arguments[0] === undefined ? { unit: 'px' } : arguments[0];
 
@@ -101,8 +102,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  };
 	}
-
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

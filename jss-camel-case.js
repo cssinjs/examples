@@ -56,8 +56,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = jssCamelCase;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = jssCamelCase;
 	var regExp = /([A-Z])/g;
 
 	/**
@@ -66,7 +68,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Rule} rule
 	 * @api public
 	 */
-
 	function jssCamelCase() {
 	  return function (rule) {
 	    var style = rule.style;
@@ -84,7 +85,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function replace(c) {
 	  return '-' + c.toLowerCase();
 	}
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

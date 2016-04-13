@@ -1,3 +1,3 @@
 // Application
-jss.use(jssVendorPrefixer())
-jss.createStyleSheet(window.styles, {named: false}).attach()
+jss.default.use(jssVendorPrefixer())
+jss.default.createStyleSheet(window.styles, {named: false}).attach()

@@ -54,17 +54,18 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = jssPropsSort;
 	/**
 	 * Sort props by length.
 	 *
 	 * @param {Rule} rule
 	 * @api public
 	 */
-	"use strict";
-
-	exports.__esModule = true;
-	exports["default"] = jssPropsSort;
-
 	function jssPropsSort() {
 	  function sort(prop0, prop1) {
 	    return prop0.length > prop1.length;
@@ -76,14 +77,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!style) return;
 	    var newStyle = {};
 	    var props = Object.keys(style).sort(sort);
-	    for (var i = 0; i < props.length; i++) {
-	      newStyle[props[i]] = style[props[i]];
+	    for (var prop in props) {
+	      newStyle[props[prop]] = style[props[prop]];
 	    }
 	    rule.style = newStyle;
 	  };
 	}
-
-	module.exports = exports["default"];
 
 /***/ }
 /******/ ])

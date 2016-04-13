@@ -1,3 +1,3 @@
 // Application
-jss.use(jssCamelCase())
-jss.createStyleSheet(window.styles, {named: false}).attach()
+jss.default.use(jssCamelCase.default())
+jss.default.createStyleSheet(window.styles, {named: false}).attach()

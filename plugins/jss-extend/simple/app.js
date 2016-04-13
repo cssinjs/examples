@@ -1,3 +1,3 @@
 // Application
-jss.use(jssExtend())
-jss.createStyleSheet(window.styles, {named: false}).attach()
+jss.default.use(jssExtend.default())
+jss.default.createStyleSheet(window.styles, {named: false}).attach()
