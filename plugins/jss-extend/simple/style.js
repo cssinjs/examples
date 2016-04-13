@@ -1,14 +1,9 @@
-(function() {
-
-  var redButton = {
+window.styles = {
+  button: {
+    'font-size': '20px'
+  },
+  redButton: {
+    extend: 'button',
     background: 'red'
   }
-
-  window.styles = {
-    '.button': {
-      extend: redButton,
-      'font-size': '20px'
-    }
-  }
-
-}())
+}
