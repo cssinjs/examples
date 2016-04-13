@@ -447,26 +447,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Scope options overwrite instance options.
 	      if (options.named == null) options.named = this.options.named;
 	      var rule = (0, _createRule3.default)(name, style, options);
-	      // Register conditional rule, it will stringify it's child rules properly.
-	      if (rule.type === 'conditional') {
-	        this.rules[rule.selector] = rule;
-	      } else if (rule.type === 'simple') {
-	        this.rules[rule.name] = rule;
-	      }
-	      // This is a rule which is a child of a condtional rule.
-	      // We need to register its class name only.
-	      else if (rule.options.parent && rule.options.parent.type === 'conditional') {
-	          // Only named rules should be referenced in `classes`.
-	          if (rule.options.named) this.classes[name] = rule.className;
-	        } else {
-	          this.rules[rule.selector] = rule;
-	          if (options.named) {
-	            this.rules[name] = rule;
-	            this.classes[name] = rule.className;
-	          }
-	        }
+	      this.registerRule(rule);
 	      options.jss.plugins.run(rule);
 	      return rule;
+	    }
+	
+	    /**
+	     * Register a rule in `sheet.rules` and `sheet.classes` maps.
+	     *
+	     * @param {Rule} rule
+	     * @api public
+	     */
+	
+	  }, {
+	    key: 'registerRule',
+	    value: function registerRule(rule) {
+	      if (rule.name) {
+	        if (!rule.options.parent) this.rules[rule.name] = rule;
+	        if (rule.className) this.classes[rule.name] = rule.className;
+	      }
+	      if (rule.selector && !rule.options.parent) {
+	        this.rules[rule.selector] = rule;
+	      }
+	      return this;
+	    }
+	
+	    /**
+	     * Unregister a rule.
+	     *
+	     * @param {Rule} rule
+	     * @api public
+	     */
+	
+	  }, {
+	    key: 'unregisterRule',
+	    value: function unregisterRule(rule) {
+	      delete this.rules[rule.name];
+	      delete this.rules[rule.selector];
+	      delete this.classes[rule.name];
+	      return this;
 	    }
 	
 	    /**
@@ -740,6 +759,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
+	var dotsRegExp = /[.]/g;
+	var classesRegExp = /[.][^ ,]+/g;
+	
 	/**
 	 * Regular rules.
 	 *
@@ -753,11 +775,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.id = _utils.uid.get();
 	    this.type = 'regular';
 	    this.options = options;
-	    this.selector = selector;
+	    this.selector = selector || '';
+	    this.className = '';
 	    if (options.named) {
 	      this.name = selector;
-	      this.className = options.className || (this.name ? this.name + '--' + this.id : this.id);
-	      this.selector = '.' + this.className;
+	      var className = options.className || (this.name ? this.name + '--' + this.id : this.id);
+	      this.selector = '.' + className;
 	    }
 	    this.originalStyle = style;
 	    // We expect style to be plain object.
@@ -862,24 +885,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'selector',
-	    set: function set(selector) {
-	      if (this.renderable) {
-	        var _options = this.options;
-	        var Renderer = _options.Renderer;
-	        var sheet = _options.sheet;
+	    set: function set() {
+	      var selector = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+	      var _options = this.options;
+	      var Renderer = _options.Renderer;
+	      var sheet = _options.sheet;
 	
-	        var setted = Renderer.setSelector(this.renderable, selector);
-	        // If selector setter is not implemented, rerender the sheet.
-	        if (!setted) {
-	          this._selector = selector;
-	          // We need to delete renderable from the rule, because when sheet.deploy()
-	          // calls rule.toString, it will get the old selector.
-	          delete this.renderable;
-	          sheet.deploy().link();
-	        }
-	      }
+	      // After we modify selector, ref by old selector needs to be removed.
+	
+	      if (sheet) sheet.unregisterRule(this);
 	
 	      this._selector = selector;
+	      var classes = selector.match(classesRegExp);
+	      if (classes) {
+	        this.className = classes.join(' ').replace(dotsRegExp, '');
+	      }
+	
+	      if (!this.renderable) {
+	        // Register the rule with new selector.
+	        if (sheet) sheet.registerRule(this);
+	        return;
+	      }
+	
+	      var changed = Renderer.setSelector(this.renderable, selector);
+	
+	      if (changed) {
+	        sheet.registerRule(this);
+	        return;
+	      }
+	
+	      // If selector setter is not implemented, rerender the sheet.
+	      // We need to delete renderable from the rule, because when sheet.deploy()
+	      // calls rule.toString, it will get the old selector.
+	      delete this.renderable;
+	      sheet.registerRule(this).deploy().link();
 	    }
 	
 	    /**
@@ -1065,7 +1104,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.id = _utils.uid.get();
 	    this.type = 'conditional';
 	    this.selector = selector;
-	    this.options = _extends({}, options, { parent: this });
+	    this.options = options;
 	    this.rules = Object.create(null);
 	    for (var name in styles) {
 	      this.createRule(name, styles[name]);
@@ -1084,7 +1123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(ConditionalRule, [{
 	    key: 'createRule',
 	    value: function createRule(name, style, options) {
-	      var newOptions = this.options;
+	      var newOptions = _extends({}, this.options, { parent: this });
 	      var _newOptions = newOptions;
 	      var sheet = _newOptions.sheet;
 	      var jss = _newOptions.jss;

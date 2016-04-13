@@ -1039,26 +1039,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Scope options overwrite instance options.
 	      if (options.named == null) options.named = this.options.named;
 	      var rule = (0, _createRule3.default)(name, style, options);
-	      // Register conditional rule, it will stringify it's child rules properly.
-	      if (rule.type === 'conditional') {
-	        this.rules[rule.selector] = rule;
-	      } else if (rule.type === 'simple') {
-	        this.rules[rule.name] = rule;
-	      }
-	      // This is a rule which is a child of a condtional rule.
-	      // We need to register its class name only.
-	      else if (rule.options.parent && rule.options.parent.type === 'conditional') {
-	          // Only named rules should be referenced in `classes`.
-	          if (rule.options.named) this.classes[name] = rule.className;
-	        } else {
-	          this.rules[rule.selector] = rule;
-	          if (options.named) {
-	            this.rules[name] = rule;
-	            this.classes[name] = rule.className;
-	          }
-	        }
+	      this.registerRule(rule);
 	      options.jss.plugins.run(rule);
 	      return rule;
+	    }
+
+	    /**
+	     * Register a rule in `sheet.rules` and `sheet.classes` maps.
+	     *
+	     * @param {Rule} rule
+	     * @api public
+	     */
+
+	  }, {
+	    key: 'registerRule',
+	    value: function registerRule(rule) {
+	      if (rule.name) {
+	        if (!rule.options.parent) this.rules[rule.name] = rule;
+	        if (rule.className) this.classes[rule.name] = rule.className;
+	      }
+	      if (rule.selector && !rule.options.parent) {
+	        this.rules[rule.selector] = rule;
+	      }
+	      return this;
+	    }
+
+	    /**
+	     * Unregister a rule.
+	     *
+	     * @param {Rule} rule
+	     * @api public
+	     */
+
+	  }, {
+	    key: 'unregisterRule',
+	    value: function unregisterRule(rule) {
+	      delete this.rules[rule.name];
+	      delete this.rules[rule.selector];
+	      delete this.classes[rule.name];
+	      return this;
 	    }
 
 	    /**
@@ -1332,6 +1351,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var dotsRegExp = /[.]/g;
+	var classesRegExp = /[.][^ ,]+/g;
+
 	/**
 	 * Regular rules.
 	 *
@@ -1345,11 +1367,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.id = _utils.uid.get();
 	    this.type = 'regular';
 	    this.options = options;
-	    this.selector = selector;
+	    this.selector = selector || '';
+	    this.className = '';
 	    if (options.named) {
 	      this.name = selector;
-	      this.className = options.className || (this.name ? this.name + '--' + this.id : this.id);
-	      this.selector = '.' + this.className;
+	      var className = options.className || (this.name ? this.name + '--' + this.id : this.id);
+	      this.selector = '.' + className;
 	    }
 	    this.originalStyle = style;
 	    // We expect style to be plain object.
@@ -1454,24 +1477,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'selector',
-	    set: function set(selector) {
-	      if (this.renderable) {
-	        var _options = this.options;
-	        var Renderer = _options.Renderer;
-	        var sheet = _options.sheet;
+	    set: function set() {
+	      var selector = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+	      var _options = this.options;
+	      var Renderer = _options.Renderer;
+	      var sheet = _options.sheet;
 
-	        var setted = Renderer.setSelector(this.renderable, selector);
-	        // If selector setter is not implemented, rerender the sheet.
-	        if (!setted) {
-	          this._selector = selector;
-	          // We need to delete renderable from the rule, because when sheet.deploy()
-	          // calls rule.toString, it will get the old selector.
-	          delete this.renderable;
-	          sheet.deploy().link();
-	        }
-	      }
+	      // After we modify selector, ref by old selector needs to be removed.
+
+	      if (sheet) sheet.unregisterRule(this);
 
 	      this._selector = selector;
+	      var classes = selector.match(classesRegExp);
+	      if (classes) {
+	        this.className = classes.join(' ').replace(dotsRegExp, '');
+	      }
+
+	      if (!this.renderable) {
+	        // Register the rule with new selector.
+	        if (sheet) sheet.registerRule(this);
+	        return;
+	      }
+
+	      var changed = Renderer.setSelector(this.renderable, selector);
+
+	      if (changed) {
+	        sheet.registerRule(this);
+	        return;
+	      }
+
+	      // If selector setter is not implemented, rerender the sheet.
+	      // We need to delete renderable from the rule, because when sheet.deploy()
+	      // calls rule.toString, it will get the old selector.
+	      delete this.renderable;
+	      sheet.registerRule(this).deploy().link();
 	    }
 
 	    /**
@@ -1657,7 +1696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.id = _utils.uid.get();
 	    this.type = 'conditional';
 	    this.selector = selector;
-	    this.options = _extends({}, options, { parent: this });
+	    this.options = options;
 	    this.rules = Object.create(null);
 	    for (var name in styles) {
 	      this.createRule(name, styles[name]);
@@ -1676,7 +1715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(ConditionalRule, [{
 	    key: 'createRule',
 	    value: function createRule(name, style, options) {
-	      var newOptions = this.options;
+	      var newOptions = _extends({}, this.options, { parent: this });
 	      var _newOptions = newOptions;
 	      var sheet = _newOptions.sheet;
 	      var jss = _newOptions.jss;
@@ -2378,50 +2417,57 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * CSS Vendor prefix detection and property feature testing.
-	 *
-	 * @copyright Oleg Slobodskoi 2015
-	 * @website https://github.com/jsstyles/css-vendor
-	 * @license MIT
-	 */
-
 	'use strict';
 
-	exports.__esModule = true;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.supportedValue = exports.supportedProperty = exports.prefix = undefined;
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	var _prefix = __webpack_require__(32);
 
-	var _prefix2 = __webpack_require__(32);
+	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _prefix3 = _interopRequireDefault(_prefix2);
+	var _supportedProperty = __webpack_require__(33);
 
-	exports.prefix = _prefix3['default'];
+	var _supportedProperty2 = _interopRequireDefault(_supportedProperty);
 
-	var _supportedProperty2 = __webpack_require__(33);
+	var _supportedValue = __webpack_require__(35);
 
-	var _supportedProperty3 = _interopRequireDefault(_supportedProperty2);
+	var _supportedValue2 = _interopRequireDefault(_supportedValue);
 
-	exports.supportedProperty = _supportedProperty3['default'];
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _supportedValue2 = __webpack_require__(35);
+	exports.default = {
+	  prefix: _prefix2.default,
+	  supportedProperty: _supportedProperty2.default,
+	  supportedValue: _supportedValue2.default
+	}; /**
+	    * CSS Vendor prefix detection and property feature testing.
+	    *
+	    * @copyright Oleg Slobodskoi 2015
+	    * @website https://github.com/jsstyles/css-vendor
+	    * @license MIT
+	    */
 
-	var _supportedValue3 = _interopRequireDefault(_supportedValue2);
-
-	exports.supportedValue = _supportedValue3['default'];
+	exports.prefix = _prefix2.default;
+	exports.supportedProperty = _supportedProperty2.default;
+	exports.supportedValue = _supportedValue2.default;
 
 /***/ },
 /* 32 */
 /***/ function(module, exports) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	/**
 	 * Export javascript style and css style vendor prefixes.
 	 * Based on "transform" support test.
 	 */
 
-	'use strict';
-
-	exports.__esModule = true;
 	var js = '';
 	var css = '';
 
@@ -2452,8 +2498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {{js: String, css: String}}
 	 * @api public
 	 */
-	exports['default'] = { js: js, css: css };
-	module.exports = exports['default'];
+	exports.default = { js: js, css: css };
 
 /***/ },
 /* 33 */
@@ -2461,10 +2506,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = supportedProperty;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = supportedProperty;
 
 	var _prefix = __webpack_require__(32);
 
@@ -2474,9 +2519,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _camelize2 = _interopRequireDefault(_camelize);
 
-	var el = undefined;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var el = void 0;
 	var cache = {};
 
+	// For server-side rendering.
 	if (typeof document != 'undefined') {
 	  el = document.createElement('p');
 
@@ -2503,19 +2551,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {String|Boolean}
 	 * @api public
 	 */
-
 	function supportedProperty(prop) {
+	  // For server-side rendering.
+	  if (!el) return prop;
+
 	  // We have not tested this prop yet, lets do the test.
 	  if (cache[prop] != null) return cache[prop];
 
 	  // Camelization is required because we can't test using
 	  // css syntax for e.g. in FF.
 	  // Test if property is supported as it is.
-	  if (_camelize2['default'](prop) in el.style) {
+	  if ((0, _camelize2.default)(prop) in el.style) {
 	    cache[prop] = prop;
-	    // Test if property is supported with vendor prefix.
-	  } else if (_prefix2['default'].js + _camelize2['default']('-' + prop) in el.style) {
-	      cache[prop] = _prefix2['default'].css + prop;
+	  }
+	  // Test if property is supported with vendor prefix.
+	  else if (_prefix2.default.js + (0, _camelize2.default)('-' + prop) in el.style) {
+	      cache[prop] = _prefix2.default.css + prop;
 	    } else {
 	      cache[prop] = false;
 	    }
@@ -2523,16 +2574,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return cache[prop];
 	}
 
-	module.exports = exports['default'];
-
 /***/ },
 /* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = camelize;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = camelize;
 	var regExp = /[-\s]+(.)?/g;
 
 	/**
@@ -2541,7 +2592,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {String} str
 	 * @return {String}
 	 */
-
 	function camelize(str) {
 	  return str.replace(regExp, toUpper);
 	}
@@ -2549,7 +2599,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function toUpper(match, c) {
 	  return c ? c.toUpperCase() : '';
 	}
-	module.exports = exports['default'];
 
 /***/ },
 /* 35 */
@@ -2557,18 +2606,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.__esModule = true;
-	exports['default'] = supportedValue;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = supportedValue;
 
 	var _prefix = __webpack_require__(32);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var cache = {};
-	var el = undefined;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var cache = {};
+	var el = void 0;
+
+	// For server-side rendering.
 	if (typeof document != 'undefined') el = document.createElement('p');
 
 	/**
@@ -2579,9 +2631,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @return {String|Boolean}
 	 * @api public
 	 */
-
 	function supportedValue(property, value) {
-	  if (typeof value != 'string' || !isNaN(parseInt(value, 10))) return value;
+	  // For server-side rendering.
+	  if (!el) return value;
+
+	  // It is a string or a number as a string like '1'.
+	  // We want only prefixable values here.
+	  if (typeof value !== 'string' || !isNaN(parseInt(value, 10))) return value;
 
 	  var cacheKey = property + value;
 
@@ -2595,7 +2651,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    cache[cacheKey] = value;
 	  } else {
 	    // Test value with vendor prefix.
-	    value = _prefix2['default'].css + value;
+	    value = _prefix2.default.css + value;
 
 	    // Hardcode test to convert "flex" to "-ms-flexbox" for IE10.
 	    if (value === '-ms-flex') value = '-ms-flexbox';
@@ -2610,8 +2666,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return cache[cacheKey];
 	}
-
-	module.exports = exports['default'];
 
 /***/ },
 /* 36 */

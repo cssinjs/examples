@@ -60,32 +60,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	exports.default = function () {
-	  var sheet = void 0;
-	  var resetRule = void 0;
-	  var selectors = [];
-	  return function (rule) {
-	    var options = rule.options;
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	    if (options.sheet.options.isolate === false) return;
-	    if (options.sheet === sheet) return;
-	    if (rule.type !== 'regular') return;
-	    if (options.parent && options.parent.type === 'keyframe') return;
-	    if (rule.style && rule.style.isolate === false) {
-	      delete rule.style.isolate;
-	      return;
-	    }
-	    if (!sheet && options.jss) {
-	      sheet = options.jss.createStyleSheet({}, { link: true });
-	      resetRule = sheet.createRule('reset', _reset2.default);
-	      sheet.attach();
-	    }
-	    if (selectors.indexOf(rule.selector) === -1) {
-	      selectors.push(rule.selector);
-	    }
-	    setSelector(resetRule, selectors);
-	  };
-	};
+	exports.default = jssIsolate;
 
 	var _reset = __webpack_require__(1);
 
@@ -110,6 +87,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	var setSelector = debounce(function (rule, selectors) {
 	  return rule.selector = selectors.join(',\n');
 	});
+
+	function jssIsolate() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var sheet = void 0;
+	  var resetRule = void 0;
+	  var selectors = [];
+
+	  return function (rule) {
+	    if (rule.type !== 'regular') return;
+	    if (rule.options.sheet === sheet) return;
+	    if (rule.options.sheet.options.isolate === false) return;
+	    if (rule.options.parent && rule.options.parent.type === 'keyframe') return;
+	    if (rule.style && rule.style.isolate === false) {
+	      delete rule.style.isolate;
+	      return;
+	    }
+	    // Create a separate style sheet once and use it for all rules.
+	    if (!sheet && rule.options.jss) {
+	      sheet = rule.options.jss.createStyleSheet({}, {
+	        link: true,
+	        meta: 'jss-isolate'
+	      });
+	      var mergedReset = options.reset ? _extends({}, _reset2.default, options.reset) : _reset2.default;
+	      resetRule = sheet.addRule('reset', mergedReset);
+	      sheet.attach();
+	    }
+	    if (selectors.indexOf(rule.selector) === -1) {
+	      selectors.push(rule.selector);
+	    }
+	    setSelector(resetRule, selectors);
+	  };
+	}
 
 /***/ },
 /* 1 */
@@ -146,8 +156,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'visibility': 'visible',
 	  'white-space': 'normal',
 	  'widows': '2',
-	  'word-spacing': 'normal',
-	  isolate: false
+	  'word-spacing': 'normal'
 	};
 
 /***/ }
