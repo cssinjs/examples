@@ -1,3 +1,14 @@
-// Application
+// Styles
+var styles = {
+  button: {
+    'border-left': '3px solid red',
+    border: '3px solid green'
+  }
+}
+
+// JSS Setup
 jss.default.use(jssPropsSort.default())
-jss.default.createStyleSheet(window.styles, {named: false}).attach()
+var sheet = jss.default.createStyleSheet(styles).attach()
+
+// Application logic
+document.body.innerHTML = '<button class="'+ sheet.classes.button +'">Button</button>'
