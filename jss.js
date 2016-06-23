@@ -69,7 +69,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 	
-	var _Rule = __webpack_require__(5);
+	var _Rule = __webpack_require__(6);
 	
 	var _Rule2 = _interopRequireDefault(_Rule);
 	
@@ -85,7 +85,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @website https://github.com/jsstyles/jss
 	 * @license MIT
 	 */
-	
 	module.exports = exports = jss;
 	
 	// For testing only.
@@ -114,23 +113,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 	
-	var _PluginsRegistry = __webpack_require__(13);
+	var _PluginsRegistry = __webpack_require__(14);
 	
 	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 	
-	var _SheetsRegistry = __webpack_require__(14);
+	var _SheetsRegistry = __webpack_require__(15);
 	
 	var _SheetsRegistry2 = _interopRequireDefault(_SheetsRegistry);
 	
-	var _utils = __webpack_require__(3);
-	
-	var _createRule2 = __webpack_require__(4);
+	var _createRule2 = __webpack_require__(5);
 	
 	var _createRule3 = _interopRequireDefault(_createRule2);
 	
-	var _findRenderer = __webpack_require__(10);
+	var _findRenderer = __webpack_require__(11);
 	
 	var _findRenderer2 = _interopRequireDefault(_findRenderer);
+	
+	var _utils = __webpack_require__(3);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -143,12 +142,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	
 	var Jss = function () {
+	  /**
+	   * Options:
+	   * - `generateClassName` accepts a styles string and a Rule instance.
+	   */
+	
 	  function Jss() {
+	    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	
 	    _classCallCheck(this, Jss);
 	
 	    this.sheets = new _SheetsRegistry2.default();
 	    this.plugins = new _PluginsRegistry2.default();
-	    this.uid = _utils.uid;
+	    this.version = '4.0.0';
+	    this.generateClassName = options.generateClassName || _utils.generateClassName;
 	  }
 	
 	  /**
@@ -161,8 +168,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  _createClass(Jss, [{
 	    key: 'create',
-	    value: function create() {
-	      return new Jss();
+	    value: function create(options) {
+	      return new Jss(options);
 	    }
 	
 	    /**
@@ -229,7 +236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return Jss;
 	}();
-
+	
 	exports.default = Jss;
 
 /***/ },
@@ -248,11 +255,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _utils = __webpack_require__(3);
 	
-	var _createRule2 = __webpack_require__(4);
+	var _createRule = __webpack_require__(5);
 	
-	var _createRule3 = _interopRequireDefault(_createRule2);
+	var _createRule2 = _interopRequireDefault(_createRule);
 	
-	var _findRenderer = __webpack_require__(10);
+	var _findRenderer = __webpack_require__(11);
 	
 	var _findRenderer2 = _interopRequireDefault(_findRenderer);
 	
@@ -265,13 +272,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * Options:
 	 *
-	 *  - 'media' style element attribute
-	 *  - 'title' style element attribute
-	 *  - 'type' style element attribute
-	 *  - 'named' true by default - keys are names, selectors will be generated,
-	 *    if false - keys are global selectors
-	 *  - 'link' link renderable CSS rules with their corresponding models, false
-	 *    by default because fast by default
+	 * - `media` media query - attribute of style element.
+	 * - `meta` meta information about this style - attribute of style element, for e.g. you could pass
+	 * component name for easier debugging.
+	 * - `named` true by default - keys are names, selectors will be generated, if false - keys are
+	 * global selectors.
+	 * - `link` link jss `Rule` instances with DOM `CSSRule` instances so that styles, can be modified
+	 * dynamically, false by default because it has some performance cost.
+	 * - `element` style element, will create one by default
 	 *
 	 * @param {Object} [rules] object with selectors and declarations
 	 * @param {Object} [options]
@@ -295,7 +303,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.renderer = new Renderer(this.options);
 	
 	    for (var name in rules) {
-	      this.createRule(name, rules[name]);
+	      this.createAndRegisterRule(name, rules[name]);
+	    }
+	    for (var _name in this.rules) {
+	      this.options.jss.plugins.run(this.rules[_name]);
 	    }
 	  }
 	
@@ -402,13 +413,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function toString(options) {
 	      var rules = this.rules;
 	
-	      var stringified = Object.create(null);
+	      var stringified = [];
 	      var str = '';
 	      for (var name in rules) {
 	        var rule = rules[name];
 	        // We have the same rule referenced twice if using named rules.
 	        // By name and by selector.
-	        if (stringified[rule.id]) {
+	        if (stringified.indexOf(rule) !== -1) {
 	          continue;
 	        }
 	
@@ -423,22 +434,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (str) str += '\n';
 	
 	        str += rule.toString(options);
-	        stringified[rule.id] = true;
+	        stringified.push(rule);
 	      }
 	      return str;
 	    }
 	
 	    /**
-	     * Create a rule, will not render after stylesheet was rendered the first time.
-	     * Will link the rule in `this.rules`.
+	     * Create and register a rule.
 	     *
 	     * @see createRule
 	     * @api private
 	     */
 	
 	  }, {
-	    key: 'createRule',
-	    value: function createRule(name, style, options) {
+	    key: 'createAndRegisterRule',
+	    value: function createAndRegisterRule(name, style, options) {
 	      options = _extends({}, options, {
 	        sheet: this,
 	        jss: this.options.jss,
@@ -446,9 +456,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	      // Scope options overwrite instance options.
 	      if (options.named == null) options.named = this.options.named;
-	      var rule = (0, _createRule3.default)(name, style, options);
+	      var rule = (0, _createRule2.default)(name, style, options);
 	      this.registerRule(rule);
-	      options.jss.plugins.run(rule);
+	      return rule;
+	    }
+	
+	    /**
+	     * Create and register rule, run plugins.
+	     *
+	     * Will not render after stylesheet was rendered the first time.
+	     * Will link the rule in `this.rules`.
+	     *
+	     * @see createRule
+	     * @api public
+	     */
+	
+	  }, {
+	    key: 'createRule',
+	    value: function createRule(name, style, options) {
+	      var rule = this.createAndRegisterRule(name, style, options);
+	      this.options.jss.plugins.run(rule);
 	      return rule;
 	    }
 	
@@ -462,11 +489,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'registerRule',
 	    value: function registerRule(rule) {
+	      // Children of container rules should not be registered.
+	      if (rule.options.parent) {
+	        // We need to register child rules of conditionals in classes, otherwise
+	        // user can't access generated class name if it doesn't overrides
+	        // a regular rule.
+	        if (rule.name && rule.className) {
+	          this.classes[rule.name] = rule.className;
+	        }
+	        return this;
+	      }
+	
 	      if (rule.name) {
-	        if (!rule.options.parent) this.rules[rule.name] = rule;
+	        this.rules[rule.name] = rule;
 	        if (rule.className) this.classes[rule.name] = rule.className;
 	      }
-	      if (rule.selector && !rule.options.parent) {
+	      if (rule.selector) {
 	        this.rules[rule.selector] = rule;
 	      }
 	      return this;
@@ -482,8 +520,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'unregisterRule',
 	    value: function unregisterRule(rule) {
-	      delete this.rules[rule.name];
-	      delete this.rules[rule.selector];
+	      // Children of a conditional rule are not registered.
+	      if (!rule.options.parent) {
+	        delete this.rules[rule.name];
+	        delete this.rules[rule.selector];
+	      }
 	      delete this.classes[rule.name];
 	      return this;
 	    }
@@ -525,42 +566,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return StyleSheet;
 	}();
-
+	
 	exports.default = StyleSheet;
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.clone = clone;
+	exports.findClassNames = undefined;
+	exports.generateClassName = generateClassName;
 	exports.isEmptyObject = isEmptyObject;
 	exports.toCSS = toCSS;
-	var stringify = JSON.stringify;
-	var parse = JSON.parse;
+	
+	var _murmurhash3_gc = __webpack_require__(4);
+	
+	var _murmurhash3_gc2 = _interopRequireDefault(_murmurhash3_gc);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	/**
-	 * Deeply clone object using serialization.
-	 * Expects object to be plain and without cyclic dependencies.
+	 * Generates a class name using murmurhash.
 	 *
-	 * http://jsperf.com/lodash-deepclone-vs-jquery-extend-deep/6
-	 *
-	 * @type {Object} obj
-	 * @return {Object}
+	 * @param {String} str
+	 * @param {Rule} rule
+	 * @return {String}
 	 */
-	function clone(obj) {
-	  return parse(stringify(obj));
+	function generateClassName(str, rule) {
+	  var hash = (0, _murmurhash3_gc2.default)(str);
+	  return rule.name ? rule.name + '-' + hash : hash;
 	}
 	
 	/**
 	 * Determine whether an object is empty or not.
 	 * More performant than a `Object.keys(obj).length > 0`
 	 *
-	 * @type {Object} obj
+	 * @param {Object} obj
 	 * @return {Boolean}
 	 */
 	function isEmptyObject(obj) {
@@ -569,78 +614,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } // eslint-disable-line no-unused-vars
 	
 	  return true;
-	}
-	
-	/**
-	 * Simple very fast UID generation based on a global counter.
-	 */
-	var uid = exports.uid = function () {
-	  var globalReference = typeof window == 'undefined' ? global : window;
-	  var namespace = '__JSS_VERSION_COUNTER__';
-	  if (globalReference[namespace] == null) globalReference[namespace] = 0;
-	
-	  // In case we have more than one jss version.
-	  var versionCounter = globalReference[namespace]++;
-	  var ruleCounter = 0;
-	
-	  /**
-	   * Returns a uid.
-	   * Ensures uniqueness if more than 1 jss version is used.
-	   *
-	   * @api public
-	   * @return {String}
-	   */
-	  function get() {
-	    return 'jss-' + versionCounter + '-' + ruleCounter++;
-	  }
-	
-	  /**
-	   * Resets the counter.
-	   *
-	   * @api public
-	   */
-	  function reset() {
-	    ruleCounter = 0;
-	  }
-	
-	  return { get: get, reset: reset };
-	}();
-	
-	/**
-	 * Converts a Rule to CSS string.
-	 *
-	 * Options:
-	 * - `selector` use `false` to get a rule without selector
-	 * - `indentationLevel` level of indentation
-	 *
-	 * @param {Rule|FontFaceRule} rule
-	 * @param {Object} options
-	 * @return {String}
-	 */
-	function toCSS(rule) {
-	  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	
-	  var indentationLevel = options.indentationLevel || 0;
-	  var str = '';
-	
-	  if (options.selector !== false) {
-	    str += indent(indentationLevel, rule.selector + ' {');
-	    indentationLevel++;
-	  }
-	
-	  for (var prop in rule.style) {
-	    var value = rule.style[prop];
-	    // We want to generate multiple style with identical property names.
-	    if (Array.isArray(value)) {
-	      for (var index = 0; index < value.length; index++) {
-	        str += '\n' + indent(indentationLevel, prop + ': ' + value[index] + ';');
-	      }
-	    } else str += '\n' + indent(indentationLevel, prop + ': ' + value + ';');
-	  }
-	
-	  if (options.selector !== false) str += '\n' + indent(--indentationLevel, '}');
-	
-	  return str;
 	}
 	
 	/**
@@ -658,10 +631,139 @@ return /******/ (function(modules) { // webpackBootstrap
 	    indentStr += '  ';
 	  }return indentStr + str;
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	
+	/**
+	 * Converts a Rule to CSS string.
+	 *
+	 * Options:
+	 * - `selector` use `false` to get a rule without selector
+	 * - `indentationLevel` level of indentation
+	 *
+	 * @param {String} selector
+	 * @param {Object} style
+	 * @param {Object} options
+	 * @return {String}
+	 */
+	function toCSS(selector, style) {
+	  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+	
+	  var indentationLevel = options.indentationLevel || 0;
+	  var str = '';
+	
+	  if (options.selector !== false) {
+	    str += indent(indentationLevel, selector + ' {');
+	    indentationLevel++;
+	  }
+	
+	  for (var prop in style) {
+	    var value = style[prop];
+	    // We want to generate multiple style with identical property names.
+	    if (Array.isArray(value)) {
+	      for (var index = 0; index < value.length; index++) {
+	        str += '\n' + indent(indentationLevel, prop + ': ' + value[index] + ';');
+	      }
+	    } else str += '\n' + indent(indentationLevel, prop + ': ' + value + ';');
+	  }
+	
+	  if (options.selector !== false) str += '\n' + indent(--indentationLevel, '}');
+	
+	  return str;
+	}
+	
+	/**
+	 * Get class names from a selector.
+	 *
+	 * @param {String} selector
+	 * @return {String}
+	 */
+	var findClassNames = exports.findClassNames = function () {
+	  var dotsRegExp = /[.]/g;
+	  var classesRegExp = /[.][^ ,]+/g;
+	
+	  return function (selector) {
+	    var classes = selector.match(classesRegExp);
+	
+	    if (!classes) return '';
+	
+	    return classes.join(' ').replace(dotsRegExp, '');
+	  };
+	}();
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
+	 * 
+	 * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
+	 * @see http://github.com/garycourt/murmurhash-js
+	 * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
+	 * @see http://sites.google.com/site/murmurhash/
+	 * 
+	 * @param {string} key ASCII only
+	 * @param {number} seed Positive integer only
+	 * @return {number} 32-bit positive integer hash 
+	 */
+	
+	function murmurhash3_32_gc(key, seed) {
+		var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
+		
+		remainder = key.length & 3; // key.length % 4
+		bytes = key.length - remainder;
+		h1 = seed;
+		c1 = 0xcc9e2d51;
+		c2 = 0x1b873593;
+		i = 0;
+		
+		while (i < bytes) {
+		  	k1 = 
+		  	  ((key.charCodeAt(i) & 0xff)) |
+		  	  ((key.charCodeAt(++i) & 0xff) << 8) |
+		  	  ((key.charCodeAt(++i) & 0xff) << 16) |
+		  	  ((key.charCodeAt(++i) & 0xff) << 24);
+			++i;
+			
+			k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
+			k1 = (k1 << 15) | (k1 >>> 17);
+			k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
+	
+			h1 ^= k1;
+	        h1 = (h1 << 13) | (h1 >>> 19);
+			h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
+			h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
+		}
+		
+		k1 = 0;
+		
+		switch (remainder) {
+			case 3: k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+			case 2: k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+			case 1: k1 ^= (key.charCodeAt(i) & 0xff);
+			
+			k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
+			k1 = (k1 << 15) | (k1 >>> 17);
+			k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
+			h1 ^= k1;
+		}
+		
+		h1 ^= key.length;
+	
+		h1 ^= h1 >>> 16;
+		h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;
+		h1 ^= h1 >>> 13;
+		h1 = ((((h1 & 0xffff) * 0xc2b2ae35) + ((((h1 >>> 16) * 0xc2b2ae35) & 0xffff) << 16))) & 0xffffffff;
+		h1 ^= h1 >>> 16;
+	
+		return h1 >>> 0;
+	}
+	
+	if(true) {
+	  module.exports = murmurhash3_32_gc
+	}
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -669,28 +771,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-	
 	exports.default = createRule;
 	
-	var _Rule = __webpack_require__(5);
+	var _Rule = __webpack_require__(6);
 	
 	var _Rule2 = _interopRequireDefault(_Rule);
 	
-	var _SimpleRule = __webpack_require__(6);
+	var _SimpleRule = __webpack_require__(7);
 	
 	var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
 	
-	var _KeyframeRule = __webpack_require__(7);
+	var _KeyframeRule = __webpack_require__(8);
 	
 	var _KeyframeRule2 = _interopRequireDefault(_KeyframeRule);
 	
-	var _ConditionalRule = __webpack_require__(8);
+	var _ConditionalRule = __webpack_require__(9);
 	
 	var _ConditionalRule2 = _interopRequireDefault(_ConditionalRule);
 	
-	var _FontFaceRule = __webpack_require__(9);
+	var _FontFaceRule = __webpack_require__(10);
 	
 	var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 	
@@ -730,19 +829,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (selector && selector[0] === '@') {
 	    var name = atRuleNameRegExp.exec(selector)[0];
 	    var AtRule = atRuleClassMap[name];
-	    // We use regular rule class to handle font rule,
-	    // font-face rule should not be named.
-	    if (name === '@font-face' && options.named) {
-	      options = _extends({}, options, { named: false });
-	    }
 	    return new AtRule(selector, style, options);
 	  }
+	
 	  if (options.named == null) options.named = true;
 	  return new _Rule2.default(selector, style, options);
 	}
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -759,8 +854,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var dotsRegExp = /[.]/g;
-	var classesRegExp = /[.][^ ,]+/g;
+	var parse = JSON.parse;
+	var stringify = JSON.stringify;
 	
 	/**
 	 * Regular rules.
@@ -772,19 +867,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Rule(selector, style, options) {
 	    _classCallCheck(this, Rule);
 	
-	    this.id = _utils.uid.get();
+	    // We expect style to be plain object.
+	    // To avoid original style object mutations, we clone it and hash it
+	    // along the way.
+	    // It is also the fastetst way.
+	    // http://jsperf.com/lodash-deepclone-vs-jquery-extend-deep/6
+	    var styleStr = stringify(style);
+	    this.style = parse(styleStr);
 	    this.type = 'regular';
 	    this.options = options;
-	    this.selector = selector || '';
-	    this.className = '';
+	    this.selectorText = selector || '';
+	    this.className = options.className || '';
+	    this.originalStyle = style;
 	    if (options.named) {
 	      this.name = selector;
-	      var className = options.className || (this.name ? this.name + '--' + this.id : this.id);
-	      this.selector = '.' + className;
+	      if (!this.className) {
+	        this.className = options.jss.generateClassName(styleStr, this);
+	      }
+	      this.selectorText = '.' + this.className;
 	    }
-	    this.originalStyle = style;
-	    // We expect style to be plain object.
-	    this.style = (0, _utils.clone)(style);
 	  }
 	
 	  /**
@@ -881,7 +982,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'toString',
 	    value: function toString(options) {
-	      return (0, _utils.toCSS)(this, options);
+	      return (0, _utils.toCSS)(this.selector, this.style, options);
 	    }
 	  }, {
 	    key: 'selector',
@@ -895,11 +996,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      if (sheet) sheet.unregisterRule(this);
 	
-	      this._selector = selector;
-	      var classes = selector.match(classesRegExp);
-	      if (classes) {
-	        this.className = classes.join(' ').replace(dotsRegExp, '');
-	      }
+	      this.selectorText = selector;
+	      this.className = (0, _utils.findClassNames)(selector);
 	
 	      if (!this.renderable) {
 	        // Register the rule with new selector.
@@ -933,18 +1031,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.options.Renderer.getSelector(this.renderable);
 	      }
 	
-	      return this._selector;
+	      return this.selectorText;
 	    }
 	  }]);
 	
 	  return Rule;
 	}();
-
+	
 	exports.default = Rule;
 
 /***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/* 7 */
+/***/ function(module, exports) {
 
 	'use strict';
 	
@@ -953,8 +1051,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _utils = __webpack_require__(3);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -968,7 +1064,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SimpleRule(name, value, options) {
 	    _classCallCheck(this, SimpleRule);
 	
-	    this.id = _utils.uid.get();
 	    this.type = 'simple';
 	    this.name = name;
 	    this.value = value;
@@ -986,18 +1081,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(SimpleRule, [{
 	    key: 'toString',
 	    value: function toString() {
+	      if (Array.isArray(this.value)) {
+	        var str = '';
+	        for (var index = 0; index < this.value.length; index++) {
+	          str += this.name + ' ' + this.value[index] + ';';
+	          if (this.value[index + 1]) str += '\n';
+	        }
+	        return str;
+	      }
+	
 	      return this.name + ' ' + this.value + ';';
 	    }
 	  }]);
 	
 	  return SimpleRule;
 	}();
-
+	
 	exports.default = SimpleRule;
 
 /***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/* 8 */
+/***/ function(module, exports) {
 
 	'use strict';
 	
@@ -1008,8 +1112,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _utils = __webpack_require__(3);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -1023,7 +1125,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function KeyframeRule(selector, frames, options) {
 	    _classCallCheck(this, KeyframeRule);
 	
-	    this.id = _utils.uid.get();
 	    this.type = 'keyframe';
 	    this.selector = selector;
 	    this.options = options;
@@ -1070,11 +1171,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return KeyframeRule;
 	}();
-
+	
 	exports.default = KeyframeRule;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1101,7 +1202,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ConditionalRule(selector, styles, options) {
 	    _classCallCheck(this, ConditionalRule);
 	
-	    this.id = _utils.uid.get();
 	    this.type = 'conditional';
 	    this.selector = selector;
 	    this.options = options;
@@ -1167,11 +1267,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return ConditionalRule;
 	}();
-
+	
 	exports.default = ConditionalRule;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1187,7 +1287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	/**
-	 * Regular rules and font-face.
+	 * Font-face rules.
 	 *
 	 * @api public
 	 */
@@ -1196,7 +1296,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Rule(selector, style, options) {
 	    _classCallCheck(this, Rule);
 	
-	    this.id = _utils.uid.get();
 	    this.type = 'font-face';
 	    this.options = options;
 	    this.selector = selector;
@@ -1214,17 +1313,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Rule, [{
 	    key: 'toString',
 	    value: function toString(options) {
-	      return (0, _utils.toCSS)(this, options);
+	      if (Array.isArray(this.style)) {
+	        var str = '';
+	        for (var index = 0; index < this.style.length; index++) {
+	          str += (0, _utils.toCSS)(this.selector, this.style[index], options);
+	          if (this.style[index + 1]) str += '\n';
+	        }
+	        return str;
+	      }
+	
+	      return (0, _utils.toCSS)(this.selector, this.style, options);
 	    }
 	  }]);
 	
 	  return Rule;
 	}();
-
+	
 	exports.default = Rule;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1234,11 +1342,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = findRenderer;
 	
-	var _DomRenderer = __webpack_require__(11);
+	var _DomRenderer = __webpack_require__(12);
 	
 	var _DomRenderer2 = _interopRequireDefault(_DomRenderer);
 	
-	var _VirtualRenderer = __webpack_require__(12);
+	var _VirtualRenderer = __webpack_require__(13);
 	
 	var _VirtualRenderer2 = _interopRequireDefault(_VirtualRenderer);
 	
@@ -1261,7 +1369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1289,7 +1397,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        element.style[name] = value;
 	      } catch (err) {
 	        // IE8 may throw if property is unknown.
+	        return false;
 	      }
+	      return true;
 	    }
 	  }, {
 	    key: 'setSelector',
@@ -1311,7 +1421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, DomRenderer);
 	
 	    this.head = document.head || document.getElementsByTagName('head')[0];
-	    this.element = document.createElement('style');
+	    this.element = options.element || document.createElement('style');
 	    // IE8 will not have `styleSheet` prop without `type and `styleSheet.cssText`
 	    // is the only way to render on IE8.
 	    this.element.type = 'text/css';
@@ -1329,6 +1439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(DomRenderer, [{
 	    key: 'attach',
 	    value: function attach() {
+	      if (this.element.parendNode) return;
 	      this.head.appendChild(this.element);
 	    }
 	
@@ -1403,11 +1514,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return DomRenderer;
 	}();
-
+	
 	exports.default = DomRenderer;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1459,11 +1570,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return VirtualRenderer;
 	}();
-
+	
 	exports.default = VirtualRenderer;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1521,11 +1632,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return PluginsRegistry;
 	}();
-
+	
 	exports.default = PluginsRegistry;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1583,7 +1694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  return SheetsRegistry;
 	}();
-
+	
 	exports.default = SheetsRegistry;
 
 /***/ }
