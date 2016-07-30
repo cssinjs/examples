@@ -2,7 +2,7 @@
 
 ## JSS Examples
 
-[Demo](http://jsstyles.github.io/examples/index.html) -
-[JSS](https://github.com/jsstyles/jss)
+[Demo](http://cssinjs.github.io/examples/index.html) -
+[JSS](https://github.com/cssinjs/jss)
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/jsstyles/jss?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
