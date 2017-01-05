@@ -5,4 +5,4 @@
 [Demo](http://cssinjs.github.io/examples/index.html) -
 [JSS](https://github.com/cssinjs/jss)
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/cssinjs/lobby)
+[![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/cssinjs/lobby)
