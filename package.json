@@ -1,7 +1,8 @@
 {
   "name": "jss-examples",
   "description": "JSS Examples",
-  "version": "0.4.0",
+  "version": "1.0.0",
+  "private": true,
   "author": {
     "name": "Oleg Slobodskoi",
     "email": "oleg008@gmail.com"
