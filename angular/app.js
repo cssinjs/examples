@@ -19,6 +19,6 @@ angular
   .controller('myController', function MyController($scope) {
     $scope.classes = sheet.classes
     $scope.showSource = function () {
-      location.href = 'http://github.com/jsstyles/jss-examples/tree/master/angular'
+      location.href = 'https://github.com/cssinjs/examples/tree/master/angular'
     }
   })

@@ -24,7 +24,7 @@ export default function render() {
     </style>
   </head>
   <body>
-    <a href="https://github.com/cssinjs/jss-examples/tree/gh-pages/react-ssr" class="btn" target="_blank">View on Github</a>
+    <a href="https://github.com/cssinjs/examples/tree/gh-pages/react-ssr" class="btn" target="_blank">View on Github</a>
     <div id="app">${app}</div>
     <script src="./app.js"></script>
   </body>
