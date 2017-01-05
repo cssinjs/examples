@@ -6,7 +6,7 @@ var styles = {
 }
 
 // JSS Setup
-jss.default.use(jssVendorPrefixer())
+jss.default.use(jssVendorPrefixer.default())
 var sheet = jss.default.createStyleSheet(styles).attach()
 
 // Application logic

@@ -1,15 +1,17 @@
 // Styles
 var styles = {
-  '.square': {
-    float: 'left',
-    width: '100px',
-    height: '100px',
-    background: 'red'
+  '@global': {
+    '.square': {
+      float: 'left',
+      width: '100px',
+      height: '100px',
+      background: 'red'
+    }
   }
 }
 
 // Application logic.
-var sheet = jss.createStyleSheet(styles, {named: false}).attach()
+var sheet = jss.default.use(jssGlobal.default()).createStyleSheet(styles).attach()
 
 document.body.innerHTML = '\
   <div class="square">\

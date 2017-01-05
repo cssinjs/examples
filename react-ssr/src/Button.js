@@ -1,5 +1,5 @@
 import React from 'react'
-import useSheet from 'react-jss'
+import injectSheet from 'react-jss'
 
 const styles = {
   button: {
@@ -12,4 +12,4 @@ function Button(props) {
   return <button className={classes.button}>My Button</button>
 }
 
-export default useSheet(styles)(Button)
+export default injectSheet(styles)(Button)

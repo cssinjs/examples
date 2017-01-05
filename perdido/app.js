@@ -1,27 +1,15 @@
 (function() {
   //Setup JSS
   var jss = window.jss.default,
-      jssExtend = window.jssExtend.default,
-      jssNested = window.jssNested.default,
-      jssCamelCase = window.jssCamelCase.default,
-      jssDefaultUnit = window.jssDefaultUnit.default,
-      jssVendorPrefixer = window.jssVendorPrefixer,
-      jssPropsSort = window.jssPropsSort.default,
+      jssPreset = window.jssPreset.default,
       perdido = window.perdido.default
 
-  jss.use(jssExtend())
-  jss.use(jssNested())
-  jss.use(jssCamelCase())
-  jss.use(jssDefaultUnit())
-  jss.use(jssVendorPrefixer())
-  jss.use(jssPropsSort())
-
+  jss.setup(jssPreset())
 
   // Get the template
   var template = document.getElementById('template').innerHTML;
 
   // Attach the reset styles.
-  jss.createStyleSheet(window.setupStyles, {named: false}).attach()
   var sheet = jss.createStyleSheet(window.styles).attach()
 
   // Replace the class names with the JSS generated ones.

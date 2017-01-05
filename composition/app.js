@@ -1,5 +1,5 @@
-var sheetA = jss.createStyleSheet(window.componentA).attach()
-var sheetB = jss.createStyleSheet(window.componentB).attach()
+var sheetA = jss.default.createStyleSheet(window.componentA).attach()
+var sheetB = jss.default.createStyleSheet(window.componentB).attach()
 
 var tpl = document.getElementById('template').innerHTML
 

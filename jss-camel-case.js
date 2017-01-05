@@ -54,37 +54,67 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = jssCamelCase;
 	var regExp = /([A-Z])/g;
+
+	/**
+	 * Replace a string passed from String#replace.
+	 * @param {String} str
+	 * @return {String}
+	 */
+	function replace(str) {
+	  return "-" + str.toLowerCase();
+	}
+
+	/**
+	 * Convert camel cased property names to dash separated.
+	 *
+	 * @param {Object} style
+	 * @return {Object}
+	 */
+	function convertCase(style) {
+	  var converted = {};
+
+	  for (var prop in style) {
+	    var value = style[prop];
+	    prop = prop.replace(regExp, replace);
+	    converted[prop] = value;
+	  }
+
+	  if (style.fallbacks) {
+	    if (Array.isArray(style.fallbacks)) converted.fallbacks = style.fallbacks.map(convertCase);else converted.fallbacks = convertCase(style.fallbacks);
+	  }
+
+	  return converted;
+	}
 
 	/**
 	 * Allow camel cased property names by converting them back to dasherized.
 	 *
 	 * @param {Rule} rule
-	 * @api public
 	 */
-	function jssCamelCase() {
+
+	exports["default"] = function () {
 	  return function (rule) {
 	    var style = rule.style;
 
 	    if (!style) return;
-	    rule.style = {};
-	    for (var prop in style) {
-	      var value = style[prop];
-	      prop = prop.replace(regExp, replace);
-	      rule.style[prop] = value;
-	    }
-	  };
-	}
 
-	function replace(c) {
-	  return '-' + c.toLowerCase();
-	}
+	    if (Array.isArray(style)) {
+	      // Handle rules like @font-face, which can have multiple styles in an array
+	      for (var index = 0; index < style.length; index++) {
+	        style[index] = convertCase(style[index]);
+	      }
+	      return;
+	    }
+
+	    rule.style = convertCase(style);
+	  };
+	};
 
 /***/ }
 /******/ ])
