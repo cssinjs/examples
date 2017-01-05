@@ -1,8 +1,9 @@
-![JSS logo](https://avatars1.githubusercontent.com/u/9503099?v=3&s=60)
-
 ## JSS Examples
 
-[Demo](http://cssinjs.github.io/examples/index.html) -
-[JSS](https://github.com/cssinjs/jss)
-
 [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/cssinjs/lobby)
+
+- [JSS Documentation](https://github.com/cssinjs/cssinjs/)
+- [Calendar](http://cssinjs.github.io/examples/calendar/index.html) 
+- [Perdido Grid System](http://cssinjs.github.io/examples/perdido/index.html) 
+- [Todo MVC](https://cssinjs.github.io/react-todomvc-jss) 
+- [More Examples](https://github.com/cssinjs/examples)
