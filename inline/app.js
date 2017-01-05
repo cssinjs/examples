@@ -6,8 +6,10 @@ var styles = {
   }
 }
 
+var div = document.body.appendChild(document.createElement('div'))
+
 // Application logic.
-document.body.innerHTML = '\
+div.innerHTML = '\
   <button>Button 1</button>\
   <button>Button 2</button>\
 '
