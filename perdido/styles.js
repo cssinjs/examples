@@ -40,7 +40,7 @@ window.styles = {
   // Header
   awesomeHeader: {
     textAlign: 'center',
-    margin: '30px 0 60px'
+    marginTop: 20
   },
 
   // Description

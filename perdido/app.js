@@ -12,8 +12,9 @@
   // Attach the reset styles.
   var sheet = jss.createStyleSheet(window.styles).attach()
 
+  var div = document.body.appendChild(document.createElement('div'))
   // Replace the class names with the JSS generated ones.
-  document.body.innerHTML = template
+  div.innerHTML = template
     .replace('{awesomeHeader}', sheet.classes.awesomeHeader)
     .replace('{coolDescription}',
       `${sheet.classes.coolDescription} ${sheet.classes.centerSections}`)
