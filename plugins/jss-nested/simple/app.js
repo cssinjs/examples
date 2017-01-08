@@ -19,10 +19,10 @@ var styles = {
 jss.default.use(jssNested.default())
 var sheet = jss.default.createStyleSheet(styles).attach()
 
-// Application logic
-document.body.innerHTML = '\
+// Application logic.
+var div = document.body.appendChild(document.createElement('div'))
+div.innerHTML = '\
   <div class="'+ sheet.classes.square +'">\
     <button>Button</button>\
   </div>\
 '
-

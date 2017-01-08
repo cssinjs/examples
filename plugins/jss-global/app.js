@@ -12,8 +12,8 @@ var styles = {
 
 // Application logic.
 var sheet = jss.default.use(jssGlobal.default()).createStyleSheet(styles).attach()
-
-document.body.innerHTML = '\
+var div = document.body.appendChild(document.createElement('div'))
+div.innerHTML = '\
   <div class="square">\
     <button>Detach</button>\
     <button>Attach</button>\

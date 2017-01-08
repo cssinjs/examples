@@ -13,5 +13,6 @@ var styles = {
 jss.default.use(jssIsolate.default())
 var sheet = jss.default.createStyleSheet(styles).attach()
 
-// Application logic
-document.body.innerHTML = '<a class="'+ sheet.classes.button +'">Button</a>'
+// Application logic.
+var div = document.body.appendChild(document.createElement('div'))
+div.innerHTML = '<a class="'+ sheet.classes.button +'">Button</a>'

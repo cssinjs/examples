@@ -20,8 +20,10 @@ var styles = {
 jss.default.use(jssExtend.default())
 var sheet = jss.default.createStyleSheet(styles).attach()
 
-// Application logic
-document.body.innerHTML = '\
+
+// Application logic.
+var div = document.body.appendChild(document.createElement('div'))
+div.innerHTML = '\
   <button class="'+ sheet.classes.button0 +'">Button 1</button>\
   <button class="'+ sheet.classes.button1 +'">Button 2</button>\
 '
