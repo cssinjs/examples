@@ -1,4 +1,4 @@
-## Examples
+# Examples
 
 [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/cssinjs/lobby)
 
