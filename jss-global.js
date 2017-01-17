@@ -168,6 +168,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return GlobalPrefixedRule;
 	}();
 	
+	var separatorRegExp = /\s*,\s*/g;
+	
+	function addScope(selector, scope) {
+	  var parts = selector.split(separatorRegExp);
+	  var scoped = '';
+	  for (var i = 0; i < parts.length; i++) {
+	    scoped += scope + ' ' + parts[i].trim();
+	    if (parts[i + 1]) scoped += ', ';
+	  }
+	  return scoped;
+	}
+	
 	function handleNestedGlobalContainerRule(rule) {
 	  var options = rule.options,
 	      style = rule.style;
@@ -177,9 +189,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!rules) return;
 	
 	  for (var name in rules) {
-	    var selector = rule.selector + ' ' + name;
 	    options.sheet.addRule(name, rules[name], _extends({}, options, {
-	      selector: selector,
+	      selector: addScope(name, rule.selector),
 	      generateClassName: null
 	    }));
 	  }
@@ -194,10 +205,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  for (var prop in style) {
 	    if (prop.substr(0, key.length) !== key) continue;
 	
-	    var selector = prop.substr(key.length).trim();
-	    var scopedSelector = rule.selector + ' ' + selector;
-	    options.sheet.addRule(scopedSelector, style[prop], _extends({}, options, {
-	      selector: scopedSelector,
+	    var selector = addScope(prop.substr(key.length), rule.selector);
+	    options.sheet.addRule(selector, style[prop], _extends({}, options, {
+	      selector: selector,
 	      generateClassName: null
 	    }));
 	    delete style[prop];
@@ -377,7 +387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Jss = function () {
 	  function Jss(options) {
 	    (0, _classCallCheck3['default'])(this, Jss);
-	    this.version = "6.0.2";
+	    this.version = "6.1.1";
 	    this.plugins = new _PluginsRegistry2['default']();
 	
 	    this.use.apply(this, _plugins2['default']); // eslint-disable-line prefer-spread
@@ -2126,10 +2136,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'link',
 	    value: function link() {
 	      var cssRules = this.renderer.getRules();
-	      for (var i = 0; i < cssRules.length; i++) {
-	        var CSSStyleRule = cssRules[i];
-	        var rule = this.rules.get(CSSStyleRule.selectorText);
-	        if (rule) rule.renderable = CSSStyleRule;
+	
+	      // Is undefined when VirtualRenderer is used.
+	      if (cssRules) {
+	        for (var i = 0; i < cssRules.length; i++) {
+	          var CSSStyleRule = cssRules[i];
+	          var rule = this.rules.get(CSSStyleRule.selectorText);
+	          if (rule) rule.renderable = CSSStyleRule;
+	        }
 	      }
 	      this.linked = true;
 	      return this;
@@ -2657,7 +2671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -2672,7 +2686,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _createClass3 = _interopRequireDefault(_createClass2);
 	
 	function _interopRequireDefault(obj) {
-	  return obj && obj.__esModule ? obj : { "default": obj };
+	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 	
 	/* eslint-disable class-methods-use-this */
@@ -2682,47 +2696,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var VirtualRenderer = function () {
 	  function VirtualRenderer() {
-	    (0, _classCallCheck3["default"])(this, VirtualRenderer);
+	    (0, _classCallCheck3['default'])(this, VirtualRenderer);
 	  }
 	
-	  (0, _createClass3["default"])(VirtualRenderer, [{
-	    key: "createElement",
+	  (0, _createClass3['default'])(VirtualRenderer, [{
+	    key: 'createElement',
 	    value: function createElement() {}
 	  }, {
-	    key: "setStyle",
-	    value: function setStyle() {}
+	    key: 'setStyle',
+	    value: function setStyle() {
+	      return true;
+	    }
 	  }, {
-	    key: "getStyle",
-	    value: function getStyle() {}
+	    key: 'getStyle',
+	    value: function getStyle() {
+	      return '';
+	    }
 	  }, {
-	    key: "setSelector",
-	    value: function setSelector() {}
+	    key: 'setSelector',
+	    value: function setSelector() {
+	      return true;
+	    }
 	  }, {
-	    key: "getSelector",
-	    value: function getSelector() {}
+	    key: 'getSelector',
+	    value: function getSelector() {
+	      return '';
+	    }
 	  }, {
-	    key: "attach",
+	    key: 'attach',
 	    value: function attach() {}
 	  }, {
-	    key: "detach",
+	    key: 'detach',
 	    value: function detach() {}
 	  }, {
-	    key: "deploy",
+	    key: 'deploy',
 	    value: function deploy() {}
 	  }, {
-	    key: "insertRule",
-	    value: function insertRule() {}
+	    key: 'insertRule',
+	    value: function insertRule() {
+	      return true;
+	    }
 	  }, {
-	    key: "deleteRule",
-	    value: function deleteRule() {}
+	    key: 'deleteRule',
+	    value: function deleteRule() {
+	      return true;
+	    }
 	  }, {
-	    key: "getRules",
+	    key: 'getRules',
 	    value: function getRules() {}
 	  }]);
 	  return VirtualRenderer;
 	}();
 	
-	exports["default"] = VirtualRenderer;
+	exports['default'] = VirtualRenderer;
 
 /***/ },
 /* 89 */
@@ -3125,8 +3151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    , get: function get() {
 	      if (this.renderable) {
-	        var selector = this.renderer.getSelector(this.renderable);
-	        return selector;
+	        return this.renderer.getSelector(this.renderable);
 	      }
 	
 	      return this.selectorText;
@@ -3326,9 +3351,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'onProcessRule',
 	    value: function onProcessRule(rule) {
+	      if (rule.isProcessed) return;
 	      for (var i = 0; i < this.processors.length; i++) {
-	        this.processors[i](rule);
+	        this.processors[i](rule, rule.options.sheet);
 	      }
+	      rule.isProcessed = true;
 	    }
 	
 	    /**

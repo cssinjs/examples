@@ -709,17 +709,6 @@
 	  }
 	};
 
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
 	var standardReleaser = function (instance) {
 	  var Klass = this;
 	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
@@ -759,8 +748,7 @@
 	  oneArgumentPooler: oneArgumentPooler,
 	  twoArgumentPooler: twoArgumentPooler,
 	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
+	  fourArgumentPooler: fourArgumentPooler
 	};
 
 	module.exports = PooledClass;
@@ -3100,7 +3088,14 @@
 	    // We warn in this case but don't throw. We expect the element creation to
 	    // succeed and there will likely be errors in render.
 	    if (!validType) {
-	      process.env.NODE_ENV !== 'production' ? warning(false, 'React.createElement: type should not be null, undefined, boolean, or ' + 'number. It should be a string (for DOM elements) or a ReactClass ' + '(for composite components).%s', getDeclarationErrorAddendum()) : void 0;
+	      if (typeof type !== 'function' && typeof type !== 'string') {
+	        var info = '';
+	        if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	          info += ' You likely forgot to export your component from the file ' + 'it\'s defined in.';
+	        }
+	        info += getDeclarationErrorAddendum();
+	        process.env.NODE_ENV !== 'production' ? warning(false, 'React.createElement: type is invalid -- expected a string (for ' + 'built-in components) or a class/function (for composite ' + 'components) but got: %s.%s', type == null ? type : typeof type, info) : void 0;
+	      }
 	    }
 
 	    var element = ReactElement.createElement.apply(this, arguments);
@@ -4071,7 +4066,7 @@
 
 	'use strict';
 
-	module.exports = '15.4.1';
+	module.exports = '15.4.2';
 
 /***/ },
 /* 31 */
@@ -4270,6 +4265,13 @@
 	var internalInstanceKey = '__reactInternalInstance$' + Math.random().toString(36).slice(2);
 
 	/**
+	 * Check if a given node should be cached.
+	 */
+	function shouldPrecacheNode(node, nodeID) {
+	  return node.nodeType === 1 && node.getAttribute(ATTR_NAME) === String(nodeID) || node.nodeType === 8 && node.nodeValue === ' react-text: ' + nodeID + ' ' || node.nodeType === 8 && node.nodeValue === ' react-empty: ' + nodeID + ' ';
+	}
+
+	/**
 	 * Drill down (through composites and empty components) until we get a host or
 	 * host text component.
 	 *
@@ -4334,7 +4336,7 @@
 	    }
 	    // We assume the child nodes are in the same order as the child instances.
 	    for (; childNode !== null; childNode = childNode.nextSibling) {
-	      if (childNode.nodeType === 1 && childNode.getAttribute(ATTR_NAME) === String(childID) || childNode.nodeType === 8 && childNode.nodeValue === ' react-text: ' + childID + ' ' || childNode.nodeType === 8 && childNode.nodeValue === ' react-empty: ' + childID + ' ') {
+	      if (shouldPrecacheNode(childNode, childID)) {
 	        precacheNode(childInst, childNode);
 	        continue outer;
 	      }
@@ -6575,17 +6577,6 @@
 	  }
 	};
 
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
 	var standardReleaser = function (instance) {
 	  var Klass = this;
 	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
@@ -6625,8 +6616,7 @@
 	  oneArgumentPooler: oneArgumentPooler,
 	  twoArgumentPooler: twoArgumentPooler,
 	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
+	  fourArgumentPooler: fourArgumentPooler
 	};
 
 	module.exports = PooledClass;
@@ -11444,12 +11434,18 @@
 	    } else {
 	      var contentToUse = CONTENT_TYPES[typeof props.children] ? props.children : null;
 	      var childrenToUse = contentToUse != null ? null : props.children;
+	      // TODO: Validate that text is allowed as a child of this node
 	      if (contentToUse != null) {
-	        // TODO: Validate that text is allowed as a child of this node
-	        if (process.env.NODE_ENV !== 'production') {
-	          setAndValidateContentChildDev.call(this, contentToUse);
+	        // Avoid setting textContent when the text is empty. In IE11 setting
+	        // textContent on a text area will cause the placeholder to not
+	        // show within the textarea until it has been focused and blurred again.
+	        // https://github.com/facebook/react/issues/6731#issuecomment-254874553
+	        if (contentToUse !== '') {
+	          if (process.env.NODE_ENV !== 'production') {
+	            setAndValidateContentChildDev.call(this, contentToUse);
+	          }
+	          DOMLazyTree.queueText(lazyTree, contentToUse);
 	        }
-	        DOMLazyTree.queueText(lazyTree, contentToUse);
 	      } else if (childrenToUse != null) {
 	        var mountImages = this.mountChildren(childrenToUse, transaction, context);
 	        for (var i = 0; i < mountImages.length; i++) {
@@ -13369,7 +13365,17 @@
 	      }
 	    } else {
 	      if (props.value == null && props.defaultValue != null) {
-	        node.defaultValue = '' + props.defaultValue;
+	        // In Chrome, assigning defaultValue to certain input types triggers input validation.
+	        // For number inputs, the display value loses trailing decimal points. For email inputs,
+	        // Chrome raises "The specified value <x> is not a valid email address".
+	        //
+	        // Here we check to see if the defaultValue has actually changed, avoiding these problems
+	        // when the user is inputting text
+	        //
+	        // https://github.com/facebook/react/issues/7253
+	        if (node.defaultValue !== '' + props.defaultValue) {
+	          node.defaultValue = '' + props.defaultValue;
+	        }
 	      }
 	      if (props.checked == null && props.defaultChecked != null) {
 	        node.defaultChecked = !!props.defaultChecked;
@@ -14116,9 +14122,15 @@
 	    // This is in postMount because we need access to the DOM node, which is not
 	    // available until after the component has mounted.
 	    var node = ReactDOMComponentTree.getNodeFromInstance(inst);
+	    var textContent = node.textContent;
 
-	    // Warning: node.value may be the empty string at this point (IE11) if placeholder is set.
-	    node.value = node.textContent; // Detach value from defaultValue
+	    // Only set node.value if textContent is equal to the expected
+	    // initial value. In IE10/IE11 there is a bug where the placeholder attribute
+	    // will populate textContent as well.
+	    // https://developer.microsoft.com/microsoft-edge/platform/issues/101525/
+	    if (textContent === inst._wrapperState.initialValue) {
+	      node.value = textContent;
+	    }
 	  }
 	};
 
@@ -14920,7 +14932,17 @@
 	    instance = ReactEmptyComponent.create(instantiateReactComponent);
 	  } else if (typeof node === 'object') {
 	    var element = node;
-	    !(element && (typeof element.type === 'function' || typeof element.type === 'string')) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : _prodInvariant('130', element.type == null ? element.type : typeof element.type, getDeclarationErrorAddendum(element._owner)) : void 0;
+	    var type = element.type;
+	    if (typeof type !== 'function' && typeof type !== 'string') {
+	      var info = '';
+	      if (process.env.NODE_ENV !== 'production') {
+	        if (type === undefined || typeof type === 'object' && type !== null && Object.keys(type).length === 0) {
+	          info += ' You likely forgot to export your component from the file ' + 'it\'s defined in.';
+	        }
+	      }
+	      info += getDeclarationErrorAddendum(element._owner);
+	       true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s', type == null ? type : typeof type, info) : _prodInvariant('130', type == null ? type : typeof type, info) : void 0;
+	    }
 
 	    // Special case string values
 	    if (typeof element.type === 'string') {
@@ -15210,7 +15232,7 @@
 	      // Since plain JS classes are defined without any special initialization
 	      // logic, we can not catch common errors early. Therefore, we have to
 	      // catch them here, at initialization time, instead.
-	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
+	      process.env.NODE_ENV !== 'production' ? warning(!inst.getInitialState || inst.getInitialState.isReactClassApproved || inst.state, 'getInitialState was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Did you mean to define a state property instead?', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.getDefaultProps || inst.getDefaultProps.isReactClassApproved, 'getDefaultProps was defined on %s, a plain JavaScript class. ' + 'This is only supported for classes created using React.createClass. ' + 'Use a static property to define defaultProps instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.propTypes, 'propTypes was defined as an instance property on %s. Use a static ' + 'property to define propTypes instead.', this.getName() || 'a component') : void 0;
 	      process.env.NODE_ENV !== 'production' ? warning(!inst.contextTypes, 'contextTypes was defined as an instance property on %s. Use a ' + 'static property to define contextTypes instead.', this.getName() || 'a component') : void 0;
@@ -16214,14 +16236,11 @@
 
 	'use strict';
 
-	var _prodInvariant = __webpack_require__(35),
-	    _assign = __webpack_require__(4);
+	var _prodInvariant = __webpack_require__(35);
 
 	var invariant = __webpack_require__(8);
 
 	var genericComponentClass = null;
-	// This registry keeps track of wrapper classes around host tags.
-	var tagToComponentClass = {};
 	var textComponentClass = null;
 
 	var ReactHostComponentInjection = {
@@ -16234,11 +16253,6 @@
 	  // rendered as props.
 	  injectTextComponentClass: function (componentClass) {
 	    textComponentClass = componentClass;
-	  },
-	  // This accepts a keyed object with classes as values. Each key represents a
-	  // tag. That particular tag will use this class instead of the generic one.
-	  injectComponentClasses: function (componentClasses) {
-	    _assign(tagToComponentClass, componentClasses);
 	  }
 	};
 
@@ -21093,7 +21107,7 @@
 
 	'use strict';
 
-	module.exports = '15.4.1';
+	module.exports = '15.4.2';
 
 /***/ },
 /* 172 */
@@ -21538,15 +21552,15 @@
 
 	var _jss = __webpack_require__(180);
 
-	var _jssPresetDefault = __webpack_require__(282);
+	var _jssPresetDefault = __webpack_require__(283);
 
 	var _jssPresetDefault2 = _interopRequireDefault(_jssPresetDefault);
 
-	var _hoistNonReactStatics = __webpack_require__(299);
+	var _hoistNonReactStatics = __webpack_require__(300);
 
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
-	var _SheetsRegistryProvider = __webpack_require__(300);
+	var _SheetsRegistryProvider = __webpack_require__(301);
 
 	var _SheetsRegistryProvider2 = _interopRequireDefault(_SheetsRegistryProvider);
 
@@ -21558,45 +21572,54 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var refNs = 'ref-' + String(Math.random()).substr(2);
+	var refs = function refs(sheet) {
+	  return sheet[refNs] || 0;
+	};
+	var dec = function dec(sheet) {
+	  return --sheet[refNs];
+	};
+	var inc = function inc(sheet) {
+	  return ++sheet[refNs];
+	};
+
 	/**
 	 * Wrap a Component into a JSS Container Component.
 	 *
 	 * @param {Jss} jss
 	 * @param {Component} WrappedComponent
-	 * @param {Object} styles
+	 * @param {Object} stylesOrSheet
 	 * @param {Object} [options]
 	 * @return {Component}
 	 */
-	function wrap(jss, WrappedComponent, styles) {
+	function wrap(jss, WrappedComponent, stylesOrSheet) {
 	  var _class, _temp;
 
 	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-	  var refs = 0;
 	  var sheet = null;
+	  var styles = stylesOrSheet;
+
+	  // Accept StyleSheet instance.
+	  if (stylesOrSheet && typeof stylesOrSheet.attach === 'function') {
+	    sheet = stylesOrSheet;
+	    styles = null;
+	  }
 
 	  var displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
 	  if (!options.meta) options.meta = displayName;
 
-	  function attach() {
-	    if (!sheet) sheet = jss.createStyleSheet(styles, options);
-	    sheet.attach();
-	  }
-
-	  function detach() {
-	    sheet.detach();
-	  }
-
 	  function ref() {
-	    if (refs === 0) attach();
-	    refs++;
+	    if (!sheet) sheet = jss.createStyleSheet(styles, options);
+	    if (sheet[refNs] === undefined) sheet[refNs] = 0;
+	    if (refs(sheet) === 0) sheet.attach();
+	    inc(sheet);
 	    return sheet;
 	  }
 
 	  function deref() {
-	    refs--;
-	    if (refs === 0) detach();
+	    if (dec(sheet) === 0) sheet.detach();
 	  }
 
 	  return _temp = _class = function (_Component) {
@@ -21630,7 +21653,7 @@
 	    }, {
 	      key: 'componentWillUnmount',
 	      value: function componentWillUnmount() {
-	        if (this.sheet && !sheet && !refs) {
+	        if (this.sheet && !sheet) {
 	          this.sheet.detach();
 	          var jssSheetsRegistry = this.context.jssSheetsRegistry;
 
@@ -21640,7 +21663,7 @@
 	    }, {
 	      key: 'render',
 	      value: function render() {
-	        return _react2['default'].createElement(WrappedComponent, _extends({}, this.props, { sheet: this.sheet }));
+	        return _react2['default'].createElement(WrappedComponent, _extends({ sheet: this.sheet }, this.props));
 	      }
 	    }]);
 
@@ -21657,7 +21680,14 @@
 
 	var jss = exports.jss = (0, _jss.create)((0, _jssPresetDefault2['default'])());
 
-	// global index counter to preserve source order.
+	// Global index counter to preserve source order.
+	// As we create the style sheet during componentWillMount lifecycle,
+	// children are handled after the parents, so the order of style elements would
+	// be parent->child. It is a problem though when a parent passes a className
+	// which needs to override any childs styles. StyleSheet of the child has a higher
+	// specificity, because of the source order.
+	// So our solution is to render sheets them in the reverse order child->sheet, so
+	// that parent has a higher specificity.
 	var indexCounter = -100000;
 
 	/**
@@ -21670,7 +21700,7 @@
 	function create() {
 	  var localJss = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : jss;
 
-	  return function injectSheet(styles) {
+	  return function injectSheet(stylesOrSheet) {
 	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	    if (options.index === undefined) {
@@ -21679,7 +21709,7 @@
 	    return function () {
 	      var WrappedComponent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Container;
 
-	      var Jss = wrap(localJss, WrappedComponent, styles, options);
+	      var Jss = wrap(localJss, WrappedComponent, stylesOrSheet, options);
 	      return (0, _hoistNonReactStatics2['default'])(Jss, WrappedComponent, { wrapped: true });
 	    };
 	  };
@@ -21810,7 +21840,7 @@
 
 	var _sheets2 = _interopRequireDefault(_sheets);
 
-	var _generateClassName = __webpack_require__(280);
+	var _generateClassName = __webpack_require__(281);
 
 	var _generateClassName2 = _interopRequireDefault(_generateClassName);
 
@@ -21827,7 +21857,7 @@
 	var Jss = function () {
 	  function Jss(options) {
 	    (0, _classCallCheck3['default'])(this, Jss);
-	    this.version = "6.1.1";
+	    this.version = "6.2.0";
 	    this.plugins = new _PluginsRegistry2['default']();
 
 	    this.use.apply(this, _plugins2['default']); // eslint-disable-line prefer-spread
@@ -24835,6 +24865,10 @@
 
 	var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 
+	var _ViewportRule = __webpack_require__(280);
+
+	var _ViewportRule2 = _interopRequireDefault(_ViewportRule);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var classes = {
@@ -24844,12 +24878,15 @@
 	  '@keyframes': _KeyframeRule2['default'],
 	  '@media': _ConditionalRule2['default'],
 	  '@supports': _ConditionalRule2['default'],
-	  '@font-face': _FontFaceRule2['default']
+	  '@font-face': _FontFaceRule2['default'],
+	  '@viewport': _ViewportRule2['default'],
+	  '@-ms-viewport': _ViewportRule2['default']
 	};
 
 	/**
 	 * Generate plugins which will register all rules.
 	 */
+
 	exports['default'] = Object.keys(classes).map(function (key) {
 	  // https://jsperf.com/indexof-vs-substr-vs-regex-at-the-beginning-3
 	  var re = new RegExp('^' + key);
@@ -25160,9 +25197,59 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _classCallCheck2 = __webpack_require__(255);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(256);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _toCss = __webpack_require__(271);
+
+	var _toCss2 = _interopRequireDefault(_toCss);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var ViewportRule = function () {
+	  function ViewportRule(name, style, options) {
+	    (0, _classCallCheck3['default'])(this, ViewportRule);
+	    this.type = 'viewport';
+
+	    this.name = name;
+	    this.style = style;
+	    this.options = options;
+	  }
+
+	  /**
+	   * Generates a CSS string.
+	   */
+
+
+	  (0, _createClass3['default'])(ViewportRule, [{
+	    key: 'toString',
+	    value: function toString() {
+	      return (0, _toCss2['default'])(this.name, this.style);
+	    }
+	  }]);
+	  return ViewportRule;
+	}();
+
+	exports['default'] = ViewportRule;
+
+/***/ },
+/* 281 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports['default'] = generateClassName;
 
-	var _murmurhash3_gc = __webpack_require__(281);
+	var _murmurhash3_gc = __webpack_require__(282);
 
 	var _murmurhash3_gc2 = _interopRequireDefault(_murmurhash3_gc);
 
@@ -25181,7 +25268,7 @@
 	}
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25254,7 +25341,7 @@
 	}
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25263,39 +25350,39 @@
 	  value: true
 	});
 
-	var _jssExtend = __webpack_require__(283);
+	var _jssExtend = __webpack_require__(284);
 
 	var _jssExtend2 = _interopRequireDefault(_jssExtend);
 
-	var _jssNested = __webpack_require__(284);
+	var _jssNested = __webpack_require__(285);
 
 	var _jssNested2 = _interopRequireDefault(_jssNested);
 
-	var _jssCamelCase = __webpack_require__(285);
+	var _jssCamelCase = __webpack_require__(286);
 
 	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
 
-	var _jssDefaultUnit = __webpack_require__(286);
+	var _jssDefaultUnit = __webpack_require__(287);
 
 	var _jssDefaultUnit2 = _interopRequireDefault(_jssDefaultUnit);
 
-	var _jssVendorPrefixer = __webpack_require__(288);
+	var _jssVendorPrefixer = __webpack_require__(289);
 
 	var _jssVendorPrefixer2 = _interopRequireDefault(_jssVendorPrefixer);
 
-	var _jssPropsSort = __webpack_require__(294);
+	var _jssPropsSort = __webpack_require__(295);
 
 	var _jssPropsSort2 = _interopRequireDefault(_jssPropsSort);
 
-	var _jssCompose = __webpack_require__(295);
+	var _jssCompose = __webpack_require__(296);
 
 	var _jssCompose2 = _interopRequireDefault(_jssCompose);
 
-	var _jssExpand = __webpack_require__(296);
+	var _jssExpand = __webpack_require__(297);
 
 	var _jssExpand2 = _interopRequireDefault(_jssExpand);
 
-	var _jssGlobal = __webpack_require__(298);
+	var _jssGlobal = __webpack_require__(299);
 
 	var _jssGlobal2 = _interopRequireDefault(_jssGlobal);
 
@@ -25309,7 +25396,7 @@
 	};
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25385,7 +25472,7 @@
 	};
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25499,7 +25586,7 @@
 	}
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25565,7 +25652,7 @@
 	};
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25575,7 +25662,7 @@
 	});
 	exports['default'] = defaultUnit;
 
-	var _defaultUnits = __webpack_require__(287);
+	var _defaultUnits = __webpack_require__(288);
 
 	var _defaultUnits2 = _interopRequireDefault(_defaultUnits);
 
@@ -25674,7 +25761,7 @@
 	}
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -25793,7 +25880,7 @@
 	};
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25803,7 +25890,7 @@
 	});
 	exports['default'] = jssVendorPrefixer;
 
-	var _cssVendor = __webpack_require__(289);
+	var _cssVendor = __webpack_require__(290);
 
 	var vendor = _interopRequireWildcard(_cssVendor);
 
@@ -25844,7 +25931,7 @@
 	}
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25854,15 +25941,15 @@
 	});
 	exports.supportedValue = exports.supportedProperty = exports.prefix = undefined;
 
-	var _prefix = __webpack_require__(290);
+	var _prefix = __webpack_require__(291);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _supportedProperty = __webpack_require__(291);
+	var _supportedProperty = __webpack_require__(292);
 
 	var _supportedProperty2 = _interopRequireDefault(_supportedProperty);
 
-	var _supportedValue = __webpack_require__(293);
+	var _supportedValue = __webpack_require__(294);
 
 	var _supportedValue2 = _interopRequireDefault(_supportedValue);
 
@@ -25885,7 +25972,7 @@
 	exports.supportedValue = _supportedValue2['default'];
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25939,7 +26026,7 @@
 	exports['default'] = { js: js, css: css };
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25953,11 +26040,11 @@
 
 	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-	var _prefix = __webpack_require__(290);
+	var _prefix = __webpack_require__(291);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _camelize = __webpack_require__(292);
+	var _camelize = __webpack_require__(293);
 
 	var _camelize2 = _interopRequireDefault(_camelize);
 
@@ -26016,7 +26103,7 @@
 	}
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -26042,7 +26129,7 @@
 	}
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26056,7 +26143,7 @@
 
 	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-	var _prefix = __webpack_require__(290);
+	var _prefix = __webpack_require__(291);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
@@ -26121,7 +26208,7 @@
 	}
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -26156,7 +26243,7 @@
 	}
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26226,7 +26313,7 @@
 	}
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26236,7 +26323,7 @@
 	});
 	exports.default = jssExpand;
 
-	var _props = __webpack_require__(297);
+	var _props = __webpack_require__(298);
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -26406,7 +26493,7 @@
 	}
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -26571,7 +26658,7 @@
 	};
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26688,6 +26775,18 @@
 	  return GlobalPrefixedRule;
 	}();
 
+	var separatorRegExp = /\s*,\s*/g;
+
+	function addScope(selector, scope) {
+	  var parts = selector.split(separatorRegExp);
+	  var scoped = '';
+	  for (var i = 0; i < parts.length; i++) {
+	    scoped += scope + ' ' + parts[i].trim();
+	    if (parts[i + 1]) scoped += ', ';
+	  }
+	  return scoped;
+	}
+
 	function handleNestedGlobalContainerRule(rule) {
 	  var options = rule.options,
 	      style = rule.style;
@@ -26697,9 +26796,8 @@
 	  if (!rules) return;
 
 	  for (var name in rules) {
-	    var selector = rule.selector + ' ' + name;
 	    options.sheet.addRule(name, rules[name], _extends({}, options, {
-	      selector: selector,
+	      selector: addScope(name, rule.selector),
 	      generateClassName: null
 	    }));
 	  }
@@ -26714,10 +26812,9 @@
 	  for (var prop in style) {
 	    if (prop.substr(0, key.length) !== key) continue;
 
-	    var selector = prop.substr(key.length).trim();
-	    var scopedSelector = rule.selector + ' ' + selector;
-	    options.sheet.addRule(scopedSelector, style[prop], _extends({}, options, {
-	      selector: scopedSelector,
+	    var selector = addScope(prop.substr(key.length), rule.selector);
+	    options.sheet.addRule(selector, style[prop], _extends({}, options, {
+	      selector: selector,
 	      generateClassName: null
 	    }));
 	    delete style[prop];
@@ -26768,7 +26865,7 @@
 	}
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports) {
 
 	/**
@@ -26824,7 +26921,7 @@
 
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

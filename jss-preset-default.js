@@ -1567,6 +1567,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return GlobalPrefixedRule;
 	}();
 
+	var separatorRegExp = /\s*,\s*/g;
+
+	function addScope(selector, scope) {
+	  var parts = selector.split(separatorRegExp);
+	  var scoped = '';
+	  for (var i = 0; i < parts.length; i++) {
+	    scoped += scope + ' ' + parts[i].trim();
+	    if (parts[i + 1]) scoped += ', ';
+	  }
+	  return scoped;
+	}
+
 	function handleNestedGlobalContainerRule(rule) {
 	  var options = rule.options,
 	      style = rule.style;
@@ -1576,9 +1588,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!rules) return;
 
 	  for (var name in rules) {
-	    var selector = rule.selector + ' ' + name;
 	    options.sheet.addRule(name, rules[name], _extends({}, options, {
-	      selector: selector,
+	      selector: addScope(name, rule.selector),
 	      generateClassName: null
 	    }));
 	  }
@@ -1593,10 +1604,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  for (var prop in style) {
 	    if (prop.substr(0, key.length) !== key) continue;
 
-	    var selector = prop.substr(key.length).trim();
-	    var scopedSelector = rule.selector + ' ' + selector;
-	    options.sheet.addRule(scopedSelector, style[prop], _extends({}, options, {
-	      selector: scopedSelector,
+	    var selector = addScope(prop.substr(key.length), rule.selector);
+	    options.sheet.addRule(selector, style[prop], _extends({}, options, {
+	      selector: selector,
 	      generateClassName: null
 	    }));
 	    delete style[prop];

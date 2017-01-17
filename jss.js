@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 23);
+/******/ 	return __webpack_require__(__webpack_require__.s = 24);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -265,7 +265,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _SheetsRegistry = __webpack_require__(3);
+var _SheetsRegistry = __webpack_require__(4);
 
 var _SheetsRegistry2 = _interopRequireDefault(_SheetsRegistry);
 
@@ -324,6 +324,89 @@ function createRule(name) {
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports['default'] = toCss;
+
+var _toCssValue = __webpack_require__(6);
+
+var _toCssValue2 = _interopRequireDefault(_toCssValue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Indent a string.
+ * http://jsperf.com/array-join-vs-for
+ */
+function indentStr(str, indent) {
+  var result = '';
+  for (var index = 0; index < indent; index++) {
+    result += '  ';
+  }return result + str;
+}
+
+/**
+ * Converts a Rule to CSS string.
+ */
+
+function toCss(selector, style) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var _options$indent = options.indent,
+      indent = _options$indent === undefined ? 0 : _options$indent;
+  var fallbacks = style.fallbacks;
+
+  var result = '';
+
+  indent++;
+
+  // Apply fallbacks first.
+  if (fallbacks) {
+    // Array syntax {fallbacks: [{prop: value}]}
+    if (Array.isArray(fallbacks)) {
+      for (var index = 0; index < fallbacks.length; index++) {
+        var fallback = fallbacks[index];
+        for (var prop in fallback) {
+          var value = fallback[prop];
+          if (value != null) {
+            result += '\n' + indentStr(prop + ': ' + (0, _toCssValue2['default'])(value) + ';', indent);
+          }
+        }
+      }
+    }
+    // Object syntax {fallbacks: {prop: value}}
+    else {
+        for (var _prop in fallbacks) {
+          var _value = fallbacks[_prop];
+          if (_value != null) {
+            result += '\n' + indentStr(_prop + ': ' + (0, _toCssValue2['default'])(_value) + ';', indent);
+          }
+        }
+      }
+  }
+
+  for (var _prop2 in style) {
+    var _value2 = style[_prop2];
+    if (_value2 != null && _prop2 !== 'fallbacks') {
+      result += '\n' + indentStr(_prop2 + ': ' + (0, _toCssValue2['default'])(_value2) + ';', indent);
+    }
+  }
+
+  if (!result) return result;
+
+  indent--;
+  result = indentStr(selector + ' {' + result + '\n', indent) + indentStr('}', indent);
+
+  return result;
+}
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -416,7 +499,7 @@ var SheetsRegistry = function () {
 exports['default'] = SheetsRegistry;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -427,7 +510,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports['default'] = findRenderer;
 
-var _isInBrowser = __webpack_require__(21);
+var _isInBrowser = __webpack_require__(22);
 
 var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
@@ -452,89 +535,6 @@ function findRenderer() {
   if (options.Renderer) return options.Renderer;
   var useVirtual = options.virtual || !_isInBrowser2['default'];
   return useVirtual ? _VirtualRenderer2['default'] : _DomRenderer2['default'];
-}
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports['default'] = toCss;
-
-var _toCssValue = __webpack_require__(6);
-
-var _toCssValue2 = _interopRequireDefault(_toCssValue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/**
- * Indent a string.
- * http://jsperf.com/array-join-vs-for
- */
-function indentStr(str, indent) {
-  var result = '';
-  for (var index = 0; index < indent; index++) {
-    result += '  ';
-  }return result + str;
-}
-
-/**
- * Converts a Rule to CSS string.
- */
-
-function toCss(selector, style) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-  var _options$indent = options.indent,
-      indent = _options$indent === undefined ? 0 : _options$indent;
-  var fallbacks = style.fallbacks;
-
-  var result = '';
-
-  indent++;
-
-  // Apply fallbacks first.
-  if (fallbacks) {
-    // Array syntax {fallbacks: [{prop: value}]}
-    if (Array.isArray(fallbacks)) {
-      for (var index = 0; index < fallbacks.length; index++) {
-        var fallback = fallbacks[index];
-        for (var prop in fallback) {
-          var value = fallback[prop];
-          if (value != null) {
-            result += '\n' + indentStr(prop + ': ' + (0, _toCssValue2['default'])(value) + ';', indent);
-          }
-        }
-      }
-    }
-    // Object syntax {fallbacks: {prop: value}}
-    else {
-        for (var _prop in fallbacks) {
-          var _value = fallbacks[_prop];
-          if (_value != null) {
-            result += '\n' + indentStr(_prop + ': ' + (0, _toCssValue2['default'])(_value) + ';', indent);
-          }
-        }
-      }
-  }
-
-  for (var _prop2 in style) {
-    var _value2 = style[_prop2];
-    if (_value2 != null && _prop2 !== 'fallbacks') {
-      result += '\n' + indentStr(_prop2 + ': ' + (0, _toCssValue2['default'])(_value2) + ';', indent);
-    }
-  }
-
-  if (!result) return result;
-
-  indent--;
-  result = indentStr(selector + ' {' + result + '\n', indent) + indentStr('}', indent);
-
-  return result;
 }
 
 /***/ },
@@ -661,7 +661,7 @@ var _PluginsRegistry = __webpack_require__(9);
 
 var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
-var _plugins = __webpack_require__(18);
+var _plugins = __webpack_require__(19);
 
 var _plugins2 = _interopRequireDefault(_plugins);
 
@@ -669,7 +669,7 @@ var _sheets = __webpack_require__(1);
 
 var _sheets2 = _interopRequireDefault(_sheets);
 
-var _generateClassName = __webpack_require__(20);
+var _generateClassName = __webpack_require__(21);
 
 var _generateClassName2 = _interopRequireDefault(_generateClassName);
 
@@ -677,7 +677,7 @@ var _createRule2 = __webpack_require__(2);
 
 var _createRule3 = _interopRequireDefault(_createRule2);
 
-var _findRenderer = __webpack_require__(4);
+var _findRenderer = __webpack_require__(5);
 
 var _findRenderer2 = _interopRequireDefault(_findRenderer);
 
@@ -689,7 +689,7 @@ var Jss = function () {
   function Jss(options) {
     _classCallCheck(this, Jss);
 
-    this.version = "6.1.1";
+    this.version = "6.2.0";
     this.plugins = new _PluginsRegistry2['default']();
 
     this.use.apply(this, _plugins2['default']); // eslint-disable-line prefer-spread
@@ -880,7 +880,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _findRenderer = __webpack_require__(4);
+var _findRenderer = __webpack_require__(5);
 
 var _findRenderer2 = _interopRequireDefault(_findRenderer);
 
@@ -1537,7 +1537,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _toCss = __webpack_require__(5);
+var _toCss = __webpack_require__(3);
 
 var _toCss2 = _interopRequireDefault(_toCss);
 
@@ -1676,7 +1676,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _toCss = __webpack_require__(5);
+var _toCss = __webpack_require__(3);
 
 var _toCss2 = _interopRequireDefault(_toCss);
 
@@ -1684,7 +1684,7 @@ var _toCssValue = __webpack_require__(6);
 
 var _toCssValue2 = _interopRequireDefault(_toCssValue);
 
-var _findClassNames = __webpack_require__(19);
+var _findClassNames = __webpack_require__(20);
 
 var _findClassNames2 = _interopRequireDefault(_findClassNames);
 
@@ -1908,6 +1908,55 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _toCss = __webpack_require__(3);
+
+var _toCss2 = _interopRequireDefault(_toCss);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ViewportRule = function () {
+  function ViewportRule(name, style, options) {
+    _classCallCheck(this, ViewportRule);
+
+    this.type = 'viewport';
+
+    this.name = name;
+    this.style = style;
+    this.options = options;
+  }
+
+  /**
+   * Generates a CSS string.
+   */
+
+
+  _createClass(ViewportRule, [{
+    key: 'toString',
+    value: function toString() {
+      return (0, _toCss2['default'])(this.name, this.style);
+    }
+  }]);
+
+  return ViewportRule;
+}();
+
+exports['default'] = ViewportRule;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _SimpleRule = __webpack_require__(17);
 
 var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
@@ -1924,6 +1973,10 @@ var _FontFaceRule = __webpack_require__(14);
 
 var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 
+var _ViewportRule = __webpack_require__(18);
+
+var _ViewportRule2 = _interopRequireDefault(_ViewportRule);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var classes = {
@@ -1933,12 +1986,15 @@ var classes = {
   '@keyframes': _KeyframeRule2['default'],
   '@media': _ConditionalRule2['default'],
   '@supports': _ConditionalRule2['default'],
-  '@font-face': _FontFaceRule2['default']
+  '@font-face': _FontFaceRule2['default'],
+  '@viewport': _ViewportRule2['default'],
+  '@-ms-viewport': _ViewportRule2['default']
 };
 
 /**
  * Generate plugins which will register all rules.
  */
+
 exports['default'] = Object.keys(classes).map(function (key) {
   // https://jsperf.com/indexof-vs-substr-vs-regex-at-the-beginning-3
   var re = new RegExp('^' + key);
@@ -1949,7 +2005,7 @@ exports['default'] = Object.keys(classes).map(function (key) {
 });
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1974,7 +2030,7 @@ function findClassNames(selector) {
 }
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1985,7 +2041,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports['default'] = generateClassName;
 
-var _murmurhash3_gc = __webpack_require__(22);
+var _murmurhash3_gc = __webpack_require__(23);
 
 var _murmurhash3_gc2 = _interopRequireDefault(_murmurhash3_gc);
 
@@ -2004,7 +2060,7 @@ function generateClassName(str, rule, sheet) {
 }
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2021,7 +2077,7 @@ var isBrowser = exports.isBrowser = (typeof window === "undefined" ? "undefined"
 exports.default = isBrowser;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 /**
@@ -2094,7 +2150,7 @@ if(true) {
 }
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2109,7 +2165,7 @@ var _Jss = __webpack_require__(8);
 
 var _Jss2 = _interopRequireDefault(_Jss);
 
-var _SheetsRegistry = __webpack_require__(3);
+var _SheetsRegistry = __webpack_require__(4);
 
 var _SheetsRegistry2 = _interopRequireDefault(_SheetsRegistry);
 

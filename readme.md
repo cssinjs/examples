@@ -6,6 +6,7 @@
 - [Calendar](http://cssinjs.github.io/examples/calendar/)
 - [Perdido Grid System](http://cssinjs.github.io/examples/perdido/)
 - [Todo MVC](https://cssinjs.github.io/react-todomvc-jss/)
+- [Bootstrap](http://cssinjs.github.io/examples/bootstrap/)
 - [Other examples](https://github.com/cssinjs/examples/tree/gh-pages/)
 
 ## Let us know if you built something nice!
