@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 24);
+/******/ 	return __webpack_require__(__webpack_require__.s = 25);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -226,6 +226,28 @@ var RulesContainer = function () {
     }
 
     /**
+     * Update the function values with a new data.
+     */
+
+  }, {
+    key: 'update',
+    value: function update(data) {
+      this.index.forEach(function (rule) {
+        var style = rule.originalStyle;
+        for (var prop in style) {
+          var value = style[prop];
+          if (typeof value === 'function') {
+            var computedValue = value(data);
+            rule.prop(prop, computedValue);
+          }
+        }
+        if (rule.rules instanceof RulesContainer) {
+          rule.rules.update(data);
+        }
+      });
+    }
+
+    /**
      * Convert rules to a CSS string.
      */
 
@@ -295,7 +317,7 @@ var _warning = __webpack_require__(7);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _RegularRule = __webpack_require__(16);
+var _RegularRule = __webpack_require__(17);
 
 var _RegularRule2 = _interopRequireDefault(_RegularRule);
 
@@ -510,15 +532,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports['default'] = findRenderer;
 
-var _isInBrowser = __webpack_require__(22);
+var _isInBrowser = __webpack_require__(23);
 
 var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-var _DomRenderer = __webpack_require__(11);
+var _DomRenderer = __webpack_require__(12);
 
 var _DomRenderer2 = _interopRequireDefault(_DomRenderer);
 
-var _VirtualRenderer = __webpack_require__(12);
+var _VirtualRenderer = __webpack_require__(13);
 
 var _VirtualRenderer2 = _interopRequireDefault(_VirtualRenderer);
 
@@ -653,15 +675,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _StyleSheet = __webpack_require__(10);
+var _StyleSheet = __webpack_require__(11);
 
 var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
-var _PluginsRegistry = __webpack_require__(9);
+var _PluginsRegistry = __webpack_require__(10);
 
 var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
-var _plugins = __webpack_require__(19);
+var _plugins = __webpack_require__(20);
 
 var _plugins2 = _interopRequireDefault(_plugins);
 
@@ -669,7 +691,7 @@ var _sheets = __webpack_require__(1);
 
 var _sheets2 = _interopRequireDefault(_sheets);
 
-var _generateClassName = __webpack_require__(21);
+var _generateClassName = __webpack_require__(22);
 
 var _generateClassName2 = _interopRequireDefault(_generateClassName);
 
@@ -689,10 +711,11 @@ var Jss = function () {
   function Jss(options) {
     _classCallCheck(this, Jss);
 
-    this.version = "6.2.0";
+    this.version = "6.5.0";
     this.plugins = new _PluginsRegistry2['default']();
 
-    this.use.apply(this, _plugins2['default']); // eslint-disable-line prefer-spread
+    // eslint-disable-next-line prefer-spread
+    this.use.apply(this, _plugins2['default']);
     this.setup(options);
   }
 
@@ -701,12 +724,12 @@ var Jss = function () {
     value: function setup() {
       var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      this.options = _extends({}, options, {
-        generateClassName: options.generateClassName || _generateClassName2['default']
-      });
-      var plugins = this.options.plugins;
-
-      if (plugins) this.use.apply(this, plugins); // eslint-disable-line prefer-spread
+      this.options = _extends({
+        generateClassName: options.generateClassName || _generateClassName2['default'],
+        insertionPoint: options.insertionPoint || 'jss'
+      }, options);
+      // eslint-disable-next-line prefer-spread
+      if (options.plugins) this.use.apply(this, options.plugins);
       return this;
     }
 
@@ -717,10 +740,13 @@ var Jss = function () {
   }, {
     key: 'createStyleSheet',
     value: function createStyleSheet(styles, options) {
-      return new _StyleSheet2['default'](styles, _extends({
+      var sheet = new _StyleSheet2['default'](styles, _extends({
         jss: this,
-        generateClassName: this.options.generateClassName
+        generateClassName: this.options.generateClassName,
+        insertionPoint: this.options.insertionPoint
       }, options));
+      this.plugins.onProcessSheet(sheet);
+      return sheet;
     }
 
     /**
@@ -801,6 +827,51 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/**
+ * Extracts a styles object with only props that contain function values.
+ */
+exports['default'] = function (styles) {
+  var fnValuesCounter = 0;
+
+  // eslint-disable-next-line no-shadow
+  function extract(styles) {
+    var to = void 0;
+
+    for (var key in styles) {
+      var value = styles[key];
+      var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+
+      if (type === 'function') {
+        if (!to) to = {};
+        to[key] = value;
+        fnValuesCounter++;
+      } else if (type === 'object' && value !== null && !Array.isArray(value)) {
+        if (!to) to = {};
+        var _extracted = extract(value);
+        if (_extracted) to[key] = _extracted;
+      }
+    }
+
+    return to;
+  }
+
+  var extracted = extract(styles);
+  return fnValuesCounter ? extracted : null;
+};
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -809,8 +880,9 @@ var PluginsRegistry = function () {
   function PluginsRegistry() {
     _classCallCheck(this, PluginsRegistry);
 
-    this.creators = [];
-    this.processors = [];
+    this.ruleCreators = [];
+    this.ruleProcessors = [];
+    this.sheetProcessors = [];
   }
 
   _createClass(PluginsRegistry, [{
@@ -821,8 +893,8 @@ var PluginsRegistry = function () {
      * Call `onCreateRule` hooks and return an object if returned by a hook.
      */
     value: function onCreateRule(name, decl, options) {
-      for (var i = 0; i < this.creators.length; i++) {
-        var rule = this.creators[i](name, decl, options);
+      for (var i = 0; i < this.ruleCreators.length; i++) {
+        var rule = this.ruleCreators[i](name, decl, options);
         if (rule) return rule;
       }
       return null;
@@ -836,10 +908,22 @@ var PluginsRegistry = function () {
     key: 'onProcessRule',
     value: function onProcessRule(rule) {
       if (rule.isProcessed) return;
-      for (var i = 0; i < this.processors.length; i++) {
-        this.processors[i](rule, rule.options.sheet);
+      for (var i = 0; i < this.ruleProcessors.length; i++) {
+        this.ruleProcessors[i](rule, rule.options.sheet);
       }
       rule.isProcessed = true;
+    }
+
+    /**
+     * Call `onProcessSheet` hooks.
+     */
+
+  }, {
+    key: 'onProcessSheet',
+    value: function onProcessSheet(sheet) {
+      for (var i = 0; i < this.sheetProcessors.length; i++) {
+        this.sheetProcessors[i](sheet);
+      }
     }
 
     /**
@@ -851,12 +935,13 @@ var PluginsRegistry = function () {
     key: 'use',
     value: function use(plugin) {
       if (typeof plugin === 'function') {
-        this.processors.push(plugin);
+        this.ruleProcessors.push(plugin);
         return;
       }
 
-      if (plugin.onCreateRule) this.creators.push(plugin.onCreateRule);
-      if (plugin.onProcessRule) this.processors.push(plugin.onProcessRule);
+      if (plugin.onCreateRule) this.ruleCreators.push(plugin.onCreateRule);
+      if (plugin.onProcessRule) this.ruleProcessors.push(plugin.onProcessRule);
+      if (plugin.onProcessSheet) this.sheetProcessors.push(plugin.onProcessSheet);
     }
   }]);
 
@@ -866,7 +951,7 @@ var PluginsRegistry = function () {
 exports['default'] = PluginsRegistry;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1081,6 +1166,17 @@ var StyleSheet = function () {
     }
 
     /**
+     * Update the function values with a new data.
+     */
+
+  }, {
+    key: 'update',
+    value: function update(data) {
+      this.rules.update(data);
+      return this;
+    }
+
+    /**
      * Convert rules to a CSS string.
      */
 
@@ -1097,7 +1193,7 @@ var StyleSheet = function () {
 exports['default'] = StyleSheet;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1165,12 +1261,23 @@ function setSelector(rule, selectorText) {
 }
 
 /**
+ * Gets the `head` element upon the first call and caches it.
+ */
+var getHead = function () {
+  var head = void 0;
+  return function () {
+    if (!head) head = document.head || document.getElementsByTagName('head')[0];
+    return head;
+  };
+}();
+
+/**
  * Find attached sheet with an index higher than the passed one.
  */
-function findHigherSheet(registry, index) {
+function findHigherSheet(registry, options) {
   for (var i = 0; i < registry.length; i++) {
     var sheet = registry[i];
-    if (sheet.attached && sheet.options.index > index) {
+    if (sheet.attached && sheet.options.index > options.index && sheet.options.insertionPoint === options.insertionPoint) {
       return sheet;
     }
   }
@@ -1180,10 +1287,12 @@ function findHigherSheet(registry, index) {
 /**
  * Find attached sheet with the highest index.
  */
-function findHighestSheet(registry) {
+function findHighestSheet(registry, options) {
   for (var i = registry.length - 1; i >= 0; i--) {
     var sheet = registry[i];
-    if (sheet.attached) return sheet;
+    if (sheet.attached && sheet.options.insertionPoint === options.insertionPoint) {
+      return sheet;
+    }
   }
   return null;
 }
@@ -1191,10 +1300,11 @@ function findHighestSheet(registry) {
 /**
  * Find a comment with "jss" inside.
  */
-function findCommentNode(head) {
+function findCommentNode(text) {
+  var head = getHead();
   for (var i = 0; i < head.childNodes.length; i++) {
     var node = head.childNodes[i];
-    if (node.nodeType === 8 && node.nodeValue.trim() === 'jss') {
+    if (node.nodeType === 8 && node.nodeValue.trim() === text) {
       return node;
     }
   }
@@ -1204,22 +1314,22 @@ function findCommentNode(head) {
 /**
  * Find a node before which we can insert the sheet.
  */
-function findPrevNode(head, index) {
+function findPrevNode(options) {
   var registry = _sheets2['default'].registry;
 
 
-  if (registry.length > 1) {
+  if (registry.length > 0) {
     // Try to insert before the next higher sheet.
-    var sheet = findHigherSheet(registry, index);
+    var sheet = findHigherSheet(registry, options);
     if (sheet) return sheet.renderer.element;
 
     // Otherwise insert after the last attached.
-    sheet = findHighestSheet(registry);
+    sheet = findHighestSheet(registry, options);
     if (sheet) return sheet.renderer.element.nextElementSibling;
   }
 
-  // Try find a comment placeholder if registry is empty.
-  var comment = findCommentNode(head);
+  // Try to find a comment placeholder if registry is empty.
+  var comment = findCommentNode(options.insertionPoint);
   if (comment) return comment.nextSibling;
   return null;
 }
@@ -1253,7 +1363,6 @@ var DomRenderer = function () {
           meta = _ref.meta,
           element = _ref.element;
 
-      this.head = document.head || document.getElementsByTagName('head')[0];
       this.element = element || document.createElement('style');
       this.element.type = 'text/css';
       this.element.setAttribute('data-jss', '');
@@ -1270,8 +1379,8 @@ var DomRenderer = function () {
     value: function attach() {
       // In the case the element node is external and it is already in the DOM.
       if (this.element.parentNode || !this.sheet) return;
-      var prevNode = findPrevNode(this.head, this.sheet.options.index);
-      this.head.insertBefore(this.element, prevNode);
+      var prevNode = findPrevNode(this.sheet.options);
+      getHead().insertBefore(this.element, prevNode);
     }
 
     /**
@@ -1329,9 +1438,9 @@ var DomRenderer = function () {
       var sheet = this.element.sheet;
       var cssRules = sheet.cssRules;
 
-      for (var index = 0; index < cssRules.length; index++) {
-        if (rule === cssRules[index]) {
-          sheet.deleteRule(index);
+      for (var _index = 0; _index < cssRules.length; _index++) {
+        if (rule === cssRules[_index]) {
+          sheet.deleteRule(_index);
           return true;
         }
       }
@@ -1355,7 +1464,7 @@ var DomRenderer = function () {
 exports['default'] = DomRenderer;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1432,7 +1541,7 @@ var VirtualRenderer = function () {
 exports['default'] = VirtualRenderer;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1525,7 +1634,7 @@ var ConditionalRule = function () {
 exports['default'] = ConditionalRule;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1583,7 +1692,7 @@ var FontFaceRule = function () {
 exports['default'] = FontFaceRule;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1662,7 +1771,7 @@ var KeyframeRule = function () {
 exports['default'] = KeyframeRule;
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1684,7 +1793,7 @@ var _toCssValue = __webpack_require__(6);
 
 var _toCssValue2 = _interopRequireDefault(_toCssValue);
 
-var _findClassNames = __webpack_require__(20);
+var _findClassNames = __webpack_require__(21);
 
 var _findClassNames2 = _interopRequireDefault(_findClassNames);
 
@@ -1740,9 +1849,12 @@ var RegularRule = function () {
     value: function prop(name, value) {
       // Its a setter.
       if (value != null) {
-        this.style[name] = value;
-        // Only defined if option linked is true.
-        if (this.renderable) this.renderer.setStyle(this.renderable, name, value);
+        // Don't do anything if the value has not changed.
+        if (this.style[name] !== value) {
+          this.style[name] = value;
+          // Only defined if option linked is true.
+          if (this.renderable) this.renderer.setStyle(this.renderable, name, value);
+        }
         return this;
       }
       // Its a getter, read the value from the DOM if its not cached.
@@ -1846,7 +1958,7 @@ var RegularRule = function () {
 exports['default'] = RegularRule;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1898,7 +2010,7 @@ var SimpleRule = function () {
 exports['default'] = SimpleRule;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1947,7 +2059,7 @@ var ViewportRule = function () {
 exports['default'] = ViewportRule;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1957,23 +2069,23 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _SimpleRule = __webpack_require__(17);
+var _SimpleRule = __webpack_require__(18);
 
 var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
 
-var _KeyframeRule = __webpack_require__(15);
+var _KeyframeRule = __webpack_require__(16);
 
 var _KeyframeRule2 = _interopRequireDefault(_KeyframeRule);
 
-var _ConditionalRule = __webpack_require__(13);
+var _ConditionalRule = __webpack_require__(14);
 
 var _ConditionalRule2 = _interopRequireDefault(_ConditionalRule);
 
-var _FontFaceRule = __webpack_require__(14);
+var _FontFaceRule = __webpack_require__(15);
 
 var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 
-var _ViewportRule = __webpack_require__(18);
+var _ViewportRule = __webpack_require__(19);
 
 var _ViewportRule2 = _interopRequireDefault(_ViewportRule);
 
@@ -2005,7 +2117,7 @@ exports['default'] = Object.keys(classes).map(function (key) {
 });
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2030,37 +2142,39 @@ function findClassNames(selector) {
 }
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(global) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports['default'] = generateClassName;
 
-var _murmurhash3_gc = __webpack_require__(23);
 
-var _murmurhash3_gc2 = _interopRequireDefault(_murmurhash3_gc);
+var globalRef = typeof window === 'undefined' ? global : window;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var namespace = '__JSS_VERSION_COUNTER__';
+if (globalRef[namespace] == null) globalRef[namespace] = 0;
+// In case we have more than one JSS version.
+var jssCounter = globalRef[namespace]++;
+var ruleCounter = 0;
 
 /**
- * Generates a class name using murmurhash.
+ * Generates unique class names.
  */
-function generateClassName(str, rule, sheet) {
-  if (sheet && sheet.options.meta) str += sheet.options.meta;
 
-  var hash = (0, _murmurhash3_gc2['default'])(str);
-
-  // There is no name if `jss.createRule(style)` was used.
-  return rule.name ? rule.name + '-' + hash : hash;
-}
+exports['default'] = function (str, rule) {
+  return (
+    // There is no rule name if `jss.createRule(style)` was used.
+    (rule.name || 'jss') + '-' + jssCounter + '-' + ruleCounter++
+  );
+};
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2077,80 +2191,32 @@ var isBrowser = exports.isBrowser = (typeof window === "undefined" ? "undefined"
 exports.default = isBrowser;
 
 /***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
+/* 24 */
+/***/ function(module, exports) {
 
-/**
- * JS Implementation of MurmurHash3 (r136) (as of May 20, 2011)
- * 
- * @author <a href="mailto:gary.court@gmail.com">Gary Court</a>
- * @see http://github.com/garycourt/murmurhash-js
- * @author <a href="mailto:aappleby@gmail.com">Austin Appleby</a>
- * @see http://sites.google.com/site/murmurhash/
- * 
- * @param {string} key ASCII only
- * @param {number} seed Positive integer only
- * @return {number} 32-bit positive integer hash 
- */
+var g;
 
-function murmurhash3_32_gc(key, seed) {
-	var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
-	
-	remainder = key.length & 3; // key.length % 4
-	bytes = key.length - remainder;
-	h1 = seed;
-	c1 = 0xcc9e2d51;
-	c2 = 0x1b873593;
-	i = 0;
-	
-	while (i < bytes) {
-	  	k1 = 
-	  	  ((key.charCodeAt(i) & 0xff)) |
-	  	  ((key.charCodeAt(++i) & 0xff) << 8) |
-	  	  ((key.charCodeAt(++i) & 0xff) << 16) |
-	  	  ((key.charCodeAt(++i) & 0xff) << 24);
-		++i;
-		
-		k1 = ((((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16))) & 0xffffffff;
-		k1 = (k1 << 15) | (k1 >>> 17);
-		k1 = ((((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16))) & 0xffffffff;
+// This works in non-strict mode
+g = (function() { return this; })();
 
-		h1 ^= k1;
-        h1 = (h1 << 13) | (h1 >>> 19);
-		h1b = ((((h1 & 0xffff) * 5) + ((((h1 >>> 16) * 5) & 0xffff) << 16))) & 0xffffffff;
-		h1 = (((h1b & 0xffff) + 0x6b64) + ((((h1b >>> 16) + 0xe654) & 0xffff) << 16));
-	}
-	
-	k1 = 0;
-	
-	switch (remainder) {
-		case 3: k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
-		case 2: k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
-		case 1: k1 ^= (key.charCodeAt(i) & 0xff);
-		
-		k1 = (((k1 & 0xffff) * c1) + ((((k1 >>> 16) * c1) & 0xffff) << 16)) & 0xffffffff;
-		k1 = (k1 << 15) | (k1 >>> 17);
-		k1 = (((k1 & 0xffff) * c2) + ((((k1 >>> 16) * c2) & 0xffff) << 16)) & 0xffffffff;
-		h1 ^= k1;
-	}
-	
-	h1 ^= key.length;
-
-	h1 ^= h1 >>> 16;
-	h1 = (((h1 & 0xffff) * 0x85ebca6b) + ((((h1 >>> 16) * 0x85ebca6b) & 0xffff) << 16)) & 0xffffffff;
-	h1 ^= h1 >>> 13;
-	h1 = ((((h1 & 0xffff) * 0xc2b2ae35) + ((((h1 >>> 16) * 0xc2b2ae35) & 0xffff) << 16))) & 0xffffffff;
-	h1 ^= h1 >>> 16;
-
-	return h1 >>> 0;
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
 }
 
-if(true) {
-  module.exports = murmurhash3_32_gc
-}
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2159,7 +2225,7 @@ if(true) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.create = exports.sheets = exports.RulesContainer = exports.SheetsRegistry = undefined;
+exports.create = exports.sheets = exports.RulesContainer = exports.SheetsRegistry = exports.getDynamicStyles = undefined;
 
 var _Jss = __webpack_require__(8);
 
@@ -2177,7 +2243,16 @@ var _sheets = __webpack_require__(1);
 
 var _sheets2 = _interopRequireDefault(_sheets);
 
+var _getDynamicStyles = __webpack_require__(9);
+
+var _getDynamicStyles2 = _interopRequireDefault(_getDynamicStyles);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Extracts a styles object with only rules that contain function values.
+ */
+exports.getDynamicStyles = _getDynamicStyles2['default'];
 
 /**
  * SheetsRegistry for SSR.
@@ -2190,6 +2265,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * @website https://github.com/cssinjs/jss
  * @license MIT
  */
+
 exports.SheetsRegistry = _SheetsRegistry2['default'];
 
 /**

@@ -11,7 +11,6 @@ var styles = {
 
 // Application logic.
 var sheet = jss.default.createStyleSheet(styles, {
-  named: true,
   link: true
 }).attach()
 
