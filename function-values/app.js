@@ -39,12 +39,7 @@ function renderObjects() {
 renderObjects()
 
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++ ) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+  return '#' + Math.floor(Math.random() * 0x1000000).toString(16);
 }
 
 function random(min, max) {
