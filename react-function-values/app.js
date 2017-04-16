@@ -1,17 +1,20 @@
 import injectSheet from 'react-jss'
 import React, {Component} from 'react'
 import {render} from 'react-dom'
-import times from 'lodash/utility/times'
-import random from 'lodash/number/random'
+import reactJssRenderer from './react-jss'
+import inlineRenderer from './inline-styles'
 
-var container = document.body.appendChild(document.createElement('div'))
+const renderers = {
+  'react-jss': reactJssRenderer,
+  inline: inlineRenderer
+}
 
 const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
   <div>
     <form >
       Render using:
       <select onChange={onChangeRenderer}>
-        <option value="jss">JSS</option>
+        <option value="react-jss">react-jss</option>
         <option value="inline">Inline Styles</option>
       </select>
     </form>
@@ -21,70 +24,6 @@ const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
     </form>
   </div>
 )
-
-const renderers = {}
-
-renderers.jss = ({amount}) => {
-  class JssAnimatedObjects extends Component {
-    shouldComponentUpdate = () => false
-
-    render() {
-      const {classes} = this.props
-      return (
-        <div>
-          {times(amount, (i) => <div key={i} className={classes[`object${i}`]} />)}
-        </div>
-      )
-    }
-  }
-
-  const styles = {}
-
-  times(amount, (i) => {
-    styles[`object${i}`] = {
-      position: 'absolute',
-      width: 50,
-      height: 50,
-      borderRadius: '50%',
-      transition: 'transform 500ms',
-      background: getRandomColor(),
-      transform: () => {
-        var x = random(0, window.innerWidth)
-        var y = random(0, window.innerHeight)
-        return `translate3d(${x}px, ${y}px, 0)`
-      }
-    }
-  })
-
-  return injectSheet(styles)(JssAnimatedObjects)
-}
-
-renderers.inline = ({amount}) => {
-  return class InlineStylesAnimatedObjects extends Component {
-    render() {
-      return (
-        <div>
-          {times(amount, (i) => {
-            var x = random(0, window.innerWidth)
-            var y = random(0, window.innerHeight)
-            const transform = `translate3d(${x}px, ${y}px, 0)`
-
-            const style = {
-              position: 'absolute',
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              transition: 'transform 500ms',
-              background: getRandomColor(),
-              transform
-            }
-            return <div key={i} style={style} />
-          })}
-        </div>
-      )
-    }
-  }
-}
 
 class Animation extends Component {
   lastTime = Date.now()
@@ -118,7 +57,7 @@ class App extends Component {
 
   state = {
     amount: 10,
-    renderer: 'jss'
+    renderer: 'react-jss'
   }
 
   onAdd = (e) => {
@@ -142,8 +81,5 @@ class App extends Component {
   }
 }
 
+var container = document.body.appendChild(document.createElement('div'))
 render(<App />, container )
-
-function getRandomColor() {
-  return '#' + Math.floor(Math.random() * 0x1000000).toString(16)
-}

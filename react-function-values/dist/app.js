@@ -58,13 +58,13 @@
 
 	var _reactDom = __webpack_require__(91);
 
-	var _times = __webpack_require__(237);
+	var _reactJss3 = __webpack_require__(237);
 
-	var _times2 = _interopRequireDefault(_times);
+	var _reactJss4 = _interopRequireDefault(_reactJss3);
 
-	var _random = __webpack_require__(240);
+	var _inlineStyles = __webpack_require__(251);
 
-	var _random2 = _interopRequireDefault(_random);
+	var _inlineStyles2 = _interopRequireDefault(_inlineStyles);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,7 +74,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var container = document.body.appendChild(document.createElement('div'));
+	var renderers = {
+	  'react-jss': _reactJss4.default,
+	  inline: _inlineStyles2.default
+	};
 
 	var Controls = function Controls(_ref) {
 	  var onAdd = _ref.onAdd,
@@ -93,8 +96,8 @@
 	        { onChange: onChangeRenderer },
 	        _react2.default.createElement(
 	          'option',
-	          { value: 'jss' },
-	          'JSS'
+	          { value: 'react-jss' },
+	          'react-jss'
 	        ),
 	        _react2.default.createElement(
 	          'option',
@@ -116,133 +119,28 @@
 	  );
 	};
 
-	var renderers = {};
-
-	renderers.jss = function (_ref2) {
-	  var amount = _ref2.amount;
-
-	  var JssAnimatedObjects = function (_Component) {
-	    _inherits(JssAnimatedObjects, _Component);
-
-	    function JssAnimatedObjects() {
-	      var _ref3;
-
-	      var _temp, _this, _ret;
-
-	      _classCallCheck(this, JssAnimatedObjects);
-
-	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	        args[_key] = arguments[_key];
-	      }
-
-	      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = JssAnimatedObjects.__proto__ || Object.getPrototypeOf(JssAnimatedObjects)).call.apply(_ref3, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
-	        return false;
-	      }, _temp), _possibleConstructorReturn(_this, _ret);
-	    }
-
-	    _createClass(JssAnimatedObjects, [{
-	      key: 'render',
-	      value: function render() {
-	        var classes = this.props.classes;
-
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          (0, _times2.default)(amount, function (i) {
-	            return _react2.default.createElement('div', { key: i, className: classes['object' + i] });
-	          })
-	        );
-	      }
-	    }]);
-
-	    return JssAnimatedObjects;
-	  }(_react.Component);
-
-	  var styles = {};
-
-	  (0, _times2.default)(amount, function (i) {
-	    styles['object' + i] = {
-	      position: 'absolute',
-	      width: 50,
-	      height: 50,
-	      borderRadius: '50%',
-	      transition: 'transform 500ms',
-	      background: getRandomColor(),
-	      transform: function transform() {
-	        var x = (0, _random2.default)(0, window.innerWidth);
-	        var y = (0, _random2.default)(0, window.innerHeight);
-	        return 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-	      }
-	    };
-	  });
-
-	  return (0, _reactJss2.default)(styles)(JssAnimatedObjects);
-	};
-
-	renderers.inline = function (_ref4) {
-	  var amount = _ref4.amount;
-
-	  return function (_Component2) {
-	    _inherits(InlineStylesAnimatedObjects, _Component2);
-
-	    function InlineStylesAnimatedObjects() {
-	      _classCallCheck(this, InlineStylesAnimatedObjects);
-
-	      return _possibleConstructorReturn(this, (InlineStylesAnimatedObjects.__proto__ || Object.getPrototypeOf(InlineStylesAnimatedObjects)).apply(this, arguments));
-	    }
-
-	    _createClass(InlineStylesAnimatedObjects, [{
-	      key: 'render',
-	      value: function render() {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          (0, _times2.default)(amount, function (i) {
-	            var x = (0, _random2.default)(0, window.innerWidth);
-	            var y = (0, _random2.default)(0, window.innerHeight);
-	            var transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
-
-	            var style = {
-	              position: 'absolute',
-	              width: 50,
-	              height: 50,
-	              borderRadius: '50%',
-	              transition: 'transform 500ms',
-	              background: getRandomColor(),
-	              transform: transform
-	            };
-	            return _react2.default.createElement('div', { key: i, style: style });
-	          })
-	        );
-	      }
-	    }]);
-
-	    return InlineStylesAnimatedObjects;
-	  }(_react.Component);
-	};
-
-	var Animation = function (_Component3) {
-	  _inherits(Animation, _Component3);
+	var Animation = function (_Component) {
+	  _inherits(Animation, _Component);
 
 	  function Animation(props) {
 	    _classCallCheck(this, Animation);
 
-	    var _this3 = _possibleConstructorReturn(this, (Animation.__proto__ || Object.getPrototypeOf(Animation)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Animation.__proto__ || Object.getPrototypeOf(Animation)).call(this, props));
 
-	    _this3.lastTime = Date.now();
-	    _this3.delay = 100;
+	    _this.lastTime = Date.now();
+	    _this.delay = 100;
 
-	    _this3.animate = function () {
+	    _this.animate = function () {
 	      var now = Date.now();
-	      if (now - _this3.lastTime > _this3.delay) {
-	        _this3.forceUpdate();
-	        _this3.lastTime = now;
+	      if (now - _this.lastTime > _this.delay) {
+	        _this.forceUpdate();
+	        _this.lastTime = now;
 	      }
-	      requestAnimationFrame(_this3.animate);
+	      requestAnimationFrame(_this.animate);
 	    };
 
-	    _this3.animate();
-	    return _this3;
+	    _this.animate();
+	    return _this;
 	  }
 
 	  _createClass(Animation, [{
@@ -257,29 +155,29 @@
 	  return Animation;
 	}(_react.Component);
 
-	var App = function (_Component4) {
-	  _inherits(App, _Component4);
+	var App = function (_Component2) {
+	  _inherits(App, _Component2);
 
 	  function App() {
-	    var _ref5;
+	    var _ref2;
 
-	    var _temp2, _this4, _ret2;
+	    var _temp, _this2, _ret;
 
 	    _classCallCheck(this, App);
 
-	    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-	      args[_key2] = arguments[_key2];
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret2 = (_temp2 = (_this4 = _possibleConstructorReturn(this, (_ref5 = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref5, [this].concat(args))), _this4), _this4.state = {
+	    return _ret = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref2 = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref2, [this].concat(args))), _this2), _this2.state = {
 	      amount: 10,
-	      renderer: 'jss'
-	    }, _this4.onAdd = function (e) {
+	      renderer: 'react-jss'
+	    }, _this2.onAdd = function (e) {
 	      e.preventDefault();
-	      _this4.setState({ amount: _this4.state.amount + _this4.props.step });
-	    }, _this4.onChangeRenderer = function (e) {
-	      _this4.setState({ renderer: e.target.value });
-	    }, _temp2), _possibleConstructorReturn(_this4, _ret2);
+	      _this2.setState({ amount: _this2.state.amount + _this2.props.step });
+	    }, _this2.onChangeRenderer = function (e) {
+	      _this2.setState({ renderer: e.target.value });
+	    }, _temp), _possibleConstructorReturn(_this2, _ret);
 	  }
 
 	  _createClass(App, [{
@@ -307,11 +205,8 @@
 	};
 
 
+	var container = document.body.appendChild(document.createElement('div'));
 	(0, _reactDom.render)(_react2.default.createElement(App, null), container);
-
-	function getRandomColor() {
-	  return '#' + Math.floor(Math.random() * 0x1000000).toString(16);
-	}
 
 /***/ },
 /* 1 */
@@ -26927,146 +26822,126 @@
 /* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var bindCallback = __webpack_require__(238);
+	'use strict';
 
-	/* Native method references for those with the same name as other `lodash` methods. */
-	var nativeFloor = Math.floor,
-	    nativeIsFinite = global.isFinite,
-	    nativeMin = Math.min;
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	/** Used as references for the maximum length and index of an array. */
-	var MAX_ARRAY_LENGTH = 4294967295;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	/**
-	 * Invokes the iteratee function `n` times, returning an array of the results
-	 * of each invocation. The `iteratee` is bound to `thisArg` and invoked with
-	 * one argument; (index).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Utility
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} [iteratee=_.identity] The function invoked per iteration.
-	 * @param {*} [thisArg] The `this` binding of `iteratee`.
-	 * @returns {Array} Returns the array of results.
-	 * @example
-	 *
-	 * var diceRolls = _.times(3, _.partial(_.random, 1, 6, false));
-	 * // => [3, 6, 4]
-	 *
-	 * _.times(3, function(n) {
-	 *   mage.castSpell(n);
-	 * });
-	 * // => invokes `mage.castSpell(n)` three times with `n` of `0`, `1`, and `2`
-	 *
-	 * _.times(3, function(n) {
-	 *   this.cast(n);
-	 * }, mage);
-	 * // => also invokes `mage.castSpell(n)` three times
-	 */
-	function times(n, iteratee, thisArg) {
-	  n = nativeFloor(n);
+	var _react = __webpack_require__(30);
 
-	  // Exit early to avoid a JSC JIT bug in Safari 8
-	  // where `Array(0)` is treated as `Array(1)`.
-	  if (n < 1 || !nativeIsFinite(n)) {
-	    return [];
-	  }
-	  var index = -1,
-	      result = Array(nativeMin(n, MAX_ARRAY_LENGTH));
+	var _react2 = _interopRequireDefault(_react);
 
-	  iteratee = bindCallback(iteratee, thisArg, 1);
-	  while (++index < n) {
-	    if (index < MAX_ARRAY_LENGTH) {
-	      result[index] = iteratee(index);
-	    } else {
-	      iteratee(index);
+	var _reactJss = __webpack_require__(1);
+
+	var _reactJss2 = _interopRequireDefault(_reactJss);
+
+	var _utils = __webpack_require__(238);
+
+	var _times = __webpack_require__(248);
+
+	var _times2 = _interopRequireDefault(_times);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	exports.default = function (_ref) {
+	  var amount = _ref.amount;
+
+	  var JssAnimatedObjects = function (_Component) {
+	    _inherits(JssAnimatedObjects, _Component);
+
+	    function JssAnimatedObjects() {
+	      var _ref2;
+
+	      var _temp, _this, _ret;
+
+	      _classCallCheck(this, JssAnimatedObjects);
+
+	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	        args[_key] = arguments[_key];
+	      }
+
+	      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref2 = JssAnimatedObjects.__proto__ || Object.getPrototypeOf(JssAnimatedObjects)).call.apply(_ref2, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
+	        return false;
+	      }, _temp), _possibleConstructorReturn(_this, _ret);
 	    }
-	  }
-	  return result;
-	}
 
-	module.exports = times;
+	    _createClass(JssAnimatedObjects, [{
+	      key: 'render',
+	      value: function render() {
+	        var classes = this.props.classes;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          (0, _times2.default)(amount, function (i) {
+	            return _react2.default.createElement('div', { key: i, className: classes['object' + i] });
+	          })
+	        );
+	      }
+	    }]);
+
+	    return JssAnimatedObjects;
+	  }(_react.Component);
+
+	  var styles = {};
+
+	  (0, _times2.default)(amount, function (i) {
+	    styles['object' + i] = {
+	      position: 'absolute',
+	      width: 50,
+	      height: 50,
+	      borderRadius: '50%',
+	      transition: 'transform 500ms',
+	      background: (0, _utils.getRandomColor)(),
+	      transform: _utils.getRandomTransform
+	    };
+	  });
+
+	  return (0, _reactJss2.default)(styles)(JssAnimatedObjects);
+	};
 
 /***/ },
 /* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(239);
+	'use strict';
 
-	/**
-	 * A specialized version of `baseCallback` which only supports `this` binding
-	 * and specifying the number of arguments to provide to `func`.
-	 *
-	 * @private
-	 * @param {Function} func The function to bind.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {number} [argCount] The number of arguments to provide to `func`.
-	 * @returns {Function} Returns the callback.
-	 */
-	function bindCallback(func, thisArg, argCount) {
-	  if (typeof func != 'function') {
-	    return identity;
-	  }
-	  if (thisArg === undefined) {
-	    return func;
-	  }
-	  switch (argCount) {
-	    case 1: return function(value) {
-	      return func.call(thisArg, value);
-	    };
-	    case 3: return function(value, index, collection) {
-	      return func.call(thisArg, value, index, collection);
-	    };
-	    case 4: return function(accumulator, value, index, collection) {
-	      return func.call(thisArg, accumulator, value, index, collection);
-	    };
-	    case 5: return function(value, other, key, object, source) {
-	      return func.call(thisArg, value, other, key, object, source);
-	    };
-	  }
-	  return function() {
-	    return func.apply(thisArg, arguments);
-	  };
-	}
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getRandomTransform = exports.getRandomColor = undefined;
 
-	module.exports = bindCallback;
+	var _random = __webpack_require__(239);
 
+	var _random2 = _interopRequireDefault(_random);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var getRandomColor = exports.getRandomColor = function getRandomColor() {
+	  return '#' + Math.floor(Math.random() * 0x1000000).toString(16);
+	};
+
+	var getRandomTransform = exports.getRandomTransform = function getRandomTransform() {
+	  var x = (0, _random2.default)(0, window.innerWidth);
+	  var y = (0, _random2.default)(0, window.innerHeight);
+	  return 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+	};
 
 /***/ },
 /* 239 */
-/***/ function(module, exports) {
-
-	/**
-	 * This method returns the first argument provided to it.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Utility
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 *
-	 * _.identity(object) === object;
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	module.exports = identity;
-
-
-/***/ },
-/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRandom = __webpack_require__(241),
-	    isIterateeCall = __webpack_require__(242);
+	var baseRandom = __webpack_require__(240),
+	    isIterateeCall = __webpack_require__(241);
 
 	/* Native method references for those with the same name as other `lodash` methods. */
 	var nativeMin = Math.min,
@@ -27138,7 +27013,7 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/* Native method references for those with the same name as other `lodash` methods. */
@@ -27162,12 +27037,12 @@
 
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArrayLike = __webpack_require__(243),
-	    isIndex = __webpack_require__(247),
-	    isObject = __webpack_require__(248);
+	var isArrayLike = __webpack_require__(242),
+	    isIndex = __webpack_require__(246),
+	    isObject = __webpack_require__(247);
 
 	/**
 	 * Checks if the provided arguments are from an iteratee call.
@@ -27196,11 +27071,11 @@
 
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getLength = __webpack_require__(244),
-	    isLength = __webpack_require__(246);
+	var getLength = __webpack_require__(243),
+	    isLength = __webpack_require__(245);
 
 	/**
 	 * Checks if `value` is array-like.
@@ -27217,10 +27092,10 @@
 
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(245);
+	var baseProperty = __webpack_require__(244);
 
 	/**
 	 * Gets the "length" property value of `object`.
@@ -27238,7 +27113,7 @@
 
 
 /***/ },
-/* 245 */
+/* 244 */
 /***/ function(module, exports) {
 
 	/**
@@ -27258,7 +27133,7 @@
 
 
 /***/ },
-/* 246 */
+/* 245 */
 /***/ function(module, exports) {
 
 	/**
@@ -27284,7 +27159,7 @@
 
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports) {
 
 	/** Used to detect unsigned integer values. */
@@ -27314,7 +27189,7 @@
 
 
 /***/ },
-/* 248 */
+/* 247 */
 /***/ function(module, exports) {
 
 	/**
@@ -27346,6 +27221,211 @@
 
 	module.exports = isObject;
 
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var bindCallback = __webpack_require__(249);
+
+	/* Native method references for those with the same name as other `lodash` methods. */
+	var nativeFloor = Math.floor,
+	    nativeIsFinite = global.isFinite,
+	    nativeMin = Math.min;
+
+	/** Used as references for the maximum length and index of an array. */
+	var MAX_ARRAY_LENGTH = 4294967295;
+
+	/**
+	 * Invokes the iteratee function `n` times, returning an array of the results
+	 * of each invocation. The `iteratee` is bound to `thisArg` and invoked with
+	 * one argument; (index).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Utility
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+	 * @param {*} [thisArg] The `this` binding of `iteratee`.
+	 * @returns {Array} Returns the array of results.
+	 * @example
+	 *
+	 * var diceRolls = _.times(3, _.partial(_.random, 1, 6, false));
+	 * // => [3, 6, 4]
+	 *
+	 * _.times(3, function(n) {
+	 *   mage.castSpell(n);
+	 * });
+	 * // => invokes `mage.castSpell(n)` three times with `n` of `0`, `1`, and `2`
+	 *
+	 * _.times(3, function(n) {
+	 *   this.cast(n);
+	 * }, mage);
+	 * // => also invokes `mage.castSpell(n)` three times
+	 */
+	function times(n, iteratee, thisArg) {
+	  n = nativeFloor(n);
+
+	  // Exit early to avoid a JSC JIT bug in Safari 8
+	  // where `Array(0)` is treated as `Array(1)`.
+	  if (n < 1 || !nativeIsFinite(n)) {
+	    return [];
+	  }
+	  var index = -1,
+	      result = Array(nativeMin(n, MAX_ARRAY_LENGTH));
+
+	  iteratee = bindCallback(iteratee, thisArg, 1);
+	  while (++index < n) {
+	    if (index < MAX_ARRAY_LENGTH) {
+	      result[index] = iteratee(index);
+	    } else {
+	      iteratee(index);
+	    }
+	  }
+	  return result;
+	}
+
+	module.exports = times;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var identity = __webpack_require__(250);
+
+	/**
+	 * A specialized version of `baseCallback` which only supports `this` binding
+	 * and specifying the number of arguments to provide to `func`.
+	 *
+	 * @private
+	 * @param {Function} func The function to bind.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {number} [argCount] The number of arguments to provide to `func`.
+	 * @returns {Function} Returns the callback.
+	 */
+	function bindCallback(func, thisArg, argCount) {
+	  if (typeof func != 'function') {
+	    return identity;
+	  }
+	  if (thisArg === undefined) {
+	    return func;
+	  }
+	  switch (argCount) {
+	    case 1: return function(value) {
+	      return func.call(thisArg, value);
+	    };
+	    case 3: return function(value, index, collection) {
+	      return func.call(thisArg, value, index, collection);
+	    };
+	    case 4: return function(accumulator, value, index, collection) {
+	      return func.call(thisArg, accumulator, value, index, collection);
+	    };
+	    case 5: return function(value, other, key, object, source) {
+	      return func.call(thisArg, value, other, key, object, source);
+	    };
+	  }
+	  return function() {
+	    return func.apply(thisArg, arguments);
+	  };
+	}
+
+	module.exports = bindCallback;
+
+
+/***/ },
+/* 250 */
+/***/ function(module, exports) {
+
+	/**
+	 * This method returns the first argument provided to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Utility
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 *
+	 * _.identity(object) === object;
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	module.exports = identity;
+
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(30);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _times = __webpack_require__(248);
+
+	var _times2 = _interopRequireDefault(_times);
+
+	var _utils = __webpack_require__(238);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	exports.default = function (_ref) {
+	  var amount = _ref.amount;
+	  return function (_Component) {
+	    _inherits(InlineStylesAnimatedObjects, _Component);
+
+	    function InlineStylesAnimatedObjects() {
+	      _classCallCheck(this, InlineStylesAnimatedObjects);
+
+	      return _possibleConstructorReturn(this, (InlineStylesAnimatedObjects.__proto__ || Object.getPrototypeOf(InlineStylesAnimatedObjects)).apply(this, arguments));
+	    }
+
+	    _createClass(InlineStylesAnimatedObjects, [{
+	      key: 'render',
+	      value: function render() {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          (0, _times2.default)(amount, function (i) {
+	            var style = {
+	              position: 'absolute',
+	              width: 50,
+	              height: 50,
+	              borderRadius: '50%',
+	              transition: 'transform 500ms',
+	              background: (0, _utils.getRandomColor)(),
+	              transform: (0, _utils.getRandomTransform)()
+	            };
+	            return _react2.default.createElement('div', { key: i, style: style });
+	          })
+	        );
+	      }
+	    }]);
+
+	    return InlineStylesAnimatedObjects;
+	  }(_react.Component);
+	};
 
 /***/ }
 /******/ ]);
