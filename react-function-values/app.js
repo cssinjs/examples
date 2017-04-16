@@ -25,7 +25,7 @@ const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
 const renderers = {}
 
 renderers.jss = ({amount}) => {
-  class Objects extends Component {
+  class JssAnimatedObjects extends Component {
     shouldComponentUpdate = () => false
 
     render() {
@@ -56,11 +56,11 @@ renderers.jss = ({amount}) => {
     }
   })
 
-  return injectSheet(styles)(Objects)
+  return injectSheet(styles)(JssAnimatedObjects)
 }
 
 renderers.inline = ({amount}) => {
-  class Objects extends Component {
+  return class InlineStylesAnimatedObjects extends Component {
     render() {
       return (
         <div>
@@ -84,8 +84,6 @@ renderers.inline = ({amount}) => {
       )
     }
   }
-
-  return Objects
 }
 
 class Animation extends Component {

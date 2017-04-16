@@ -121,26 +121,26 @@
 	renderers.jss = function (_ref2) {
 	  var amount = _ref2.amount;
 
-	  var Objects = function (_Component) {
-	    _inherits(Objects, _Component);
+	  var JssAnimatedObjects = function (_Component) {
+	    _inherits(JssAnimatedObjects, _Component);
 
-	    function Objects() {
+	    function JssAnimatedObjects() {
 	      var _ref3;
 
 	      var _temp, _this, _ret;
 
-	      _classCallCheck(this, Objects);
+	      _classCallCheck(this, JssAnimatedObjects);
 
 	      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
 	        args[_key] = arguments[_key];
 	      }
 
-	      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = Objects.__proto__ || Object.getPrototypeOf(Objects)).call.apply(_ref3, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
+	      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref3 = JssAnimatedObjects.__proto__ || Object.getPrototypeOf(JssAnimatedObjects)).call.apply(_ref3, [this].concat(args))), _this), _this.shouldComponentUpdate = function () {
 	        return false;
 	      }, _temp), _possibleConstructorReturn(_this, _ret);
 	    }
 
-	    _createClass(Objects, [{
+	    _createClass(JssAnimatedObjects, [{
 	      key: 'render',
 	      value: function render() {
 	        var classes = this.props.classes;
@@ -155,7 +155,7 @@
 	      }
 	    }]);
 
-	    return Objects;
+	    return JssAnimatedObjects;
 	  }(_react.Component);
 
 	  var styles = {};
@@ -176,22 +176,22 @@
 	    };
 	  });
 
-	  return (0, _reactJss2.default)(styles)(Objects);
+	  return (0, _reactJss2.default)(styles)(JssAnimatedObjects);
 	};
 
 	renderers.inline = function (_ref4) {
 	  var amount = _ref4.amount;
 
-	  var Objects = function (_Component2) {
-	    _inherits(Objects, _Component2);
+	  return function (_Component2) {
+	    _inherits(InlineStylesAnimatedObjects, _Component2);
 
-	    function Objects() {
-	      _classCallCheck(this, Objects);
+	    function InlineStylesAnimatedObjects() {
+	      _classCallCheck(this, InlineStylesAnimatedObjects);
 
-	      return _possibleConstructorReturn(this, (Objects.__proto__ || Object.getPrototypeOf(Objects)).apply(this, arguments));
+	      return _possibleConstructorReturn(this, (InlineStylesAnimatedObjects.__proto__ || Object.getPrototypeOf(InlineStylesAnimatedObjects)).apply(this, arguments));
 	    }
 
-	    _createClass(Objects, [{
+	    _createClass(InlineStylesAnimatedObjects, [{
 	      key: 'render',
 	      value: function render() {
 	        return _react2.default.createElement(
@@ -217,10 +217,8 @@
 	      }
 	    }]);
 
-	    return Objects;
+	    return InlineStylesAnimatedObjects;
 	  }(_react.Component);
-
-	  return Objects;
 	};
 
 	var Animation = function (_Component3) {
