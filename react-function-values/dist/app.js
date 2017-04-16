@@ -78,20 +78,47 @@
 
 	var Controls = function Controls(_ref) {
 	  var onAdd = _ref.onAdd,
-	      amount = _ref.amount;
+	      amount = _ref.amount,
+	      classes = _ref.classes,
+	      onChangeRenderer = _ref.onChangeRenderer;
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    _react2.default.createElement('input', { readOnly: true, value: amount + ' objects' }),
 	    _react2.default.createElement(
-	      'button',
-	      { onClick: onAdd },
-	      'Render 30 more'
+	      'form',
+	      null,
+	      'Render using:',
+	      _react2.default.createElement(
+	        'select',
+	        { onChange: onChangeRenderer },
+	        _react2.default.createElement(
+	          'option',
+	          { value: 'jss' },
+	          'JSS'
+	        ),
+	        _react2.default.createElement(
+	          'option',
+	          { value: 'inline' },
+	          'Inline Styles'
+	        )
+	      )
+	    ),
+	    _react2.default.createElement(
+	      'form',
+	      null,
+	      _react2.default.createElement('input', { readOnly: true, value: amount + ' objects' }),
+	      _react2.default.createElement(
+	        'button',
+	        { onClick: onAdd },
+	        'Render 30 more'
+	      )
 	    )
 	  );
 	};
 
-	var createObjects = function createObjects(_ref2) {
+	var renderers = {};
+
+	renderers.jss = function (_ref2) {
 	  var amount = _ref2.amount;
 
 	  var Objects = function (_Component) {
@@ -152,28 +179,72 @@
 	  return (0, _reactJss2.default)(styles)(Objects);
 	};
 
-	var Animation = function (_Component2) {
-	  _inherits(Animation, _Component2);
+	renderers.inline = function (_ref4) {
+	  var amount = _ref4.amount;
+
+	  var Objects = function (_Component2) {
+	    _inherits(Objects, _Component2);
+
+	    function Objects() {
+	      _classCallCheck(this, Objects);
+
+	      return _possibleConstructorReturn(this, (Objects.__proto__ || Object.getPrototypeOf(Objects)).apply(this, arguments));
+	    }
+
+	    _createClass(Objects, [{
+	      key: 'render',
+	      value: function render() {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          (0, _times2.default)(amount, function (i) {
+	            var x = (0, _random2.default)(0, window.innerWidth);
+	            var y = (0, _random2.default)(0, window.innerHeight);
+	            var transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+
+	            var style = {
+	              position: 'absolute',
+	              width: 50,
+	              height: 50,
+	              borderRadius: '50%',
+	              transition: 'transform 500ms',
+	              background: getRandomColor(),
+	              transform: transform
+	            };
+	            return _react2.default.createElement('div', { key: i, style: style });
+	          })
+	        );
+	      }
+	    }]);
+
+	    return Objects;
+	  }(_react.Component);
+
+	  return Objects;
+	};
+
+	var Animation = function (_Component3) {
+	  _inherits(Animation, _Component3);
 
 	  function Animation(props) {
 	    _classCallCheck(this, Animation);
 
-	    var _this2 = _possibleConstructorReturn(this, (Animation.__proto__ || Object.getPrototypeOf(Animation)).call(this, props));
+	    var _this3 = _possibleConstructorReturn(this, (Animation.__proto__ || Object.getPrototypeOf(Animation)).call(this, props));
 
-	    _this2.lastTime = Date.now();
-	    _this2.delay = 100;
+	    _this3.lastTime = Date.now();
+	    _this3.delay = 100;
 
-	    _this2.animate = function () {
+	    _this3.animate = function () {
 	      var now = Date.now();
-	      if (now - _this2.lastTime > _this2.delay) {
-	        _this2.forceUpdate();
-	        _this2.lastTime = now;
+	      if (now - _this3.lastTime > _this3.delay) {
+	        _this3.forceUpdate();
+	        _this3.lastTime = now;
 	      }
-	      requestAnimationFrame(_this2.animate);
+	      requestAnimationFrame(_this3.animate);
 	    };
 
-	    _this2.animate();
-	    return _this2;
+	    _this3.animate();
+	    return _this3;
 	  }
 
 	  _createClass(Animation, [{
@@ -188,13 +259,13 @@
 	  return Animation;
 	}(_react.Component);
 
-	var App = function (_Component3) {
-	  _inherits(App, _Component3);
+	var App = function (_Component4) {
+	  _inherits(App, _Component4);
 
 	  function App() {
-	    var _ref4;
+	    var _ref5;
 
-	    var _temp2, _this3, _ret2;
+	    var _temp2, _this4, _ret2;
 
 	    _classCallCheck(this, App);
 
@@ -202,22 +273,30 @@
 	      args[_key2] = arguments[_key2];
 	    }
 
-	    return _ret2 = (_temp2 = (_this3 = _possibleConstructorReturn(this, (_ref4 = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref4, [this].concat(args))), _this3), _this3.state = { amount: 10 }, _this3.onAdd = function () {
-	      _this3.setState({ amount: _this3.state.amount + _this3.props.step });
-	    }, _temp2), _possibleConstructorReturn(_this3, _ret2);
+	    return _ret2 = (_temp2 = (_this4 = _possibleConstructorReturn(this, (_ref5 = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref5, [this].concat(args))), _this4), _this4.state = {
+	      amount: 10,
+	      renderer: 'jss'
+	    }, _this4.onAdd = function (e) {
+	      e.preventDefault();
+	      _this4.setState({ amount: _this4.state.amount + _this4.props.step });
+	    }, _this4.onChangeRenderer = function (e) {
+	      _this4.setState({ renderer: e.target.value });
+	    }, _temp2), _possibleConstructorReturn(_this4, _ret2);
 	  }
 
 	  _createClass(App, [{
 	    key: 'render',
 	    value: function render() {
-	      var amount = this.state.amount;
+	      var _state = this.state,
+	          amount = _state.amount,
+	          renderer = _state.renderer;
 
-
+	      var Component = renderers[renderer]({ amount: amount });
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(Controls, { onAdd: this.onAdd, amount: amount }),
-	        _react2.default.createElement(Animation, { amount: amount, Component: createObjects({ amount: amount }) })
+	        _react2.default.createElement(Controls, { onAdd: this.onAdd, amount: amount, onChangeRenderer: this.onChangeRenderer }),
+	        _react2.default.createElement(Animation, { amount: amount, Component: Component })
 	      );
 	    }
 	  }]);

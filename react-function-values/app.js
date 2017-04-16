@@ -6,14 +6,25 @@ import random from 'lodash/number/random'
 
 var container = document.body.appendChild(document.createElement('div'))
 
-const Controls = ({onAdd, amount}) => (
+const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
   <div>
-    <input readOnly value={`${amount} objects`} />
-    <button onClick={onAdd}>Render 30 more</button>
+    <form >
+      Render using:
+      <select onChange={onChangeRenderer}>
+        <option value="jss">JSS</option>
+        <option value="inline">Inline Styles</option>
+      </select>
+    </form>
+    <form>
+      <input readOnly value={`${amount} objects`} />
+      <button onClick={onAdd}>Render 30 more</button>
+    </form>
   </div>
 )
 
-const createObjects = ({amount}) => {
+const renderers = {}
+
+renderers.jss = ({amount}) => {
   class Objects extends Component {
     shouldComponentUpdate = () => false
 
@@ -48,6 +59,35 @@ const createObjects = ({amount}) => {
   return injectSheet(styles)(Objects)
 }
 
+renderers.inline = ({amount}) => {
+  class Objects extends Component {
+    render() {
+      return (
+        <div>
+          {times(amount, (i) => {
+            var x = random(0, window.innerWidth)
+            var y = random(0, window.innerHeight)
+            const transform = `translate3d(${x}px, ${y}px, 0)`
+
+            const style = {
+              position: 'absolute',
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              transition: 'transform 500ms',
+              background: getRandomColor(),
+              transform
+            }
+            return <div key={i} style={style} />
+          })}
+        </div>
+      )
+    }
+  }
+
+  return Objects
+}
+
 class Animation extends Component {
   lastTime = Date.now()
 
@@ -78,19 +118,27 @@ class App extends Component {
     step: 30
   }
 
-  state = {amount: 10}
+  state = {
+    amount: 10,
+    renderer: 'jss'
+  }
 
-  onAdd = () => {
+  onAdd = (e) => {
+    e.preventDefault()
     this.setState({amount: this.state.amount + this.props.step})
   }
 
-  render() {
-    const {amount} = this.state
+  onChangeRenderer = (e) => {
+    this.setState({renderer: e.target.value})
+  }
 
+  render() {
+    const {amount, renderer} = this.state
+    const Component = renderers[renderer]({amount})
     return (
       <div>
-        <Controls onAdd={this.onAdd} amount={amount} />
-        <Animation amount={amount} Component={createObjects({amount})} />
+        <Controls onAdd={this.onAdd} amount={amount} onChangeRenderer={this.onChangeRenderer}/>
+        <Animation amount={amount} Component={Component} />
       </div>
     )
   }
