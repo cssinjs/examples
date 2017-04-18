@@ -13,7 +13,7 @@ const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
       <select onChange={onChangeRenderer} defaultValue="jss">
         <option value="jss">Pure JSS</option>
         <option value="react-jss">React-JSS</option>
-        <option value="inline">Inline Styles</option>
+        <option value="inline">React Inline Styles</option>
       </select>
     </form>
     <form>
