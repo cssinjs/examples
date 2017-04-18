@@ -1,28 +1,10 @@
 import injectSheet from 'react-jss'
 import React, {Component} from 'react'
-import {render} from 'react-dom'
 import reactJssRenderer from './reactJssRenderer'
 import reactInlineRenderer from './reactInlineRenderer'
 import * as jssRenderer from './jssRenderer'
 import {tick} from './utils'
-
-const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
-  <div>
-    <form style={{marginBottom: 10}}>
-      Render using:
-      <select onChange={onChangeRenderer} defaultValue="jss">
-        <option value="jss">Pure JSS</option>
-        <option value="react-jss">React-JSS</option>
-        <option value="inline">React Inline Styles</option>
-      </select>
-    </form>
-    <form>
-      <input readOnly value={`${amount} objects`} />
-      <button onClick={onAdd}>Render 30 more</button>
-    </form>
-    <p>Enable FPS Meter in DevTools if you want to see the difference in numbers.</p>
-  </div>
-)
+import Controls from './Controls'
 
 let update
 
@@ -75,7 +57,7 @@ class JssAnimation extends Component {
   }
 }
 
-class App extends Component {
+export default class App extends Component {
   static defaultProps = {
     step: 30
   }
@@ -111,4 +93,3 @@ class App extends Component {
   }
 }
 
-render(<App />, document.body.appendChild(document.createElement('div')) )
