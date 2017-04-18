@@ -110,7 +110,7 @@
 	        _react2.default.createElement(
 	          'option',
 	          { value: 'inline' },
-	          'Inline Styles'
+	          'React Inline Styles'
 	        )
 	      )
 	    ),
