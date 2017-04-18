@@ -10,8 +10,8 @@ const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
   <div>
     <form style={{marginBottom: 10}}>
       Render using:
-      <select onChange={onChangeRenderer}>
-        <option value="jss" selected>Pure JSS</option>
+      <select onChange={onChangeRenderer} defaultValue="jss">
+        <option value="jss">Pure JSS</option>
         <option value="react-jss">React-JSS</option>
         <option value="inline">Inline Styles</option>
       </select>

@@ -96,10 +96,10 @@
 	      'Render using:',
 	      _react2.default.createElement(
 	        'select',
-	        { onChange: onChangeRenderer },
+	        { onChange: onChangeRenderer, defaultValue: 'jss' },
 	        _react2.default.createElement(
 	          'option',
-	          { value: 'jss', selected: true },
+	          { value: 'jss' },
 	          'Pure JSS'
 	        ),
 	        _react2.default.createElement(
@@ -127,7 +127,7 @@
 	    _react2.default.createElement(
 	      'p',
 	      null,
-	      'Enable FPS Meter in DevTools if you want to see the difference in numbers'
+	      'Enable FPS Meter in DevTools if you want to see the difference in numbers.'
 	    )
 	  );
 	};
