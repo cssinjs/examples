@@ -3,8 +3,9 @@ import injectSheet from 'react-jss'
 import {getRandomColor, getRandomTransform} from './utils'
 import times from 'lodash/utility/times'
 
-export default ({amount}) => {
+export default (amount) => {
   class JssAnimatedObjects extends Component {
+
     shouldComponentUpdate = () => false
 
     render() {

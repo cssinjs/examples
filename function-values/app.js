@@ -1,67 +1,113 @@
-jss.default.setup(jssPreset.default())
+import injectSheet from 'react-jss'
+import React, {Component} from 'react'
+import {render} from 'react-dom'
+import reactJssRenderer from './reactJssRenderer'
+import reactInlineRenderer from './reactInlineRenderer'
+import * as jssRenderer from './jssRenderer'
+import {tick} from './utils'
 
-var container = document.body.appendChild(document.createElement('div'))
+const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
+  <div>
+    <form >
+      Render using:
+      <select onChange={onChangeRenderer}>
+        <option value="jss" selected>Pure JSS</option>
+        <option value="react-jss">React-JSS</option>
+        <option value="inline">Inline Styles</option>
+      </select>
+    </form>
+    <form>
+      <input readOnly value={`${amount} objects`} />
+      <button onClick={onAdd}>Render 30 more</button>
+    </form>
+  </div>
+)
 
-var objectsAmount = 10
-var sheet
+let update
 
-function renderObjects() {
-  var styles = {}
-
-  for (var i = 0; i < objectsAmount; i++) {
-    styles['object-' + i] = {
-      position: 'absolute',
-      width: '50px',
-      height: '50px',
-      borderRadius: '50%',
-      background: getRandomColor(),
-      transform: function() {
-        var x = random(0, window.innerWidth)
-        var y = random(0, window.innerHeight)
-        return 'translate3d('+ x + 'px,' + y + 'px, 0)'
-      },
-      transition: 'transform 500ms'
-    }
-  }
-
-  if (sheet) sheet.detach()
-  sheet = jss.default.createStyleSheet(styles, {link: true}).attach()
-
-  console.log(sheet.toString())
-
-  var html = ''
-  for (var i = 0; i < objectsAmount; i++) {
-    html+= '<div class="'+ sheet.classes['object-' + i] +'" ></div>'
-  }
-  container.innerHTML = html
-}
-
-renderObjects()
-
-function getRandomColor() {
-  return '#' + Math.floor(Math.random() * 0x1000000).toString(16);
-}
-
-function random(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-var lastTime = Date.now()
-var delay = 100
-
-function animate() {
-  var now = Date.now()
-  if (now - lastTime > delay) {
-    sheet.update()
-    lastTime = now
-  }
-  requestAnimationFrame(animate)
-}
-
-animate()
-
-document.querySelector('#add-objects').addEventListener('click', function() {
-  objectsAmount += 30
-  document.querySelector('#objects-amount').value = objectsAmount + ' objects'
-  renderObjects()
+tick(() => {
+  if (update) update()
 })
+
+class ReactAnimation extends Component {
+  constructor(props) {
+    super(props)
+    update = this.forceUpdate.bind(this)
+    this.Renderer = this.getRenderer(props)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.Renderer = this.getRenderer(nextProps)
+  }
+
+  getRenderer({renderer, amount}) { 
+    const createRenderer = renderer === 'inline' ? reactInlineRenderer : reactJssRenderer
+    return createRenderer(amount)
+  }
+
+  render() {
+    return <this.Renderer />
+  }
+}
+
+class JssAnimation extends Component {
+  constructor(props) {
+    super(props)
+    update = jssRenderer.update
+  }
+
+  componentWillReceiveProps({amount}) {
+    jssRenderer.render(amount)
+  }
+
+  componentWillMount() {
+    update = jssRenderer.update
+    jssRenderer.render(this.props.amount)
+  }
+
+  componentWillUnmount() {
+    jssRenderer.destroy()
+  }
+
+  render() {
+    return null
+  }
+}
+
+class App extends Component {
+  static defaultProps = {
+    step: 30
+  }
+
+  state = {
+    amount: 10,
+    renderer: 'react-jss'
+  }
+
+  onAdd = (e) => {
+    e.preventDefault()
+    this.setState({amount: this.state.amount + this.props.step})
+  }
+
+  onChangeRenderer = (e) => {
+    this.setState({renderer: e.target.value})
+  }
+
+  render() {
+    const {amount, renderer} = this.state
+    const Animation = renderer === 'jss' ? JssAnimation : ReactAnimation
+
+    return (
+      <div>
+        <Controls
+          onAdd={this.onAdd}
+          amount={amount}
+          onChangeRenderer={this.onChangeRenderer}
+        />
+        <Animation renderer={renderer} amount={amount} />
+      </div>
+    )
+  }
+}
+
+render(<App />, document.body.appendChild(document.createElement('div')) )

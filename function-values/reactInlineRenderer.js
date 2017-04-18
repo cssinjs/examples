@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import times from 'lodash/utility/times'
 import {getRandomColor, getRandomTransform} from './utils'
 
-export default ({amount}) => (
+export default (amount) => (
   class InlineStylesAnimatedObjects extends Component {
     render() {
       return (
