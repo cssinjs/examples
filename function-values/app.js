@@ -8,7 +8,7 @@ import {tick} from './utils'
 
 const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
   <div>
-    <form >
+    <form style={{marginBottom: 10}}>
       Render using:
       <select onChange={onChangeRenderer}>
         <option value="jss" selected>Pure JSS</option>
@@ -20,6 +20,7 @@ const Controls = ({onAdd, amount, classes, onChangeRenderer}) => (
       <input readOnly value={`${amount} objects`} />
       <button onClick={onAdd}>Render 30 more</button>
     </form>
+    <p>Enable FPS Meter in DevTools if you want to see the difference in numbers.</p>
   </div>
 )
 

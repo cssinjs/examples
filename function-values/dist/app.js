@@ -92,7 +92,7 @@
 	    null,
 	    _react2.default.createElement(
 	      'form',
-	      null,
+	      { style: { marginBottom: 10 } },
 	      'Render using:',
 	      _react2.default.createElement(
 	        'select',
@@ -123,6 +123,11 @@
 	        { onClick: onAdd },
 	        'Render 30 more'
 	      )
+	    ),
+	    _react2.default.createElement(
+	      'p',
+	      null,
+	      'Enable FPS Meter in DevTools if you want to see the difference in numbers'
 	    )
 	  );
 	};
