@@ -55,6 +55,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var box = document.body.appendChild(document.createElement('div'));
+	box.textContent = 'Drag me';
 
 	var pos$ = (0, _utils.getPosition)(box);
 
@@ -64,7 +65,11 @@
 	    width: '100px',
 	    height: '100px',
 	    background: 'black',
+	    color: 'white',
 	    cursor: 'move',
+	    display: 'flex',
+	    'align-items': 'center',
+	    'justify-content': 'center',
 	    top: pos$.map(function (pos) {
 	      return pos.top + 'px';
 	    }),
