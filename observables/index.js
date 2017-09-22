@@ -1,11 +1,10 @@
 import jss from 'jss'
-
+import {Subject} from 'rxjs'
 import {getPosition} from './utils'
 
-const box = document.body.appendChild(document.createElement('div'))
-box.textContent = 'Drag me'
-
-const pos$ = getPosition(box)
+// Create subjects first in order to stream positions later in.
+const top$ = new Subject()
+const left$ = new Subject()
 
 const {classes} = jss.createStyleSheet({
   box: {
@@ -18,9 +17,19 @@ const {classes} = jss.createStyleSheet({
     display: 'flex',
     'align-items': 'center',
     'justify-content': 'center',
-    top: pos$.map(pos => `${pos.top}px`),
-    left: pos$.map(pos => `${pos.left}px`)
+    top: top$,
+    left: left$
   }
 }, {link: true}).attach()
 
+
+// Render DOM.
+const box = document.body.appendChild(document.createElement('div'))
+box.textContent = 'Drag me'
 box.className = classes.box
+
+// Stream positions from the mouse observer to our subjects.
+getPosition(box).forEach(({left, top}) => {
+  top$.next(`${top}px`)
+  left$.next(`${left}px`)
+})
