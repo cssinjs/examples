@@ -6,6 +6,7 @@ import {getPosition} from './utils'
 const top$ = new Subject()
 const left$ = new Subject()
 
+// Create the style sheet.
 const {classes} = jss.createStyleSheet({
   box: {
     position: 'absolute',
@@ -20,6 +21,7 @@ const {classes} = jss.createStyleSheet({
     top: top$,
     left: left$
   }
+// Use option `link: true` in order to connect CSSStyleRule with the JSS StyleRule.
 }, {link: true}).attach()
 
 
