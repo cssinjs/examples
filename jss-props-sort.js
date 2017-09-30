@@ -62,27 +62,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = jssPropsSort;
 	/**
 	 * Sort props by length.
-	 *
-	 * @param {Rule} rule
-	 * @api public
 	 */
 	function jssPropsSort() {
 	  function sort(prop0, prop1) {
 	    return prop0.length - prop1.length;
 	  }
 	
-	  return function (rule) {
-	    var style = rule.style,
-	        type = rule.type;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
 	
-	    if (!style || type !== 'regular') return;
 	    var newStyle = {};
 	    var props = Object.keys(style).sort(sort);
 	    for (var prop in props) {
 	      newStyle[props[prop]] = style[props[prop]];
 	    }
-	    rule.style = newStyle;
-	  };
+	    return newStyle;
+	  }
+	
+	  return { onProcessStyle: onProcessStyle };
 	}
 
 /***/ }

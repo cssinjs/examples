@@ -52,7 +52,13 @@
 
 	var _jss2 = _interopRequireDefault(_jss);
 
+	var _jssPresetDefault = __webpack_require__(384);
+
+	var _jssPresetDefault2 = _interopRequireDefault(_jssPresetDefault);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	_jss2.default.setup((0, _jssPresetDefault2.default)());
 
 	var renderBox = function renderBox() {
 	  var box = document.createElement('div');
@@ -93,21 +99,19 @@
 	  var _jss$createStyleSheet = _jss2.default.createStyleSheet({
 	    box: {
 	      position: 'absolute',
-	      width: '100px',
-	      height: '100px',
+	      width: 100,
+	      height: 100,
 	      background: 'black',
 	      color: 'white',
 	      cursor: 'move',
 	      display: 'flex',
 	      'align-items': 'center',
 	      'justify-content': 'center',
-	      top: pos$.map(function (_ref) {
-	        var top = _ref.top;
-	        return top + 'px';
+	      top: pos$.map(function (pos) {
+	        return pos.top;
 	      }),
-	      left: pos$.map(function (_ref2) {
-	        var left = _ref2.left;
-	        return left + 'px';
+	      left: pos$.map(function (pos) {
+	        return pos.left;
 	      })
 	    }
 	    // Use option `link: true` in order to connect CSSStyleRule with the JSS StyleRule.
@@ -20853,6 +20857,10 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _warning = __webpack_require__(356);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
 	var _toCss = __webpack_require__(360);
 
 	var _toCss2 = _interopRequireDefault(_toCss);
@@ -20915,7 +20923,13 @@
 	            writable: true
 	          });
 	          // Renderable is defined if StyleSheet option `link` is true.
-	          if (this.renderable) this.renderer.setStyle(this.renderable, name, nextValue);
+	          if (this.renderable) this.renderer.setStyle(this.renderable, name, nextValue);else {
+	            var sheet = this.options.sheet;
+
+	            if (sheet && sheet.attached) {
+	              (0, _warning2['default'])(false, 'Rule is not linked. Missing sheet option "link: true".');
+	            }
+	          }
 	        }
 	        return this;
 	      }
@@ -21664,7 +21678,7 @@
 	  function Jss(options) {
 	    _classCallCheck(this, Jss);
 
-	    this.version = "9.0.0-pre.4";
+	    this.version = "9.0.0";
 	    this.plugins = new _PluginsRegistry2['default']();
 	    this.options = {
 	      createGenerateClassName: _createGenerateClassName2['default'],
@@ -22869,6 +22883,1672 @@
 	}();
 
 	exports['default'] = VirtualRenderer;
+
+/***/ },
+/* 384 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _jssTemplate = __webpack_require__(385);
+
+	var _jssTemplate2 = _interopRequireDefault(_jssTemplate);
+
+	var _jssGlobal = __webpack_require__(387);
+
+	var _jssGlobal2 = _interopRequireDefault(_jssGlobal);
+
+	var _jssExtend = __webpack_require__(388);
+
+	var _jssExtend2 = _interopRequireDefault(_jssExtend);
+
+	var _jssNested = __webpack_require__(389);
+
+	var _jssNested2 = _interopRequireDefault(_jssNested);
+
+	var _jssCompose = __webpack_require__(390);
+
+	var _jssCompose2 = _interopRequireDefault(_jssCompose);
+
+	var _jssCamelCase = __webpack_require__(391);
+
+	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
+
+	var _jssDefaultUnit = __webpack_require__(392);
+
+	var _jssDefaultUnit2 = _interopRequireDefault(_jssDefaultUnit);
+
+	var _jssExpand = __webpack_require__(394);
+
+	var _jssExpand2 = _interopRequireDefault(_jssExpand);
+
+	var _jssVendorPrefixer = __webpack_require__(396);
+
+	var _jssVendorPrefixer2 = _interopRequireDefault(_jssVendorPrefixer);
+
+	var _jssPropsSort = __webpack_require__(403);
+
+	var _jssPropsSort2 = _interopRequireDefault(_jssPropsSort);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function () {
+	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  return {
+	    plugins: [(0, _jssTemplate2.default)(options.template), (0, _jssGlobal2.default)(options.global), (0, _jssExtend2.default)(options.extend), (0, _jssNested2.default)(options.nested), (0, _jssCompose2.default)(options.compose), (0, _jssCamelCase2.default)(options.camelCase), (0, _jssDefaultUnit2.default)(options.defaultUnit), (0, _jssExpand2.default)(options.expand), (0, _jssVendorPrefixer2.default)(options.vendorPrefixer), (0, _jssPropsSort2.default)(options.propsSort)]
+	  };
+	};
+
+/***/ },
+/* 385 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _parse = __webpack_require__(386);
+
+	var _parse2 = _interopRequireDefault(_parse);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var onProcessRule = function onProcessRule(rule) {
+	  if (typeof rule.style === 'string') {
+	    rule.style = (0, _parse2['default'])(rule.style);
+	  }
+	};
+
+	exports['default'] = function () {
+	  return { onProcessRule: onProcessRule };
+	};
+
+/***/ },
+/* 386 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _warning = __webpack_require__(356);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var semiWithNl = /;\n/;
+
+	/**
+	 * Naive CSS parser.
+	 * - Supports only rule body (no selectors)
+	 * - Requires semicolon and new line after the value (except of last line)
+	 * - No nested rules support
+	 */
+
+	exports['default'] = function (cssText) {
+	  var style = {};
+	  var split = cssText.split(semiWithNl);
+	  for (var i = 0; i < split.length; i++) {
+	    var decl = split[i];
+
+	    if (!decl) continue;
+	    var colonIndex = decl.indexOf(':');
+	    if (colonIndex === -1) {
+	      (0, _warning2['default'])(false, 'Malformed CSS string "%s"', decl);
+	      continue;
+	    }
+	    var prop = decl.substr(0, colonIndex).trim();
+	    var value = decl.substr(colonIndex + 1).trim();
+	    style[prop] = value;
+	  }
+	  return style;
+	};
+
+/***/ },
+/* 387 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	exports['default'] = jssGlobal;
+
+	var _jss = __webpack_require__(352);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var propKey = '@global';
+	var prefixKey = '@global ';
+
+	var GlobalContainerRule = function () {
+	  function GlobalContainerRule(key, styles, options) {
+	    _classCallCheck(this, GlobalContainerRule);
+
+	    this.type = 'global';
+
+	    this.key = key;
+	    this.options = options;
+	    this.rules = new _jss.RuleList(_extends({}, options, {
+	      parent: this
+	    }));
+
+	    for (var selector in styles) {
+	      this.rules.add(selector, styles[selector], { selector: selector });
+	    }
+
+	    this.rules.process();
+	  }
+
+	  /**
+	   * Get a rule.
+	   */
+
+
+	  _createClass(GlobalContainerRule, [{
+	    key: 'getRule',
+	    value: function getRule(name) {
+	      return this.rules.get(name);
+	    }
+
+	    /**
+	     * Create and register rule, run plugins.
+	     */
+
+	  }, {
+	    key: 'addRule',
+	    value: function addRule(name, style, options) {
+	      var rule = this.rules.add(name, style, options);
+	      this.options.jss.plugins.onProcessRule(rule);
+	      return rule;
+	    }
+
+	    /**
+	     * Get index of a rule.
+	     */
+
+	  }, {
+	    key: 'indexOf',
+	    value: function indexOf(rule) {
+	      return this.rules.indexOf(rule);
+	    }
+
+	    /**
+	     * Generates a CSS string.
+	     */
+
+	  }, {
+	    key: 'toString',
+	    value: function toString() {
+	      return this.rules.toString();
+	    }
+	  }]);
+
+	  return GlobalContainerRule;
+	}();
+
+	var GlobalPrefixedRule = function () {
+	  function GlobalPrefixedRule(name, style, options) {
+	    _classCallCheck(this, GlobalPrefixedRule);
+
+	    this.name = name;
+	    this.options = options;
+	    var selector = name.substr(prefixKey.length);
+	    this.rule = options.jss.createRule(selector, style, _extends({}, options, {
+	      parent: this,
+	      selector: selector
+	    }));
+	  }
+
+	  _createClass(GlobalPrefixedRule, [{
+	    key: 'toString',
+	    value: function toString(options) {
+	      return this.rule.toString(options);
+	    }
+	  }]);
+
+	  return GlobalPrefixedRule;
+	}();
+
+	var separatorRegExp = /\s*,\s*/g;
+
+	function addScope(selector, scope) {
+	  var parts = selector.split(separatorRegExp);
+	  var scoped = '';
+	  for (var i = 0; i < parts.length; i++) {
+	    scoped += scope + ' ' + parts[i].trim();
+	    if (parts[i + 1]) scoped += ', ';
+	  }
+	  return scoped;
+	}
+
+	function handleNestedGlobalContainerRule(rule) {
+	  var options = rule.options,
+	      style = rule.style;
+
+	  var rules = style[propKey];
+
+	  if (!rules) return;
+
+	  for (var name in rules) {
+	    options.sheet.addRule(name, rules[name], _extends({}, options, {
+	      selector: addScope(name, rule.selector)
+	    }));
+	  }
+
+	  delete style[propKey];
+	}
+
+	function handlePrefixedGlobalRule(rule) {
+	  var options = rule.options,
+	      style = rule.style;
+
+	  for (var prop in style) {
+	    if (prop.substr(0, propKey.length) !== propKey) continue;
+
+	    var selector = addScope(prop.substr(propKey.length), rule.selector);
+	    options.sheet.addRule(selector, style[prop], _extends({}, options, {
+	      selector: selector
+	    }));
+	    delete style[prop];
+	  }
+	}
+
+	/**
+	 * Convert nested rules to separate, remove them from original styles.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssGlobal() {
+	  function onCreateRule(name, styles, options) {
+	    if (name === propKey) {
+	      return new GlobalContainerRule(name, styles, options);
+	    }
+
+	    if (name[0] === '@' && name.substr(0, prefixKey.length) === prefixKey) {
+	      return new GlobalPrefixedRule(name, styles, options);
+	    }
+
+	    var parent = options.parent;
+
+
+	    if (parent) {
+	      if (parent.type === 'global' || parent.options.parent.type === 'global') {
+	        options.global = true;
+	      }
+	    }
+
+	    if (options.global) options.selector = name;
+
+	    return null;
+	  }
+
+	  function onProcessRule(rule) {
+	    if (rule.type !== 'style') return;
+
+	    handleNestedGlobalContainerRule(rule);
+	    handlePrefixedGlobalRule(rule);
+	  }
+
+	  return { onCreateRule: onCreateRule, onProcessRule: onProcessRule };
+	}
+
+/***/ },
+/* 388 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports['default'] = jssExtend;
+
+	var _warning = __webpack_require__(356);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	var _isObservable = __webpack_require__(363);
+
+	var _isObservable2 = _interopRequireDefault(_isObservable);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var isObject = function isObject(obj) {
+	  return obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && !Array.isArray(obj) && !(0, _isObservable2['default'])(obj);
+	};
+
+	/**
+	 * Recursively extend styles.
+	 */
+	function extend(style, rule, sheet) {
+	  var newStyle = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
+	  if (typeof style.extend === 'string') {
+	    if (sheet) {
+	      var refRule = sheet.getRule(style.extend);
+	      if (refRule) {
+	        if (refRule === rule) (0, _warning2['default'])(false, '[JSS] A rule tries to extend itself \r\n%s', rule);else if (refRule.options.parent) {
+	          var originalStyle = refRule.options.parent.rules.raw[style.extend];
+	          extend(originalStyle, rule, sheet, newStyle);
+	        }
+	      }
+	    }
+	  } else if (Array.isArray(style.extend)) {
+	    for (var index = 0; index < style.extend.length; index++) {
+	      extend(style.extend[index], rule, sheet, newStyle);
+	    }
+	  } else {
+	    for (var prop in style.extend) {
+	      if (prop === 'extend') {
+	        extend(style.extend.extend, rule, sheet, newStyle);
+	      } else if (isObject(style.extend[prop])) {
+	        if (!newStyle[prop]) newStyle[prop] = {};
+	        extend(style.extend[prop], rule, sheet, newStyle[prop]);
+	      } else {
+	        newStyle[prop] = style.extend[prop];
+	      }
+	    }
+	  }
+	  // Copy base style.
+	  for (var _prop in style) {
+	    if (_prop === 'extend') continue;
+	    if (isObject(newStyle[_prop]) && isObject(style[_prop])) {
+	      extend(style[_prop], rule, sheet, newStyle[_prop]);
+	    } else if (isObject(style[_prop])) {
+	      newStyle[_prop] = extend(style[_prop], rule, sheet);
+	    } else {
+	      newStyle[_prop] = style[_prop];
+	    }
+	  }
+
+	  return newStyle;
+	}
+
+	/**
+	 * Handle `extend` property.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssExtend() {
+	  function onProcessStyle(style, rule, sheet) {
+	    return style.extend ? extend(style, rule, sheet) : style;
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ },
+/* 389 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	exports.default = jssNested;
+
+	var _warning = __webpack_require__(356);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var separatorRegExp = /\s*,\s*/g;
+	var parentRegExp = /&/g;
+	var refRegExp = /\$([\w-]+)/g;
+
+	/**
+	 * Convert nested rules to separate, remove them from original styles.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssNested() {
+	  // Get a function to be used for $ref replacement.
+	  function getReplaceRef(container) {
+	    return function (match, key) {
+	      var rule = container.getRule(key);
+	      if (rule) return rule.selector;
+	      (0, _warning2.default)(false, '[JSS] Could not find the referenced rule %s in %s.', key, container.options.meta || container);
+	      return key;
+	    };
+	  }
+
+	  var hasAnd = function hasAnd(str) {
+	    return str.indexOf('&') !== -1;
+	  };
+
+	  function replaceParentRefs(nestedProp, parentProp) {
+	    var parentSelectors = parentProp.split(separatorRegExp);
+	    var nestedSelectors = nestedProp.split(separatorRegExp);
+
+	    var result = '';
+
+	    for (var i = 0; i < parentSelectors.length; i++) {
+	      var parent = parentSelectors[i];
+
+	      for (var j = 0; j < nestedSelectors.length; j++) {
+	        var nested = nestedSelectors[j];
+	        if (result) result += ', ';
+	        // Replace all & by the parent or prefix & with the parent.
+	        result += hasAnd(nested) ? nested.replace(parentRegExp, parent) : parent + ' ' + nested;
+	      }
+	    }
+
+	    return result;
+	  }
+
+	  function getOptions(rule, container, options) {
+	    // Options has been already created, now we only increase index.
+	    if (options) return _extends({}, options, { index: options.index + 1 });
+
+	    var nestingLevel = rule.options.nestingLevel;
+
+	    nestingLevel = nestingLevel === undefined ? 1 : nestingLevel + 1;
+
+	    return _extends({}, rule.options, {
+	      nestingLevel: nestingLevel,
+	      index: container.indexOf(rule) + 1
+	    });
+	  }
+
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
+	    var container = rule.options.parent;
+	    var options = void 0;
+	    var replaceRef = void 0;
+	    for (var prop in style) {
+	      var isNested = hasAnd(prop);
+	      var isNestedConditional = prop[0] === '@';
+
+	      if (!isNested && !isNestedConditional) continue;
+
+	      options = getOptions(rule, container, options);
+
+	      if (isNested) {
+	        var selector = replaceParentRefs(prop, rule.selector
+	        // Lazily create the ref replacer function just once for
+	        // all nested rules within the sheet.
+	        );if (!replaceRef) replaceRef = getReplaceRef(container
+	        // Replace all $refs.
+	        );selector = selector.replace(refRegExp, replaceRef);
+
+	        container.addRule(selector, style[prop], _extends({}, options, { selector: selector }));
+	      } else if (isNestedConditional) {
+	        // Place conditional right after the parent rule to ensure right ordering.
+	        container.addRule(prop, _defineProperty({}, rule.key, style[prop]), options);
+	      }
+
+	      delete style[prop];
+	    }
+
+	    return style;
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ },
+/* 390 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = jssCompose;
+
+	var _warning = __webpack_require__(356);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Set selector.
+	 *
+	 * @param {Object} original rule
+	 * @param {String} className class string
+	 * @return {Boolean} flag, indicating function was successfull or not
+	 */
+	function registerClass(rule, className) {
+	  // Skip falsy values
+	  if (!className) return true;
+
+	  // Support array of class names `{composes: ['foo', 'bar']}`
+	  if (Array.isArray(className)) {
+	    for (var index = 0; index < className.length; index++) {
+	      var isSetted = registerClass(rule, className[index]);
+	      if (!isSetted) return false;
+	    }
+
+	    return true;
+	  }
+
+	  // Support space separated class names `{composes: 'foo bar'}`
+	  if (className.indexOf(' ') > -1) {
+	    return registerClass(rule, className.split(' '));
+	  }
+
+	  var parent = rule.options.parent;
+
+	  // It is a ref to a local rule.
+
+	  if (className[0] === '$') {
+	    var refRule = parent.getRule(className.substr(1));
+
+	    if (!refRule) {
+	      (0, _warning2.default)(false, '[JSS] Referenced rule is not defined. \r\n%s', rule);
+	      return false;
+	    }
+
+	    if (refRule === rule) {
+	      (0, _warning2.default)(false, '[JSS] Cyclic composition detected. \r\n%s', rule);
+	      return false;
+	    }
+
+	    parent.classes[rule.key] += ' ' + parent.classes[refRule.key];
+
+	    return true;
+	  }
+
+	  rule.options.parent.classes[rule.key] += ' ' + className;
+
+	  return true;
+	}
+
+	/**
+	 * Convert compose property to additional class, remove property from original styles.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssCompose() {
+	  function onProcessStyle(style, rule) {
+	    if (!style.composes) return style;
+	    registerClass(rule, style.composes);
+	    // Remove composes property to prevent infinite loop.
+	    delete style.composes;
+	    return style;
+	  }
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ },
+/* 391 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports["default"] = camelCase;
+	var regExp = /([A-Z])/g;
+
+	/**
+	 * Replace a string passed from String#replace.
+	 * @param {String} str
+	 * @return {String}
+	 */
+	function replace(str) {
+	  return "-" + str.toLowerCase();
+	}
+
+	/**
+	 * Convert camel cased property names to dash separated.
+	 *
+	 * @param {Object} style
+	 * @return {Object}
+	 */
+	function convertCase(style) {
+	  var converted = {};
+
+	  for (var prop in style) {
+	    converted[prop.replace(regExp, replace)] = style[prop];
+	  }
+
+	  if (style.fallbacks) {
+	    if (Array.isArray(style.fallbacks)) converted.fallbacks = style.fallbacks.map(convertCase);else converted.fallbacks = convertCase(style.fallbacks);
+	  }
+
+	  return converted;
+	}
+
+	/**
+	 * Allow camel cased property names by converting them back to dasherized.
+	 *
+	 * @param {Rule} rule
+	 */
+	function camelCase() {
+	  function onProcessStyle(style) {
+	    if (Array.isArray(style)) {
+	      // Handle rules like @font-face, which can have multiple styles in an array
+	      for (var index = 0; index < style.length; index++) {
+	        style[index] = convertCase(style[index]);
+	      }
+	      return style;
+	    }
+
+	    return convertCase(style);
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ },
+/* 392 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports['default'] = defaultUnit;
+
+	var _isObservable = __webpack_require__(363);
+
+	var _isObservable2 = _interopRequireDefault(_isObservable);
+
+	var _defaultUnits = __webpack_require__(393);
+
+	var _defaultUnits2 = _interopRequireDefault(_defaultUnits);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/**
+	 * Clones the object and adds a camel cased property version.
+	 */
+	function addCamelCasedVersion(obj) {
+	  var regExp = /(-[a-z])/g;
+	  var replace = function replace(str) {
+	    return str[1].toUpperCase();
+	  };
+	  var newObj = {};
+	  for (var key in obj) {
+	    newObj[key] = obj[key];
+	    newObj[key.replace(regExp, replace)] = obj[key];
+	  }
+	  return newObj;
+	}
+
+	var units = addCamelCasedVersion(_defaultUnits2['default']);
+
+	/**
+	 * Recursive deep style passing function
+	 *
+	 * @param {String} current property
+	 * @param {(Object|Array|Number|String)} property value
+	 * @param {Object} options
+	 * @return {(Object|Array|Number|String)} resulting value
+	 */
+	function iterate(prop, value, options) {
+	  if (!value) return value;
+
+	  var convertedValue = value;
+
+	  var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+	  if (type === 'object') {
+	    if (Array.isArray(value)) type = 'array';
+	    if ((0, _isObservable2['default'])(value)) type = 'observable';
+	  }
+
+	  switch (type) {
+	    case 'object':
+	      if (prop === 'fallbacks') {
+	        for (var innerProp in value) {
+	          value[innerProp] = iterate(innerProp, value[innerProp], options);
+	        }
+	        break;
+	      }
+	      for (var _innerProp in value) {
+	        value[_innerProp] = iterate(prop + '-' + _innerProp, value[_innerProp], options);
+	      }
+	      break;
+	    case 'array':
+	      for (var i = 0; i < value.length; i++) {
+	        value[i] = iterate(prop, value[i], options);
+	      }
+	      break;
+	    case 'number':
+	      if (value !== 0) {
+	        convertedValue = value + (options[prop] || units[prop] || '');
+	      }
+	      break;
+	    default:
+	      break;
+	  }
+
+	  return convertedValue;
+	}
+
+	/**
+	 * Add unit to numeric values.
+	 */
+	function defaultUnit() {
+	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	  var camelCasedOptions = addCamelCasedVersion(options);
+
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
+
+	    for (var prop in style) {
+	      style[prop] = iterate(prop, style[prop], camelCasedOptions);
+	    }
+
+	    return style;
+	  }
+
+	  function onChangeValue(value, prop) {
+	    return iterate(prop, value, camelCasedOptions);
+	  }
+
+	  return { onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
+	}
+
+/***/ },
+/* 393 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * Generated jss-default-unit CSS property units
+	 *
+	 * @type object
+	 */
+	exports['default'] = {
+	  'animation-delay': 'ms',
+	  'animation-duration': 'ms',
+	  'background-position': 'px',
+	  'background-position-x': 'px',
+	  'background-position-y': 'px',
+	  'background-size': 'px',
+	  border: 'px',
+	  'border-bottom': 'px',
+	  'border-bottom-left-radius': 'px',
+	  'border-bottom-right-radius': 'px',
+	  'border-bottom-width': 'px',
+	  'border-left': 'px',
+	  'border-left-width': 'px',
+	  'border-radius': 'px',
+	  'border-right': 'px',
+	  'border-right-width': 'px',
+	  'border-spacing': 'px',
+	  'border-top': 'px',
+	  'border-top-left-radius': 'px',
+	  'border-top-right-radius': 'px',
+	  'border-top-width': 'px',
+	  'border-width': 'px',
+	  'border-after-width': 'px',
+	  'border-before-width': 'px',
+	  'border-end-width': 'px',
+	  'border-horizontal-spacing': 'px',
+	  'border-start-width': 'px',
+	  'border-vertical-spacing': 'px',
+	  bottom: 'px',
+	  'box-shadow': 'px',
+	  'column-gap': 'px',
+	  'column-rule': 'px',
+	  'column-rule-width': 'px',
+	  'column-width': 'px',
+	  'flex-basis': 'px',
+	  'font-size': 'px',
+	  'font-size-delta': 'px',
+	  height: 'px',
+	  left: 'px',
+	  'letter-spacing': 'px',
+	  'logical-height': 'px',
+	  'logical-width': 'px',
+	  margin: 'px',
+	  'margin-after': 'px',
+	  'margin-before': 'px',
+	  'margin-bottom': 'px',
+	  'margin-left': 'px',
+	  'margin-right': 'px',
+	  'margin-top': 'px',
+	  'max-height': 'px',
+	  'max-width': 'px',
+	  'margin-end': 'px',
+	  'margin-start': 'px',
+	  'mask-position-x': 'px',
+	  'mask-position-y': 'px',
+	  'mask-size': 'px',
+	  'max-logical-height': 'px',
+	  'max-logical-width': 'px',
+	  'min-height': 'px',
+	  'min-width': 'px',
+	  'min-logical-height': 'px',
+	  'min-logical-width': 'px',
+	  motion: 'px',
+	  'motion-offset': 'px',
+	  outline: 'px',
+	  'outline-offset': 'px',
+	  'outline-width': 'px',
+	  padding: 'px',
+	  'padding-bottom': 'px',
+	  'padding-left': 'px',
+	  'padding-right': 'px',
+	  'padding-top': 'px',
+	  'padding-after': 'px',
+	  'padding-before': 'px',
+	  'padding-end': 'px',
+	  'padding-start': 'px',
+	  'perspective-origin-x': '%',
+	  'perspective-origin-y': '%',
+	  perspective: 'px',
+	  right: 'px',
+	  'shape-margin': 'px',
+	  size: 'px',
+	  'text-indent': 'px',
+	  'text-stroke': 'px',
+	  'text-stroke-width': 'px',
+	  top: 'px',
+	  'transform-origin': '%',
+	  'transform-origin-x': '%',
+	  'transform-origin-y': '%',
+	  'transform-origin-z': '%',
+	  'transition-delay': 'ms',
+	  'transition-duration': 'ms',
+	  'vertical-align': 'px',
+	  width: 'px',
+	  'word-spacing': 'px',
+	  // Not existing properties.
+	  // Used to avoid issues with jss-expand intergration.
+	  'box-shadow-x': 'px',
+	  'box-shadow-y': 'px',
+	  'box-shadow-blur': 'px',
+	  'box-shadow-spread': 'px',
+	  'font-line-height': 'px',
+	  'text-shadow-x': 'px',
+	  'text-shadow-y': 'px',
+	  'text-shadow-blur': 'px'
+	};
+
+/***/ },
+/* 394 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = jssExpand;
+
+	var _isObservable = __webpack_require__(363);
+
+	var _isObservable2 = _interopRequireDefault(_isObservable);
+
+	var _props = __webpack_require__(395);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	/**
+	 * Map values by given prop.
+	 *
+	 * @param {Array} array of values
+	 * @param {String} original property
+	 * @param {String} original rule
+	 * @return {String} mapped values
+	 */
+	function mapValuesByProp(value, prop, rule) {
+	  return value.map(function (item) {
+	    return objectToString(item, prop, rule);
+	  });
+	}
+
+	/**
+	 * Convert array to string.
+	 *
+	 * @param {Array} array of values
+	 * @param {String} original property
+	 * @param {Object} sheme, for converting arrays in strings
+	 * @param {Object} original rule
+	 * @return {String} converted string
+	 */
+	function arrayToString(value, prop, scheme, rule) {
+	  if (scheme[prop] == null) return value.join(',');
+	  if (value.length === 0) return '';
+	  if (Array.isArray(value[0])) return arrayToString(value[0], prop, scheme);
+	  if (_typeof(value[0]) === 'object' && !(0, _isObservable2.default)(value[0])) {
+	    return mapValuesByProp(value, prop, rule);
+	  }
+	  return value.join(' ');
+	}
+
+	/**
+	 * Convert object to string.
+	 *
+	 * @param {Object} object of values
+	 * @param {String} original property
+	 * @param {Object} original rule
+	 * @param {Boolean} is fallback prop
+	 * @return {String} converted string
+	 */
+	function objectToString(value, prop, rule, isFallback) {
+	  if (!(_props.propObj[prop] || _props.customPropObj[prop])) return '';
+
+	  var result = [];
+
+	  // Check if exists any non-standart property
+	  if (_props.customPropObj[prop]) {
+	    value = customPropsToStyle(value, rule, _props.customPropObj[prop], isFallback);
+	  }
+
+	  // Pass throught all standart props
+	  if (Object.keys(value).length) {
+	    for (var baseProp in _props.propObj[prop]) {
+	      if (value[baseProp]) {
+	        if (Array.isArray(value[baseProp])) {
+	          result.push(arrayToString(value[baseProp], baseProp, _props.propArrayInObj));
+	        } else result.push(value[baseProp]);
+	        continue;
+	      }
+
+	      // Add default value from props config.
+	      if (_props.propObj[prop][baseProp] != null) {
+	        result.push(_props.propObj[prop][baseProp]);
+	      }
+	    }
+	  }
+
+	  return result.join(' ');
+	}
+
+	/**
+	 * Convert custom properties values to styles adding them to rule directly
+	 *
+	 * @param {Object} object of values
+	 * @param {Object} original rule
+	 * @param {String} property, that contain partial custom properties
+	 * @param {Boolean} is fallback prop
+	 * @return {Object} value without custom properties, that was already added to rule
+	 */
+	function customPropsToStyle(value, rule, customProps, isFallback) {
+	  for (var prop in customProps) {
+	    var propName = customProps[prop];
+
+	    // If current property doesn't exist already in rule - add new one
+	    if (typeof value[prop] !== 'undefined' && (isFallback || !rule.prop(propName))) {
+	      var appendedValue = styleDetector(_defineProperty({}, propName, value[prop]), rule)[propName];
+
+	      // Add style directly in rule
+	      if (isFallback) rule.style.fallbacks[propName] = appendedValue;else rule.style[propName] = appendedValue;
+	    }
+	    // Delete converted property to avoid double converting
+	    delete value[prop];
+	  }
+
+	  return value;
+	}
+
+	/**
+	 * Detect if a style needs to be converted.
+	 *
+	 * @param {Object} style
+	 * @param {Object} rule
+	 * @param {Boolean} is fallback prop
+	 * @return {Object} convertedStyle
+	 */
+	function styleDetector(style, rule, isFallback) {
+	  for (var prop in style) {
+	    var value = style[prop];
+
+	    if (Array.isArray(value)) {
+	      // Check double arrays to avoid recursion.
+	      if (!Array.isArray(value[0])) {
+	        if (prop === 'fallbacks') {
+	          for (var index = 0; index < style.fallbacks.length; index++) {
+	            style.fallbacks[index] = styleDetector(style.fallbacks[index], rule, true);
+	          }
+	          continue;
+	        }
+
+	        style[prop] = arrayToString(value, prop, _props.propArray);
+	        // Avoid creating properties with empty values
+	        if (!style[prop]) delete style[prop];
+	      }
+	    } else if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && !(0, _isObservable2.default)(value)) {
+	      if (prop === 'fallbacks') {
+	        style.fallbacks = styleDetector(style.fallbacks, rule, true);
+	        continue;
+	      }
+
+	      style[prop] = objectToString(value, prop, rule, isFallback);
+	      // Avoid creating properties with empty values
+	      if (!style[prop]) delete style[prop];
+	    }
+
+	    // Maybe a computed value resulting in an empty string
+	    else if (style[prop] === '') delete style[prop];
+	  }
+
+	  return style;
+	}
+
+	/**
+	 * Adds possibility to write expanded styles.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssExpand() {
+	  function onProcessStyle(style, rule) {
+	    if (!style || rule.type !== 'style') return style;
+
+	    if (Array.isArray(style)) {
+	      // Pass rules one by one and reformat them
+	      for (var index = 0; index < style.length; index++) {
+	        style[index] = styleDetector(style[index], rule);
+	      }
+	      return style;
+	    }
+
+	    return styleDetector(style, rule);
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ },
+/* 395 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/**
+	 * A scheme for converting properties from array to regular style.
+	 * All properties listed below will be transformed to a string separated by space.
+	 */
+	var propArray = exports.propArray = {
+	  'background-size': true,
+	  'background-position': true,
+	  border: true,
+	  'border-bottom': true,
+	  'border-left': true,
+	  'border-top': true,
+	  'border-right': true,
+	  'border-radius': true,
+	  'box-shadow': true,
+	  flex: true,
+	  margin: true,
+	  padding: true,
+	  outline: true,
+	  'transform-origin': true,
+	  transform: true,
+	  transition: true
+	};
+
+	/**
+	 * A scheme for converting arrays to regular styles inside of objects.
+	 * For e.g.: "{position: [0, 0]}" => "background-position: 0 0;".
+	 */
+	var propArrayInObj = exports.propArrayInObj = {
+	  position: true, // background-position
+	  size: true // background-size
+	};
+
+	/**
+	 * A scheme for parsing and building correct styles from passed objects.
+	 */
+	var propObj = exports.propObj = {
+	  padding: {
+	    top: 0,
+	    right: 0,
+	    bottom: 0,
+	    left: 0
+	  },
+	  margin: {
+	    top: 0,
+	    right: 0,
+	    bottom: 0,
+	    left: 0
+	  },
+	  background: {
+	    attachment: null,
+	    color: null,
+	    image: null,
+	    position: null,
+	    repeat: null
+	  },
+	  border: {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  'border-top': {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  'border-right': {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  'border-bottom': {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  'border-left': {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  outline: {
+	    width: null,
+	    style: null,
+	    color: null
+	  },
+	  'list-style': {
+	    type: null,
+	    position: null,
+	    image: null
+	  },
+	  transition: {
+	    property: null,
+	    duration: null,
+	    'timing-function': null,
+	    timingFunction: null, // Needed for avoiding comilation issues with jss-camel-case
+	    delay: null
+	  },
+	  animation: {
+	    name: null,
+	    duration: null,
+	    'timing-function': null,
+	    timingFunction: null, // Needed to avoid compilation issues with jss-camel-case
+	    delay: null,
+	    'iteration-count': null,
+	    iterationCount: null, // Needed to avoid compilation issues with jss-camel-case
+	    direction: null,
+	    'fill-mode': null,
+	    fillMode: null, // Needed to avoid compilation issues with jss-camel-case
+	    'play-state': null,
+	    playState: null // Needed to avoid compilation issues with jss-camel-case
+	  },
+	  'box-shadow': {
+	    x: 0,
+	    y: 0,
+	    blur: 0,
+	    spread: 0,
+	    color: null,
+	    inset: null
+	  },
+	  'text-shadow': {
+	    x: 0,
+	    y: 0,
+	    blur: null,
+	    color: null
+	  }
+	};
+
+	/**
+	 * A scheme for converting non-standart properties inside object.
+	 * For e.g.: include 'border-radius' property inside 'border' object.
+	 */
+	var customPropObj = exports.customPropObj = {
+	  border: {
+	    radius: 'border-radius'
+	  },
+	  background: {
+	    size: 'background-size',
+	    image: 'background-image'
+	  },
+	  font: {
+	    style: 'font-style',
+	    variant: 'font-variant',
+	    weight: 'font-weight',
+	    stretch: 'font-stretch',
+	    size: 'font-size',
+	    family: 'font-family',
+	    lineHeight: 'line-height', // Needed to avoid compilation issues with jss-camel-case
+	    'line-height': 'line-height'
+	  },
+	  flex: {
+	    grow: 'flex-grow',
+	    basis: 'flex-basis',
+	    direction: 'flex-direction',
+	    wrap: 'flex-wrap',
+	    flow: 'flex-flow',
+	    shrink: 'flex-shrink'
+	  },
+	  align: {
+	    self: 'align-self',
+	    items: 'align-items',
+	    content: 'align-content'
+	  }
+	};
+
+/***/ },
+/* 396 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports['default'] = jssVendorPrefixer;
+
+	var _cssVendor = __webpack_require__(397);
+
+	var vendor = _interopRequireWildcard(_cssVendor);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	/**
+	 * Add vendor prefix to a property name when needed.
+	 *
+	 * @param {Rule} rule
+	 * @api public
+	 */
+	function jssVendorPrefixer() {
+	  function onProcessRule(rule) {
+	    if (rule.type === 'keyframes') {
+	      rule.key = '@' + vendor.prefix.css + rule.key.substr(1);
+	    }
+	  }
+
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
+
+	    for (var prop in style) {
+	      var value = style[prop];
+
+	      var changeProp = false;
+	      var supportedProp = vendor.supportedProperty(prop);
+	      if (supportedProp && supportedProp !== prop) changeProp = true;
+
+	      var changeValue = false;
+	      var supportedValue = vendor.supportedValue(supportedProp, value);
+	      if (supportedValue && supportedValue !== value) changeValue = true;
+
+	      if (changeProp || changeValue) {
+	        if (changeProp) delete style[prop];
+	        style[supportedProp || prop] = supportedValue || value;
+	      }
+	    }
+
+	    return style;
+	  }
+
+	  function onChangeValue(value, prop) {
+	    return vendor.supportedValue(prop, value);
+	  }
+
+	  return { onProcessRule: onProcessRule, onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
+	}
+
+/***/ },
+/* 397 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.supportedValue = exports.supportedProperty = exports.prefix = undefined;
+
+	var _prefix = __webpack_require__(398);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	var _supportedProperty = __webpack_require__(400);
+
+	var _supportedProperty2 = _interopRequireDefault(_supportedProperty);
+
+	var _supportedValue = __webpack_require__(402);
+
+	var _supportedValue2 = _interopRequireDefault(_supportedValue);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	exports['default'] = {
+	  prefix: _prefix2['default'],
+	  supportedProperty: _supportedProperty2['default'],
+	  supportedValue: _supportedValue2['default']
+	}; /**
+	    * CSS Vendor prefix detection and property feature testing.
+	    *
+	    * @copyright Oleg Slobodskoi 2015
+	    * @website https://github.com/jsstyles/css-vendor
+	    * @license MIT
+	    */
+
+	exports.prefix = _prefix2['default'];
+	exports.supportedProperty = _supportedProperty2['default'];
+	exports.supportedValue = _supportedValue2['default'];
+
+/***/ },
+/* 398 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _isInBrowser = __webpack_require__(399);
+
+	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var js = ''; /**
+	              * Export javascript style and css style vendor prefixes.
+	              * Based on "transform" support test.
+	              */
+
+	var css = '';
+
+	// We should not do anything if required serverside.
+	if (_isInBrowser2['default']) {
+	  // Order matters. We need to check Webkit the last one because
+	  // other vendors use to add Webkit prefixes to some properties
+	  var jsCssMap = {
+	    Moz: '-moz-',
+	    // IE did it wrong again ...
+	    ms: '-ms-',
+	    O: '-o-',
+	    Webkit: '-webkit-'
+	  };
+	  var style = document.createElement('p').style;
+	  var testProp = 'Transform';
+
+	  for (var key in jsCssMap) {
+	    if (key + testProp in style) {
+	      js = key;
+	      css = jsCssMap[key];
+	      break;
+	    }
+	  }
+	}
+
+	/**
+	 * Vendor prefix string for the current browser.
+	 *
+	 * @type {{js: String, css: String}}
+	 * @api public
+	 */
+	exports['default'] = { js: js, css: css };
+
+/***/ },
+/* 399 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var isBrowser = exports.isBrowser = (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object" && (typeof document === "undefined" ? "undefined" : _typeof(document)) === 'object' && document.nodeType === 9;
+
+	exports.default = isBrowser;
+
+/***/ },
+/* 400 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports['default'] = supportedProperty;
+
+	var _isInBrowser = __webpack_require__(399);
+
+	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
+
+	var _prefix = __webpack_require__(398);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	var _camelize = __webpack_require__(401);
+
+	var _camelize2 = _interopRequireDefault(_camelize);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var el = void 0;
+	var cache = {};
+
+	if (_isInBrowser2['default']) {
+	  el = document.createElement('p');
+
+	  /**
+	   * We test every property on vendor prefix requirement.
+	   * Once tested, result is cached. It gives us up to 70% perf boost.
+	   * http://jsperf.com/element-style-object-access-vs-plain-object
+	   *
+	   * Prefill cache with known css properties to reduce amount of
+	   * properties we need to feature test at runtime.
+	   * http://davidwalsh.name/vendor-prefix
+	   */
+	  var computed = window.getComputedStyle(document.documentElement, '');
+	  for (var key in computed) {
+	    if (!isNaN(key)) cache[computed[key]] = computed[key];
+	  }
+	}
+
+	/**
+	 * Test if a property is supported, returns supported property with vendor
+	 * prefix if required. Returns `false` if not supported.
+	 *
+	 * @param {String} prop dash separated
+	 * @return {String|Boolean}
+	 * @api public
+	 */
+	function supportedProperty(prop) {
+	  // For server-side rendering.
+	  if (!el) return prop;
+
+	  // We have not tested this prop yet, lets do the test.
+	  if (cache[prop] != null) return cache[prop];
+
+	  // Camelization is required because we can't test using
+	  // css syntax for e.g. in FF.
+	  // Test if property is supported as it is.
+	  if ((0, _camelize2['default'])(prop) in el.style) {
+	    cache[prop] = prop;
+	  }
+	  // Test if property is supported with vendor prefix.
+	  else if (_prefix2['default'].js + (0, _camelize2['default'])('-' + prop) in el.style) {
+	      cache[prop] = _prefix2['default'].css + prop;
+	    } else {
+	      cache[prop] = false;
+	    }
+
+	  return cache[prop];
+	}
+
+/***/ },
+/* 401 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports['default'] = camelize;
+	var regExp = /[-\s]+(.)?/g;
+
+	/**
+	 * Convert dash separated strings to camel cased.
+	 *
+	 * @param {String} str
+	 * @return {String}
+	 */
+	function camelize(str) {
+	  return str.replace(regExp, toUpper);
+	}
+
+	function toUpper(match, c) {
+	  return c ? c.toUpperCase() : '';
+	}
+
+/***/ },
+/* 402 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports['default'] = supportedValue;
+
+	var _isInBrowser = __webpack_require__(399);
+
+	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
+
+	var _prefix = __webpack_require__(398);
+
+	var _prefix2 = _interopRequireDefault(_prefix);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var cache = {};
+	var el = void 0;
+
+	if (_isInBrowser2['default']) el = document.createElement('p');
+
+	/**
+	 * Returns prefixed value if needed. Returns `false` if value is not supported.
+	 *
+	 * @param {String} property
+	 * @param {String} value
+	 * @return {String|Boolean}
+	 * @api public
+	 */
+	function supportedValue(property, value) {
+	  // For server-side rendering.
+	  if (!el) return value;
+
+	  // It is a string or a number as a string like '1'.
+	  // We want only prefixable values here.
+	  if (typeof value !== 'string' || !isNaN(parseInt(value, 10))) return value;
+
+	  var cacheKey = property + value;
+
+	  if (cache[cacheKey] != null) return cache[cacheKey];
+
+	  // IE can even throw an error in some cases, for e.g. style.content = 'bar'
+	  try {
+	    // Test value as it is.
+	    el.style[property] = value;
+	  } catch (err) {
+	    cache[cacheKey] = false;
+	    return false;
+	  }
+
+	  // Value is supported as it is.
+	  if (el.style[property] !== '') {
+	    cache[cacheKey] = value;
+	  } else {
+	    // Test value with vendor prefix.
+	    value = _prefix2['default'].css + value;
+
+	    // Hardcode test to convert "flex" to "-ms-flexbox" for IE10.
+	    if (value === '-ms-flex') value = '-ms-flexbox';
+
+	    el.style[property] = value;
+
+	    // Value is supported with vendor prefix.
+	    if (el.style[property] !== '') cache[cacheKey] = value;
+	  }
+
+	  if (!cache[cacheKey]) cache[cacheKey] = false;
+
+	  // Reset style value.
+	  el.style[property] = '';
+
+	  return cache[cacheKey];
+	}
+
+/***/ },
+/* 403 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports['default'] = jssPropsSort;
+	/**
+	 * Sort props by length.
+	 */
+	function jssPropsSort() {
+	  function sort(prop0, prop1) {
+	    return prop0.length - prop1.length;
+	  }
+
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
+
+	    var newStyle = {};
+	    var props = Object.keys(style).sort(sort);
+	    for (var prop in props) {
+	      newStyle[props[prop]] = style[props[prop]];
+	    }
+	    return newStyle;
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
 
 /***/ }
 /******/ ]);

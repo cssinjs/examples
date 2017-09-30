@@ -1,5 +1,8 @@
 import {Observable} from 'rxjs'
 import jss from 'jss'
+import preset from 'jss-preset-default'
+
+jss.setup(preset())
 
 const renderBox = () => {
   const box = document.createElement('div')
@@ -38,16 +41,16 @@ const renderStyles = (pos$) => {
   const {classes} = jss.createStyleSheet({
     box: {
       position: 'absolute',
-      width: '100px',
-      height: '100px',
+      width: 100,
+      height: 100,
       background: 'black',
       color: 'white',
       cursor: 'move',
       display: 'flex',
       'align-items': 'center',
       'justify-content': 'center',
-      top: pos$.map(({top}) => `${top}px`),
-      left: pos$.map(({left}) => `${left}px`)
+      top: pos$.map(pos => pos.top),
+      left: pos$.map(pos => pos.left)
     }
   // Use option `link: true` in order to connect CSSStyleRule with the JSS StyleRule.
   }, {link: true}).attach()

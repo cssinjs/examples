@@ -52,13 +52,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports["default"] = camelCase;
 	var regExp = /([A-Z])/g;
 
 	/**
@@ -80,9 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var converted = {};
 
 	  for (var prop in style) {
-	    var value = style[prop];
-	    prop = prop.replace(regExp, replace);
-	    converted[prop] = value;
+	    converted[prop.replace(regExp, replace)] = style[prop];
 	  }
 
 	  if (style.fallbacks) {
@@ -97,26 +96,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @param {Rule} rule
 	 */
-
-	exports["default"] = function () {
-	  return function (rule) {
-	    var style = rule.style;
-
-	    if (!style) return;
-
+	function camelCase() {
+	  function onProcessStyle(style) {
 	    if (Array.isArray(style)) {
 	      // Handle rules like @font-face, which can have multiple styles in an array
 	      for (var index = 0; index < style.length; index++) {
 	        style[index] = convertCase(style[index]);
 	      }
-	      return;
+	      return style;
 	    }
 
-	    rule.style = convertCase(style);
-	  };
-	};
+	    return convertCase(style);
+	  }
 
-/***/ }
+	  return { onProcessStyle: onProcessStyle };
+	}
+
+/***/ })
 /******/ ])
 });
 ;

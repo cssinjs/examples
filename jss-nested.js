@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -85,11 +85,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	function jssNested() {
 	  // Get a function to be used for $ref replacement.
 	  function getReplaceRef(container) {
-	    return function (match, name) {
-	      var rule = container.getRule(name);
+	    return function (match, key) {
+	      var rule = container.getRule(key);
 	      if (rule) return rule.selector;
-	      (0, _warning2.default)(false, '[JSS] Could not find the referenced rule %s. \r\n%s', name, rule);
-	      return name;
+	      (0, _warning2.default)(false, '[JSS] Could not find the referenced rule %s in %s.', key, container.options.meta || container);
+	      return key;
 	    };
 	  }
 	
@@ -131,13 +131,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  }
 	
-	  return function (rule) {
-	    if (rule.type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
 	    var container = rule.options.parent;
 	    var options = void 0;
 	    var replaceRef = void 0;
-	
-	    for (var prop in rule.style) {
+	    for (var prop in style) {
 	      var isNested = hasAnd(prop);
 	      var isNestedConditional = prop[0] === '@';
 	
@@ -146,27 +145,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	      options = getOptions(rule, container, options);
 	
 	      if (isNested) {
-	        var selector = replaceParentRefs(prop, rule.selector);
+	        var selector = replaceParentRefs(prop, rule.selector
 	        // Lazily create the ref replacer function just once for
 	        // all nested rules within the sheet.
-	        if (!replaceRef) replaceRef = getReplaceRef(container);
+	        );if (!replaceRef) replaceRef = getReplaceRef(container
 	        // Replace all $refs.
-	        selector = selector.replace(refRegExp, replaceRef);
+	        );selector = selector.replace(refRegExp, replaceRef);
 	
-	        container.addRule(selector, rule.style[prop], _extends({}, options, { selector: selector }));
+	        container.addRule(selector, style[prop], _extends({}, options, { selector: selector }));
 	      } else if (isNestedConditional) {
 	        // Place conditional right after the parent rule to ensure right ordering.
-	        container.addRule(prop, _defineProperty({}, rule.name, rule.style[prop]), options);
+	        container.addRule(prop, _defineProperty({}, rule.key, style[prop]), options);
 	      }
 	
-	      delete rule.style[prop];
+	      delete style[prop];
 	    }
-	  };
+	
+	    return style;
+	  }
+	
+	  return { onProcessStyle: onProcessStyle };
 	}
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/**
 	 * Copyright 2014-2015, Facebook, Inc.
@@ -230,7 +233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = warning;
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

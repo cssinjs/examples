@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -74,16 +74,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @api public
 	 */
 	function jssVendorPrefixer() {
-	  return function (rule) {
-	    if (rule.type === 'keyframe') {
-	      rule.selector = '@' + vendor.prefix.css + rule.selector.substr(1);
-	      return;
+	  function onProcessRule(rule) {
+	    if (rule.type === 'keyframes') {
+	      rule.key = '@' + vendor.prefix.css + rule.key.substr(1);
 	    }
+	  }
 	
-	    if (rule.type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
 	
-	    for (var prop in rule.style) {
-	      var value = rule.style[prop];
+	    for (var prop in style) {
+	      var value = style[prop];
 	
 	      var changeProp = false;
 	      var supportedProp = vendor.supportedProperty(prop);
@@ -94,16 +95,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (supportedValue && supportedValue !== value) changeValue = true;
 	
 	      if (changeProp || changeValue) {
-	        if (changeProp) delete rule.style[prop];
-	        rule.style[supportedProp || prop] = supportedValue || value;
+	        if (changeProp) delete style[prop];
+	        style[supportedProp || prop] = supportedValue || value;
 	      }
 	    }
-	  };
+	
+	    return style;
+	  }
+	
+	  function onChangeValue(value, prop) {
+	    return vendor.supportedValue(prop, value);
+	  }
+	
+	  return { onProcessRule: onProcessRule, onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
 	}
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -142,9 +151,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.supportedProperty = _supportedProperty2['default'];
 	exports.supportedValue = _supportedValue2['default'];
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -196,9 +205,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	exports['default'] = { js: js, css: css };
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	"use strict";
 	
@@ -212,9 +221,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = isBrowser;
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -289,9 +298,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return cache[prop];
 	}
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -315,9 +324,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return c ? c.toUpperCase() : '';
 	}
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -394,7 +403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return cache[cacheKey];
 	}
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

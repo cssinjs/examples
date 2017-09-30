@@ -52,13 +52,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
 	exports['default'] = defaultUnit;
 	
 	var _defaultUnits = __webpack_require__(1);
@@ -97,8 +100,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!value) return value;
 	
 	  var convertedValue = value;
-	  switch (value.constructor) {
-	    case Object:
+	
+	  var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+	  if (type === 'object' && Array.isArray(value)) type = 'array';
+	
+	  switch (type) {
+	    case 'object':
 	      if (prop === 'fallbacks') {
 	        for (var innerProp in value) {
 	          value[innerProp] = iterate(innerProp, value[innerProp], options);
@@ -109,13 +116,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value[_innerProp] = iterate(prop + '-' + _innerProp, value[_innerProp], options);
 	      }
 	      break;
-	    case Array:
+	    case 'array':
 	      for (var i = 0; i < value.length; i++) {
 	        value[i] = iterate(prop, value[i], options);
 	      }
 	      break;
-	    case Number:
-	      convertedValue = addUnit(prop, value, options);
+	    case 'number':
+	      if (value !== 0) {
+	        convertedValue = value + (options[prop] || units[prop] || '');
+	      }
 	      break;
 	    default:
 	      break;
@@ -125,43 +134,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	
 	/**
-	 * Check if default unit must be added
-	 *
-	 * @param {String} current property
-	 * @param {(Object|Array|Number|String)} property value
-	 * @param {Object} options
-	 * @return {String} string with units
-	 */
-	function addUnit(prop, value, options) {
-	  if (typeof value === 'number' && value !== 0) {
-	    value += options[prop] || units[prop] || '';
-	  }
-	  return value;
-	}
-	
-	/**
 	 * Add unit to numeric values.
-	 *
-	 * @param {Rule} rule
-	 * @api public
 	 */
 	function defaultUnit() {
 	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	
-	  return function (rule) {
-	    var style = rule.style,
-	        type = rule.type;
+	  var camelCasedOptions = addCamelCasedVersion(options);
 	
-	    if (!style || type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'style') return style;
+	
 	    for (var prop in style) {
-	      style[prop] = iterate(prop, style[prop], addCamelCasedVersion(options));
+	      style[prop] = iterate(prop, style[prop], camelCasedOptions);
 	    }
-	  };
+	
+	    return style;
+	  }
+	
+	  function onChangeValue(value, prop) {
+	    return iterate(prop, value, camelCasedOptions);
+	  }
+	
+	  return { onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
 	}
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 	
@@ -170,7 +169,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	/**
 	 * Generated jss-default-unit CSS property units
-	 * @object
+	 *
+	 * @type object
 	 */
 	exports['default'] = {
 	  'animation-delay': 'ms',
@@ -203,16 +203,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'border-vertical-spacing': 'px',
 	  bottom: 'px',
 	  'box-shadow': 'px',
-	  'box-shadow-x': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-y': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-blur': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-spread': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'column-gap': 'px',
 	  'column-rule': 'px',
 	  'column-rule-width': 'px',
 	  'column-width': 'px',
 	  'flex-basis': 'px',
-	  'font-line-height': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'font-size': 'px',
 	  'font-size-delta': 'px',
 	  height: 'px',
@@ -261,9 +256,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'shape-margin': 'px',
 	  size: 'px',
 	  'text-indent': 'px',
-	  'text-shadow-x': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'text-shadow-y': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'text-shadow-blur': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'text-stroke': 'px',
 	  'text-stroke-width': 'px',
 	  top: 'px',
@@ -275,10 +267,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  'transition-duration': 'ms',
 	  'vertical-align': 'px',
 	  width: 'px',
-	  'word-spacing': 'px'
+	  'word-spacing': 'px',
+	  // Not existing properties.
+	  // Used to avoid issues with jss-expand intergration.
+	  'box-shadow-x': 'px',
+	  'box-shadow-y': 'px',
+	  'box-shadow-blur': 'px',
+	  'box-shadow-spread': 'px',
+	  'font-line-height': 'px',
+	  'text-shadow-x': 'px',
+	  'text-shadow-y': 'px',
+	  'text-shadow-blur': 'px'
 	};
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;

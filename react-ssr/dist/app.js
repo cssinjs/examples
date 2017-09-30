@@ -21533,187 +21533,47 @@
 /* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.SheetsRegistry = exports.SheetsRegistryProvider = exports.jss = undefined;
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	exports.create = create;
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
+	exports.create = exports.jss = exports.SheetsRegistryProvider = exports.SheetsRegistry = undefined;
 
 	var _jss = __webpack_require__(180);
 
-	var _jssPresetDefault = __webpack_require__(205);
+	Object.defineProperty(exports, 'SheetsRegistry', {
+	  enumerable: true,
+	  get: function get() {
+	    return _jss.SheetsRegistry;
+	  }
+	});
 
-	var _jssPresetDefault2 = _interopRequireDefault(_jssPresetDefault);
+	var _SheetsRegistryProvider = __webpack_require__(206);
 
-	var _hoistNonReactStatics = __webpack_require__(222);
+	Object.defineProperty(exports, 'SheetsRegistryProvider', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_SheetsRegistryProvider)['default'];
+	  }
+	});
 
-	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+	var _jss2 = __webpack_require__(215);
 
-	var _SheetsRegistryProvider = __webpack_require__(223);
+	Object.defineProperty(exports, 'jss', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_jss2)['default'];
+	  }
+	});
 
-	var _SheetsRegistryProvider2 = _interopRequireDefault(_SheetsRegistryProvider);
+	var _createInjectSheet = __webpack_require__(233);
+
+	var _createInjectSheet2 = _interopRequireDefault(_createInjectSheet);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var refNs = 'ref-' + String(Math.random()).substr(2);
-	var refs = function refs(sheet) {
-	  return sheet[refNs] || 0;
-	};
-	var dec = function dec(sheet) {
-	  return --sheet[refNs];
-	};
-	var inc = function inc(sheet) {
-	  return ++sheet[refNs];
-	};
-
-	/**
-	 * Wrap a Component into a JSS Container Component.
-	 *
-	 * @param {Jss} jss
-	 * @param {Component} WrappedComponent
-	 * @param {Object} stylesOrSheet
-	 * @param {Object} [options]
-	 * @return {Component}
-	 */
-	function wrap(jss, WrappedComponent, stylesOrSheet) {
-	  var _class, _temp;
-
-	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-
-	  var sheet = null;
-	  var styles = stylesOrSheet;
-
-	  // Accept StyleSheet instance.
-	  if (stylesOrSheet && typeof stylesOrSheet.attach === 'function') {
-	    sheet = stylesOrSheet;
-	    styles = null;
-	  }
-
-	  var displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-
-	  if (!options.meta) options.meta = displayName;
-
-	  function ref() {
-	    if (!sheet) sheet = jss.createStyleSheet(styles, options);
-	    if (sheet[refNs] === undefined) sheet[refNs] = 0;
-	    if (refs(sheet) === 0) sheet.attach();
-	    inc(sheet);
-	    return sheet;
-	  }
-
-	  function deref() {
-	    if (dec(sheet) === 0) sheet.detach();
-	  }
-
-	  return _temp = _class = function (_Component) {
-	    _inherits(Jss, _Component);
-
-	    function Jss() {
-	      _classCallCheck(this, Jss);
-
-	      return _possibleConstructorReturn(this, (Jss.__proto__ || Object.getPrototypeOf(Jss)).apply(this, arguments));
-	    }
-
-	    _createClass(Jss, [{
-	      key: 'componentWillMount',
-	      value: function componentWillMount() {
-	        this.sheet = ref();
-	        var jssSheetsRegistry = this.context.jssSheetsRegistry;
-
-	        if (jssSheetsRegistry) jssSheetsRegistry.add(this.sheet);
-	      }
-	    }, {
-	      key: 'componentWillUpdate',
-	      value: function componentWillUpdate() {
-	        if (process.env.NODE_ENV !== 'production') {
-	          // Support React Hot Loader.
-	          if (this.sheet !== sheet) {
-	            this.sheet.detach();
-	            this.sheet = ref();
-	          }
-	        }
-	      }
-	    }, {
-	      key: 'componentWillUnmount',
-	      value: function componentWillUnmount() {
-	        if (this.sheet && !sheet) {
-	          this.sheet.detach();
-	          var jssSheetsRegistry = this.context.jssSheetsRegistry;
-
-	          if (jssSheetsRegistry) jssSheetsRegistry.remove(this.sheet);
-	        } else deref();
-	      }
-	    }, {
-	      key: 'render',
-	      value: function render() {
-	        return _react2['default'].createElement(WrappedComponent, _extends({ sheet: this.sheet }, this.props));
-	      }
-	    }]);
-
-	    return Jss;
-	  }(_react.Component), _class.wrapped = WrappedComponent, _class.displayName = 'Jss(' + displayName + ')', _class.contextTypes = {
-	    jssSheetsRegistry: _react.PropTypes.instanceOf(_jss.SheetsRegistry)
-	  }, _temp;
-	}
-
-	var Container = function Container(_ref) {
-	  var children = _ref.children;
-	  return children || null;
-	};
-
-	var jss = exports.jss = (0, _jss.create)((0, _jssPresetDefault2['default'])());
-
-	// Global index counter to preserve source order.
-	// As we create the style sheet during componentWillMount lifecycle,
-	// children are handled after the parents, so the order of style elements would
-	// be parent->child. It is a problem though when a parent passes a className
-	// which needs to override any childs styles. StyleSheet of the child has a higher
-	// specificity, because of the source order.
-	// So our solution is to render sheets them in the reverse order child->sheet, so
-	// that parent has a higher specificity.
-	var indexCounter = -100000;
-
-	/**
-	 * Create a `injectSheet` function that will use the passed JSS instance.
-	 *
-	 * @param {Jss} jss
-	 * @return {Function}
-	 * @api public
-	 */
-	function create() {
-	  var localJss = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : jss;
-
-	  return function injectSheet(stylesOrSheet) {
-	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-	    if (options.index === undefined) {
-	      options.index = indexCounter++;
-	    }
-	    return function () {
-	      var WrappedComponent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Container;
-
-	      var Jss = wrap(localJss, WrappedComponent, stylesOrSheet, options);
-	      return (0, _hoistNonReactStatics2['default'])(Jss, WrappedComponent, { wrapped: true });
-	    };
-	  };
-	}
+	exports.create = _createInjectSheet2['default'];
 
 	/**
 	 * Exports injectSheet function as default.
@@ -21726,10 +21586,8 @@
 	 * @return {Function}
 	 * @api public
 	 */
-	exports['default'] = create();
-	exports.SheetsRegistryProvider = _SheetsRegistryProvider2['default'];
-	exports.SheetsRegistry = _jss.SheetsRegistry;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+	exports['default'] = (0, _createInjectSheet2['default'])();
 
 /***/ },
 /* 180 */
@@ -21758,7 +21616,7 @@
 
 	var _sheets2 = _interopRequireDefault(_sheets);
 
-	var _getDynamicStyles = __webpack_require__(204);
+	var _getDynamicStyles = __webpack_require__(205);
 
 	var _getDynamicStyles2 = _interopRequireDefault(_getDynamicStyles);
 
@@ -21828,11 +21686,11 @@
 
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
-	var _PluginsRegistry = __webpack_require__(196);
+	var _PluginsRegistry = __webpack_require__(197);
 
 	var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
-	var _plugins = __webpack_require__(197);
+	var _plugins = __webpack_require__(198);
 
 	var _plugins2 = _interopRequireDefault(_plugins);
 
@@ -21840,7 +21698,7 @@
 
 	var _sheets2 = _interopRequireDefault(_sheets);
 
-	var _generateClassName = __webpack_require__(203);
+	var _generateClassName = __webpack_require__(204);
 
 	var _generateClassName2 = _interopRequireDefault(_generateClassName);
 
@@ -21860,7 +21718,7 @@
 	  function Jss(options) {
 	    _classCallCheck(this, Jss);
 
-	    this.version = "6.5.0";
+	    this.version = "7.0.3";
 	    this.plugins = new _PluginsRegistry2['default']();
 
 	    // eslint-disable-next-line prefer-spread
@@ -22056,7 +21914,7 @@
 
 	  }, {
 	    key: 'addRule',
-	    value: function addRule(name, style, options) {
+	    value: function addRule(name, decl, options) {
 	      var queue = this.queue;
 
 	      // Plugins can create rules.
@@ -22065,7 +21923,7 @@
 
 	      if (this.attached && !queue) this.queue = [];
 
-	      var rule = this.rules.add(name, style, options);
+	      var rule = this.rules.add(name, decl, options);
 	      this.options.jss.plugins.onProcessRule(rule);
 
 	      if (this.attached) {
@@ -22153,7 +22011,7 @@
 	  }, {
 	    key: 'deploy',
 	    value: function deploy() {
-	      this.renderer.deploy(this);
+	      this.renderer.deploy();
 	      this.deployed = true;
 	      return this;
 	    }
@@ -22402,8 +22260,6 @@
 	}
 
 	var DomRenderer = function () {
-
-	  // HTMLStyleElement needs fixing https://github.com/facebook/flow/issues/2696
 	  function DomRenderer(sheet) {
 	    _classCallCheck(this, DomRenderer);
 
@@ -22411,6 +22267,7 @@
 	    this.setStyle = setStyle;
 	    this.setSelector = setSelector;
 	    this.getSelector = getSelector;
+	    this.hasInsertedRules = false;
 
 	    this.sheet = sheet;
 	    // There is no sheet when the renderer is used from a standalone RegularRule.
@@ -22420,6 +22277,9 @@
 	  /**
 	   * Create and ref style element.
 	   */
+
+
+	  // HTMLStyleElement needs fixing https://github.com/facebook/flow/issues/2696
 
 
 	  _createClass(DomRenderer, [{
@@ -22446,6 +22306,15 @@
 	    value: function attach() {
 	      // In the case the element node is external and it is already in the DOM.
 	      if (this.element.parentNode || !this.sheet) return;
+
+	      // When rules are inserted using `insertRule` API, after `sheet.detach().attach()`
+	      // browsers remove those rules.
+	      // TODO figure out if its a bug and if it is known.
+	      // Workaround is to redeploy the sheet before attaching as a string.
+	      if (this.hasInsertedRules) {
+	        this.deploy();
+	        this.hasInsertedRules = false;
+	      }
 	      var prevNode = findPrevNode(this.sheet.options);
 	      getHead().insertBefore(this.element, prevNode);
 	    }
@@ -22466,8 +22335,9 @@
 
 	  }, {
 	    key: 'deploy',
-	    value: function deploy(sheet) {
-	      this.element.textContent = '\n' + sheet.toString() + '\n';
+	    value: function deploy() {
+	      if (!this.sheet) return;
+	      this.element.textContent = '\n' + this.sheet.toString() + '\n';
 	    }
 
 	    /**
@@ -22491,6 +22361,8 @@
 	        (0, _warning2['default'])(false, '[JSS] Can not insert an unsupported rule \n\r%s', rule);
 	        return false;
 	      }
+
+	      this.hasInsertedRules = true;
 
 	      return cssRules[index];
 	    }
@@ -22816,12 +22688,13 @@
 	 * Is used for e.g. by `StyleSheet` or `ConditionalRule`.
 	 */
 	var RulesContainer = function () {
-	  // Rules registry for access by .get() method.
-	  // It contains the same rule registered by name and by selector.
+
+	  // Original styles object.
 	  function RulesContainer(options) {
 	    _classCallCheck(this, RulesContainer);
 
 	    this.map = Object.create(null);
+	    this.raw = Object.create(null);
 	    this.index = [];
 
 	    this.options = options;
@@ -22837,10 +22710,13 @@
 
 	  // Used to ensure correct rules order.
 
+	  // Rules registry for access by .get() method.
+	  // It contains the same rule registered by name and by selector.
+
 
 	  _createClass(RulesContainer, [{
 	    key: 'add',
-	    value: function add(name, style, options) {
+	    value: function add(name, decl, options) {
 	      var _options = this.options,
 	          parent = _options.parent,
 	          sheet = _options.sheet,
@@ -22860,11 +22736,14 @@
 
 	      if (!options.className) options.className = this.classes[name];
 
-	      var rule = (0, _createRule2['default'])(name, style, options);
+	      this.raw[name] = decl;
+
+	      var rule = (0, _createRule2['default'])(name, decl, options);
 	      this.register(rule);
 
 	      var index = options.index === undefined ? this.index.length : options.index;
 	      this.index.splice(index, 0, rule);
+
 	      return rule;
 	    }
 
@@ -22932,9 +22811,11 @@
 	  }, {
 	    key: 'unregister',
 	    value: function unregister(rule) {
-	      delete this.map[rule.name];
+	      if (rule.name) {
+	        delete this.map[rule.name];
+	        delete this.classes[rule.name];
+	      }
 	      delete this.map[rule.selector];
-	      delete this.classes[rule.name];
 	    }
 
 	    /**
@@ -22945,15 +22826,15 @@
 	    key: 'update',
 	    value: function update(data) {
 	      this.index.forEach(function (rule) {
-	        var style = rule.originalStyle;
-	        for (var prop in style) {
-	          var value = style[prop];
-	          if (typeof value === 'function') {
-	            var computedValue = value(data);
-	            rule.prop(prop, computedValue);
+	        if (rule.type === 'regular') {
+	          for (var prop in rule.style) {
+	            var value = rule.style[prop];
+	            if (typeof value === 'function') {
+	              var computedValue = value(data);
+	              rule.prop(prop, computedValue);
+	            }
 	          }
-	        }
-	        if (rule.rules instanceof RulesContainer) {
+	        } else if (rule.rules instanceof RulesContainer) {
 	          rule.rules.update(data);
 	        }
 	      });
@@ -23007,18 +22888,22 @@
 
 	var _RegularRule2 = _interopRequireDefault(_RegularRule);
 
+	var _cloneStyle = __webpack_require__(196);
+
+	var _cloneStyle2 = _interopRequireDefault(_cloneStyle);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	/**
 	 * Create a rule instance.
 	 */
-	function createRule(name) {
-	  var decl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	  var options = arguments[2];
+	function createRule(name, decl, options) {
 	  var jss = options.jss;
 
+	  var declCopy = (0, _cloneStyle2['default'])(decl);
+
 	  if (jss) {
-	    var rule = jss.plugins.onCreateRule(name, decl, options);
+	    var rule = jss.plugins.onCreateRule(name, declCopy, options);
 	    if (rule) return rule;
 	  }
 
@@ -23027,7 +22912,7 @@
 	    (0, _warning2['default'])(false, '[JSS] Unknown at-rule %s', name);
 	  }
 
-	  return new _RegularRule2['default'](name, decl, options);
+	  return new _RegularRule2['default'](name, declCopy, options);
 	}
 
 /***/ },
@@ -23060,9 +22945,6 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var parse = JSON.parse,
-	    stringify = JSON.stringify;
-
 	var RegularRule = function () {
 
 	  /**
@@ -23080,13 +22962,11 @@
 	        sheet = options.sheet,
 	        Renderer = options.Renderer;
 
-	    var styleStr = stringify(style);
-	    this.style = parse(styleStr);
 	    this.name = name;
-	    this.options = options;
-	    this.originalStyle = style;
 	    this.className = '';
-	    if (options.className) this.className = options.className;else if (generateClassName) this.className = generateClassName(styleStr, this, options.sheet);
+	    this.options = options;
+	    this.style = style;
+	    if (options.className) this.className = options.className;else if (generateClassName) this.className = generateClassName(this, options.sheet);
 	    this.selectorText = options.selector || '.' + this.className;
 	    if (sheet) this.renderer = sheet.renderer;else if (Renderer) this.renderer = new Renderer();
 	  }
@@ -23106,22 +22986,33 @@
 	     * Get or set a style property.
 	     */
 	    value: function prop(name, value) {
+	      var $name = typeof this.style[name] === 'function' ? '$' + name : name;
+	      var currValue = this.style[$name];
+
 	      // Its a setter.
 	      if (value != null) {
 	        // Don't do anything if the value has not changed.
-	        if (this.style[name] !== value) {
-	          this.style[name] = value;
+	        if (currValue !== value) {
+	          var jss = this.options.jss;
+
+	          var newValue = jss ? jss.plugins.onChangeValue(value, name, this) : value;
+	          Object.defineProperty(this.style, $name, {
+	            value: newValue,
+	            writable: true
+	          });
 	          // Only defined if option linked is true.
-	          if (this.renderable) this.renderer.setStyle(this.renderable, name, value);
+	          if (this.renderable) this.renderer.setStyle(this.renderable, name, newValue);
 	        }
 	        return this;
 	      }
 	      // Its a getter, read the value from the DOM if its not cached.
-	      if (this.renderable && this.style[name] == null) {
-	        // Cache the value after we have got it from the DOM once.
-	        this.style[name] = this.renderer.getStyle(this.renderable, name);
+	      if (this.renderable && currValue == null) {
+	        currValue = this.renderer.getStyle(this.renderable, name);
+	        // Cache the value after we have got it from the DOM first time.
+	        this.prop(name, currValue);
 	      }
-	      return this.style[name];
+
+	      return this.style[$name];
 	    }
 
 	    /**
@@ -23140,7 +23031,7 @@
 	    /**
 	     * Returns JSON representation of the rule.
 	     * Fallbacks are not supported.
-	     * Useful as inline style.
+	     * Useful for inline styles.
 	     */
 
 	  }, {
@@ -23149,7 +23040,8 @@
 	      var json = Object.create(null);
 	      for (var prop in this.style) {
 	        var value = this.style[prop];
-	        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') json[prop] = value;else if (Array.isArray(value)) json[prop] = (0, _toCssValue2['default'])(value);
+	        var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+	        if (type === 'function') json[prop] = this.style['$' + prop];else if (type !== 'object') json[prop] = value;else if (Array.isArray(value)) json[prop] = (0, _toCssValue2['default'])(value);
 	      }
 	      return json;
 	    }
@@ -23285,6 +23177,9 @@
 
 	  for (var _prop2 in style) {
 	    var _value2 = style[_prop2];
+	    if (typeof _value2 === 'function') {
+	      _value2 = style['$' + _prop2];
+	    }
 	    if (_value2 != null && _prop2 !== 'fallbacks') {
 	      result += '\n' + indentStr(_prop2 + ': ' + (0, _toCssValue2['default'])(_value2) + ';', indent);
 	    }
@@ -23363,7 +23258,51 @@
 	  value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.default = cloneStyle;
+	var isArray = Array.isArray;
+	function cloneStyle(style) {
+	  // Support empty values in case user ends up with them by accident.
+	  if (style == null) return style;
+
+	  // Support string value for SimpleRule.
+	  var typeOfStyle = typeof style === 'undefined' ? 'undefined' : _typeof(style);
+	  if (typeOfStyle === 'string' || typeOfStyle === 'number') return style;
+
+	  // Support array for FontFaceRule.
+	  if (isArray(style)) return style.map(cloneStyle);
+
+	  var newStyle = {};
+	  for (var name in style) {
+	    var value = style[name];
+	    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+	      newStyle[name] = cloneStyle(value);
+	      continue;
+	    }
+	    newStyle[name] = value;
+	  }
+
+	  return newStyle;
+	}
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _warning = __webpack_require__(186);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23371,9 +23310,13 @@
 	  function PluginsRegistry() {
 	    _classCallCheck(this, PluginsRegistry);
 
-	    this.ruleCreators = [];
-	    this.ruleProcessors = [];
-	    this.sheetProcessors = [];
+	    this.hooks = {
+	      onCreateRule: [],
+	      onProcessRule: [],
+	      onProcessStyle: [],
+	      onProcessSheet: [],
+	      onChangeValue: []
+	    };
 	  }
 
 	  _createClass(PluginsRegistry, [{
@@ -23384,8 +23327,8 @@
 	     * Call `onCreateRule` hooks and return an object if returned by a hook.
 	     */
 	    value: function onCreateRule(name, decl, options) {
-	      for (var i = 0; i < this.ruleCreators.length; i++) {
-	        var rule = this.ruleCreators[i](name, decl, options);
+	      for (var i = 0; i < this.hooks.onCreateRule.length; i++) {
+	        var rule = this.hooks.onCreateRule[i](name, decl, options);
 	        if (rule) return rule;
 	      }
 	      return null;
@@ -23399,10 +23342,25 @@
 	    key: 'onProcessRule',
 	    value: function onProcessRule(rule) {
 	      if (rule.isProcessed) return;
-	      for (var i = 0; i < this.ruleProcessors.length; i++) {
-	        this.ruleProcessors[i](rule, rule.options.sheet);
+	      var sheet = rule.options.sheet;
+
+	      for (var i = 0; i < this.hooks.onProcessRule.length; i++) {
+	        this.hooks.onProcessRule[i](rule, sheet);
 	      }
+	      if (rule.style) this.onProcessStyle(rule.style, rule, sheet);
 	      rule.isProcessed = true;
+	    }
+
+	    /**
+	     * Call `onProcessStyle` hooks.
+	     */
+
+	  }, {
+	    key: 'onProcessStyle',
+	    value: function onProcessStyle(style, rule, sheet) {
+	      for (var i = 0; i < this.hooks.onProcessStyle.length; i++) {
+	        rule.style = style = this.hooks.onProcessStyle[i](style, rule, sheet);
+	      }
 	    }
 
 	    /**
@@ -23412,9 +23370,23 @@
 	  }, {
 	    key: 'onProcessSheet',
 	    value: function onProcessSheet(sheet) {
-	      for (var i = 0; i < this.sheetProcessors.length; i++) {
-	        this.sheetProcessors[i](sheet);
+	      for (var i = 0; i < this.hooks.onProcessSheet.length; i++) {
+	        this.hooks.onProcessSheet[i](sheet);
 	      }
+	    }
+
+	    /**
+	     * Call `onChangeValue` hooks.
+	     */
+
+	  }, {
+	    key: 'onChangeValue',
+	    value: function onChangeValue(value, prop, rule) {
+	      var processedValue = value;
+	      for (var i = 0; i < this.hooks.onChangeValue.length; i++) {
+	        processedValue = this.hooks.onChangeValue[i](processedValue, prop, rule);
+	      }
+	      return processedValue;
 	    }
 
 	    /**
@@ -23425,14 +23397,9 @@
 	  }, {
 	    key: 'use',
 	    value: function use(plugin) {
-	      if (typeof plugin === 'function') {
-	        this.ruleProcessors.push(plugin);
-	        return;
+	      for (var name in plugin) {
+	        if (this.hooks[name]) this.hooks[name].push(plugin[name]);else (0, _warning2['default'])(false, '[JSS] Unknown hook "%s".', name);
 	      }
-
-	      if (plugin.onCreateRule) this.ruleCreators.push(plugin.onCreateRule);
-	      if (plugin.onProcessRule) this.ruleProcessors.push(plugin.onProcessRule);
-	      if (plugin.onProcessSheet) this.sheetProcessors.push(plugin.onProcessSheet);
 	    }
 	  }]);
 
@@ -23442,7 +23409,7 @@
 	exports['default'] = PluginsRegistry;
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23451,23 +23418,23 @@
 	  value: true
 	});
 
-	var _SimpleRule = __webpack_require__(198);
+	var _SimpleRule = __webpack_require__(199);
 
 	var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
 
-	var _KeyframeRule = __webpack_require__(199);
+	var _KeyframeRule = __webpack_require__(200);
 
 	var _KeyframeRule2 = _interopRequireDefault(_KeyframeRule);
 
-	var _ConditionalRule = __webpack_require__(200);
+	var _ConditionalRule = __webpack_require__(201);
 
 	var _ConditionalRule2 = _interopRequireDefault(_ConditionalRule);
 
-	var _FontFaceRule = __webpack_require__(201);
+	var _FontFaceRule = __webpack_require__(202);
 
 	var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 
-	var _ViewportRule = __webpack_require__(202);
+	var _ViewportRule = __webpack_require__(203);
 
 	var _ViewportRule2 = _interopRequireDefault(_ViewportRule);
 
@@ -23499,7 +23466,7 @@
 	});
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23550,7 +23517,7 @@
 	exports['default'] = SimpleRule;
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23628,7 +23595,7 @@
 	exports['default'] = KeyframeRule;
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23720,7 +23687,7 @@
 	exports['default'] = ConditionalRule;
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23777,7 +23744,7 @@
 	exports['default'] = FontFaceRule;
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23825,7 +23792,7 @@
 	exports['default'] = ViewportRule;
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -23847,7 +23814,7 @@
 	 * Generates unique class names.
 	 */
 
-	exports['default'] = function (str, rule) {
+	exports['default'] = function (rule) {
 	  return (
 	    // There is no rule name if `jss.createRule(style)` was used.
 	    (rule.name || 'jss') + '-' + jssCounter + '-' + ruleCounter++
@@ -23856,7 +23823,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23871,11 +23838,9 @@
 	 * Extracts a styles object with only props that contain function values.
 	 */
 	exports['default'] = function (styles) {
-	  var fnValuesCounter = 0;
-
 	  // eslint-disable-next-line no-shadow
 	  function extract(styles) {
-	    var to = void 0;
+	    var to = null;
 
 	    for (var key in styles) {
 	      var value = styles[key];
@@ -23884,23 +23849,23 @@
 	      if (type === 'function') {
 	        if (!to) to = {};
 	        to[key] = value;
-	        fnValuesCounter++;
 	      } else if (type === 'object' && value !== null && !Array.isArray(value)) {
-	        if (!to) to = {};
-	        var _extracted = extract(value);
-	        if (_extracted) to[key] = _extracted;
+	        var extracted = extract(value);
+	        if (extracted) {
+	          if (!to) to = {};
+	          to[key] = extracted;
+	        }
 	      }
 	    }
 
 	    return to;
 	  }
 
-	  var extracted = extract(styles);
-	  return fnValuesCounter ? extracted : null;
+	  return extract(styles);
 	};
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23909,39 +23874,974 @@
 	  value: true
 	});
 
-	var _jssExtend = __webpack_require__(206);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _propTypes = __webpack_require__(207);
+
+	var _jss = __webpack_require__(180);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SheetsRegistryProvider = function (_Component) {
+	  _inherits(SheetsRegistryProvider, _Component);
+
+	  function SheetsRegistryProvider() {
+	    _classCallCheck(this, SheetsRegistryProvider);
+
+	    return _possibleConstructorReturn(this, (SheetsRegistryProvider.__proto__ || Object.getPrototypeOf(SheetsRegistryProvider)).apply(this, arguments));
+	  }
+
+	  _createClass(SheetsRegistryProvider, [{
+	    key: 'getChildContext',
+	    value: function getChildContext() {
+	      return {
+	        jssSheetsRegistry: this.props.registry
+	      };
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var children = this.props.children;
+
+	      return _react.Children.count(children) > 1 ? _react2['default'].createElement(
+	        'div',
+	        null,
+	        children
+	      ) : children;
+	    }
+	  }]);
+
+	  return SheetsRegistryProvider;
+	}(_react.Component);
+
+	SheetsRegistryProvider.propTypes = {
+	  registry: (0, _propTypes.instanceOf)(_jss.SheetsRegistry).isRequired,
+	  children: _propTypes.node.isRequired
+	};
+	SheetsRegistryProvider.childContextTypes = {
+	  jssSheetsRegistry: (0, _propTypes.instanceOf)(_jss.SheetsRegistry).isRequired
+	};
+	exports['default'] = SheetsRegistryProvider;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+	    Symbol.for &&
+	    Symbol.for('react.element')) ||
+	    0xeac7;
+
+	  var isValidElement = function(object) {
+	    return typeof object === 'object' &&
+	      object !== null &&
+	      object.$$typeof === REACT_ELEMENT_TYPE;
+	  };
+
+	  // By explicitly using `prop-types` you are opting into new development behavior.
+	  // http://fb.me/prop-types-in-prod
+	  var throwOnDirectAccess = true;
+	  module.exports = __webpack_require__(208)(isValidElement, throwOnDirectAccess);
+	} else {
+	  // By explicitly using `prop-types` you are opting into new production behavior.
+	  // http://fb.me/prop-types-in-prod
+	  module.exports = __webpack_require__(214)();
+	}
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 208 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	var emptyFunction = __webpack_require__(209);
+	var invariant = __webpack_require__(210);
+	var warning = __webpack_require__(211);
+
+	var ReactPropTypesSecret = __webpack_require__(212);
+	var checkPropTypes = __webpack_require__(213);
+
+	module.exports = function(isValidElement, throwOnDirectAccess) {
+	  /* global Symbol */
+	  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+	  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+	  /**
+	   * Returns the iterator method function contained on the iterable object.
+	   *
+	   * Be sure to invoke the function with the iterable as context:
+	   *
+	   *     var iteratorFn = getIteratorFn(myIterable);
+	   *     if (iteratorFn) {
+	   *       var iterator = iteratorFn.call(myIterable);
+	   *       ...
+	   *     }
+	   *
+	   * @param {?object} maybeIterable
+	   * @return {?function}
+	   */
+	  function getIteratorFn(maybeIterable) {
+	    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+	    if (typeof iteratorFn === 'function') {
+	      return iteratorFn;
+	    }
+	  }
+
+	  /**
+	   * Collection of methods that allow declaration and validation of props that are
+	   * supplied to React components. Example usage:
+	   *
+	   *   var Props = require('ReactPropTypes');
+	   *   var MyArticle = React.createClass({
+	   *     propTypes: {
+	   *       // An optional string prop named "description".
+	   *       description: Props.string,
+	   *
+	   *       // A required enum prop named "category".
+	   *       category: Props.oneOf(['News','Photos']).isRequired,
+	   *
+	   *       // A prop named "dialog" that requires an instance of Dialog.
+	   *       dialog: Props.instanceOf(Dialog).isRequired
+	   *     },
+	   *     render: function() { ... }
+	   *   });
+	   *
+	   * A more formal specification of how these methods are used:
+	   *
+	   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+	   *   decl := ReactPropTypes.{type}(.isRequired)?
+	   *
+	   * Each and every declaration produces a function with the same signature. This
+	   * allows the creation of custom validation functions. For example:
+	   *
+	   *  var MyLink = React.createClass({
+	   *    propTypes: {
+	   *      // An optional string or URI prop named "href".
+	   *      href: function(props, propName, componentName) {
+	   *        var propValue = props[propName];
+	   *        if (propValue != null && typeof propValue !== 'string' &&
+	   *            !(propValue instanceof URI)) {
+	   *          return new Error(
+	   *            'Expected a string or an URI for ' + propName + ' in ' +
+	   *            componentName
+	   *          );
+	   *        }
+	   *      }
+	   *    },
+	   *    render: function() {...}
+	   *  });
+	   *
+	   * @internal
+	   */
+
+	  var ANONYMOUS = '<<anonymous>>';
+
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+	  var ReactPropTypes = {
+	    array: createPrimitiveTypeChecker('array'),
+	    bool: createPrimitiveTypeChecker('boolean'),
+	    func: createPrimitiveTypeChecker('function'),
+	    number: createPrimitiveTypeChecker('number'),
+	    object: createPrimitiveTypeChecker('object'),
+	    string: createPrimitiveTypeChecker('string'),
+	    symbol: createPrimitiveTypeChecker('symbol'),
+
+	    any: createAnyTypeChecker(),
+	    arrayOf: createArrayOfTypeChecker,
+	    element: createElementTypeChecker(),
+	    instanceOf: createInstanceTypeChecker,
+	    node: createNodeChecker(),
+	    objectOf: createObjectOfTypeChecker,
+	    oneOf: createEnumTypeChecker,
+	    oneOfType: createUnionTypeChecker,
+	    shape: createShapeTypeChecker
+	  };
+
+	  /**
+	   * inlined Object.is polyfill to avoid requiring consumers ship their own
+	   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+	   */
+	  /*eslint-disable no-self-compare*/
+	  function is(x, y) {
+	    // SameValue algorithm
+	    if (x === y) {
+	      // Steps 1-5, 7-10
+	      // Steps 6.b-6.e: +0 != -0
+	      return x !== 0 || 1 / x === 1 / y;
+	    } else {
+	      // Step 6.a: NaN == NaN
+	      return x !== x && y !== y;
+	    }
+	  }
+	  /*eslint-enable no-self-compare*/
+
+	  /**
+	   * We use an Error-like object for backward compatibility as people may call
+	   * PropTypes directly and inspect their output. However, we don't use real
+	   * Errors anymore. We don't inspect their stack anyway, and creating them
+	   * is prohibitively expensive if they are created too often, such as what
+	   * happens in oneOfType() for any type before the one that matched.
+	   */
+	  function PropTypeError(message) {
+	    this.message = message;
+	    this.stack = '';
+	  }
+	  // Make `instanceof Error` still work for returned errors.
+	  PropTypeError.prototype = Error.prototype;
+
+	  function createChainableTypeChecker(validate) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      var manualPropTypeCallCache = {};
+	      var manualPropTypeWarningCount = 0;
+	    }
+	    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+	      componentName = componentName || ANONYMOUS;
+	      propFullName = propFullName || propName;
+
+	      if (secret !== ReactPropTypesSecret) {
+	        if (throwOnDirectAccess) {
+	          // New behavior only for users of `prop-types` package
+	          invariant(
+	            false,
+	            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	            'Use `PropTypes.checkPropTypes()` to call them. ' +
+	            'Read more at http://fb.me/use-check-prop-types'
+	          );
+	        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+	          // Old behavior for people using React.PropTypes
+	          var cacheKey = componentName + ':' + propName;
+	          if (
+	            !manualPropTypeCallCache[cacheKey] &&
+	            // Avoid spamming the console because they are often not actionable except for lib authors
+	            manualPropTypeWarningCount < 3
+	          ) {
+	            warning(
+	              false,
+	              'You are manually calling a React.PropTypes validation ' +
+	              'function for the `%s` prop on `%s`. This is deprecated ' +
+	              'and will throw in the standalone `prop-types` package. ' +
+	              'You may be seeing this warning due to a third-party PropTypes ' +
+	              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+	              propFullName,
+	              componentName
+	            );
+	            manualPropTypeCallCache[cacheKey] = true;
+	            manualPropTypeWarningCount++;
+	          }
+	        }
+	      }
+	      if (props[propName] == null) {
+	        if (isRequired) {
+	          if (props[propName] === null) {
+	            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+	          }
+	          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+	        }
+	        return null;
+	      } else {
+	        return validate(props, propName, componentName, location, propFullName);
+	      }
+	    }
+
+	    var chainedCheckType = checkType.bind(null, false);
+	    chainedCheckType.isRequired = checkType.bind(null, true);
+
+	    return chainedCheckType;
+	  }
+
+	  function createPrimitiveTypeChecker(expectedType) {
+	    function validate(props, propName, componentName, location, propFullName, secret) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== expectedType) {
+	        // `propValue` being instance of, say, date/regexp, pass the 'object'
+	        // check, but we can offer a more precise error message here rather than
+	        // 'of type `object`'.
+	        var preciseType = getPreciseType(propValue);
+
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createAnyTypeChecker() {
+	    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
+	  }
+
+	  function createArrayOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+	      }
+	      var propValue = props[propName];
+	      if (!Array.isArray(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+	      }
+	      for (var i = 0; i < propValue.length; i++) {
+	        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+	        if (error instanceof Error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createElementTypeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      if (!isValidElement(propValue)) {
+	        var propType = getPropType(propValue);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createInstanceTypeChecker(expectedClass) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!(props[propName] instanceof expectedClass)) {
+	        var expectedClassName = expectedClass.name || ANONYMOUS;
+	        var actualClassName = getClassName(props[propName]);
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createEnumTypeChecker(expectedValues) {
+	    if (!Array.isArray(expectedValues)) {
+	      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+	      return emptyFunction.thatReturnsNull;
+	    }
+
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      for (var i = 0; i < expectedValues.length; i++) {
+	        if (is(propValue, expectedValues[i])) {
+	          return null;
+	        }
+	      }
+
+	      var valuesString = JSON.stringify(expectedValues);
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createObjectOfTypeChecker(typeChecker) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (typeof typeChecker !== 'function') {
+	        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+	      }
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+	      }
+	      for (var key in propValue) {
+	        if (propValue.hasOwnProperty(key)) {
+	          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	          if (error instanceof Error) {
+	            return error;
+	          }
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createUnionTypeChecker(arrayOfTypeCheckers) {
+	    if (!Array.isArray(arrayOfTypeCheckers)) {
+	      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+	      return emptyFunction.thatReturnsNull;
+	    }
+
+	    function validate(props, propName, componentName, location, propFullName) {
+	      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+	        var checker = arrayOfTypeCheckers[i];
+	        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+	          return null;
+	        }
+	      }
+
+	      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createNodeChecker() {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      if (!isNode(props[propName])) {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function createShapeTypeChecker(shapeTypes) {
+	    function validate(props, propName, componentName, location, propFullName) {
+	      var propValue = props[propName];
+	      var propType = getPropType(propValue);
+	      if (propType !== 'object') {
+	        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+	      }
+	      for (var key in shapeTypes) {
+	        var checker = shapeTypes[key];
+	        if (!checker) {
+	          continue;
+	        }
+	        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+	        if (error) {
+	          return error;
+	        }
+	      }
+	      return null;
+	    }
+	    return createChainableTypeChecker(validate);
+	  }
+
+	  function isNode(propValue) {
+	    switch (typeof propValue) {
+	      case 'number':
+	      case 'string':
+	      case 'undefined':
+	        return true;
+	      case 'boolean':
+	        return !propValue;
+	      case 'object':
+	        if (Array.isArray(propValue)) {
+	          return propValue.every(isNode);
+	        }
+	        if (propValue === null || isValidElement(propValue)) {
+	          return true;
+	        }
+
+	        var iteratorFn = getIteratorFn(propValue);
+	        if (iteratorFn) {
+	          var iterator = iteratorFn.call(propValue);
+	          var step;
+	          if (iteratorFn !== propValue.entries) {
+	            while (!(step = iterator.next()).done) {
+	              if (!isNode(step.value)) {
+	                return false;
+	              }
+	            }
+	          } else {
+	            // Iterator will provide entry [k,v] tuples rather than values.
+	            while (!(step = iterator.next()).done) {
+	              var entry = step.value;
+	              if (entry) {
+	                if (!isNode(entry[1])) {
+	                  return false;
+	                }
+	              }
+	            }
+	          }
+	        } else {
+	          return false;
+	        }
+
+	        return true;
+	      default:
+	        return false;
+	    }
+	  }
+
+	  function isSymbol(propType, propValue) {
+	    // Native Symbol.
+	    if (propType === 'symbol') {
+	      return true;
+	    }
+
+	    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+	    if (propValue['@@toStringTag'] === 'Symbol') {
+	      return true;
+	    }
+
+	    // Fallback for non-spec compliant Symbols which are polyfilled.
+	    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+	      return true;
+	    }
+
+	    return false;
+	  }
+
+	  // Equivalent of `typeof` but with special handling for array and regexp.
+	  function getPropType(propValue) {
+	    var propType = typeof propValue;
+	    if (Array.isArray(propValue)) {
+	      return 'array';
+	    }
+	    if (propValue instanceof RegExp) {
+	      // Old webkits (at least until Android 4.0) return 'function' rather than
+	      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+	      // passes PropTypes.object.
+	      return 'object';
+	    }
+	    if (isSymbol(propType, propValue)) {
+	      return 'symbol';
+	    }
+	    return propType;
+	  }
+
+	  // This handles more types than `getPropType`. Only used for error messages.
+	  // See `createPrimitiveTypeChecker`.
+	  function getPreciseType(propValue) {
+	    var propType = getPropType(propValue);
+	    if (propType === 'object') {
+	      if (propValue instanceof Date) {
+	        return 'date';
+	      } else if (propValue instanceof RegExp) {
+	        return 'regexp';
+	      }
+	    }
+	    return propType;
+	  }
+
+	  // Returns class name of the object, if any.
+	  function getClassName(propValue) {
+	    if (!propValue.constructor || !propValue.constructor.name) {
+	      return ANONYMOUS;
+	    }
+	    return propValue.constructor.name;
+	  }
+
+	  ReactPropTypes.checkPropTypes = checkPropTypes;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 209 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * 
+	 */
+
+	function makeEmptyFunction(arg) {
+	  return function () {
+	    return arg;
+	  };
+	}
+
+	/**
+	 * This function accepts and discards inputs; it has no side effects. This is
+	 * primarily useful idiomatically for overridable function endpoints which
+	 * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+	 */
+	var emptyFunction = function emptyFunction() {};
+
+	emptyFunction.thatReturns = makeEmptyFunction;
+	emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+	emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+	emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+	emptyFunction.thatReturnsThis = function () {
+	  return this;
+	};
+	emptyFunction.thatReturnsArgument = function (arg) {
+	  return arg;
+	};
+
+	module.exports = emptyFunction;
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright (c) 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var validateFormat = function validateFormat(format) {};
+
+	if (process.env.NODE_ENV !== 'production') {
+	  validateFormat = function validateFormat(format) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  };
+	}
+
+	function invariant(condition, format, a, b, c, d, e, f) {
+	  validateFormat(format);
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      }));
+	      error.name = 'Invariant Violation';
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	}
+
+	module.exports = invariant;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2014-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 */
+
+	'use strict';
+
+	var emptyFunction = __webpack_require__(209);
+
+	/**
+	 * Similar to invariant but only logs a warning if the condition is not met.
+	 * This can be used to log issues in development environments in critical
+	 * paths. Removing the logging code for production environments will keep the
+	 * same logic and follow the same code paths.
+	 */
+
+	var warning = emptyFunction;
+
+	if (process.env.NODE_ENV !== 'production') {
+	  (function () {
+	    var printWarning = function printWarning(format) {
+	      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        args[_key - 1] = arguments[_key];
+	      }
+
+	      var argIndex = 0;
+	      var message = 'Warning: ' + format.replace(/%s/g, function () {
+	        return args[argIndex++];
+	      });
+	      if (typeof console !== 'undefined') {
+	        console.error(message);
+	      }
+	      try {
+	        // --- Welcome to debugging React ---
+	        // This error was thrown as a convenience so that you can use this stack
+	        // to find the callsite that caused this warning to fire.
+	        throw new Error(message);
+	      } catch (x) {}
+	    };
+
+	    warning = function warning(condition, format) {
+	      if (format === undefined) {
+	        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+	      }
+
+	      if (format.indexOf('Failed Composite propType: ') === 0) {
+	        return; // Ignore CompositeComponent proptype check.
+	      }
+
+	      if (!condition) {
+	        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	          args[_key2 - 2] = arguments[_key2];
+	        }
+
+	        printWarning.apply(undefined, [format].concat(args));
+	      }
+	    };
+	  })();
+	}
+
+	module.exports = warning;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 212 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+	module.exports = ReactPropTypesSecret;
+
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	if (process.env.NODE_ENV !== 'production') {
+	  var invariant = __webpack_require__(210);
+	  var warning = __webpack_require__(211);
+	  var ReactPropTypesSecret = __webpack_require__(212);
+	  var loggedTypeFailures = {};
+	}
+
+	/**
+	 * Assert that the values match with the type specs.
+	 * Error messages are memorized and will only be shown once.
+	 *
+	 * @param {object} typeSpecs Map of name to a ReactPropType
+	 * @param {object} values Runtime values that need to be type-checked
+	 * @param {string} location e.g. "prop", "context", "child context"
+	 * @param {string} componentName Name of the component for error messages.
+	 * @param {?Function} getStack Returns the component stack.
+	 * @private
+	 */
+	function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    for (var typeSpecName in typeSpecs) {
+	      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+	        var error;
+	        // Prop type validation may throw. In case they do, we don't want to
+	        // fail the render phase where it didn't fail before. So we log it.
+	        // After these have been cleaned up, we'll let them throw.
+	        try {
+	          // This is intentionally an invariant that gets caught. It's the same
+	          // behavior as without this statement except with a better message.
+	          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
+	          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+	        } catch (ex) {
+	          error = ex;
+	        }
+	        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+	        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+	          // Only monitor this failure once because there tends to be a lot of the
+	          // same error.
+	          loggedTypeFailures[error.message] = true;
+
+	          var stack = getStack ? getStack() : '';
+
+	          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+	        }
+	      }
+	    }
+	  }
+	}
+
+	module.exports = checkPropTypes;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 214 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 */
+
+	'use strict';
+
+	var emptyFunction = __webpack_require__(209);
+	var invariant = __webpack_require__(210);
+
+	module.exports = function() {
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+	  function shim() {
+	    invariant(
+	      false,
+	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+	      'Use PropTypes.checkPropTypes() to call them. ' +
+	      'Read more at http://fb.me/use-check-prop-types'
+	    );
+	  };
+	  shim.isRequired = shim;
+	  function getShim() {
+	    return shim;
+	  };
+	  var ReactPropTypes = {
+	    array: shim,
+	    bool: shim,
+	    func: shim,
+	    number: shim,
+	    object: shim,
+	    string: shim,
+	    symbol: shim,
+
+	    any: shim,
+	    arrayOf: getShim,
+	    element: shim,
+	    instanceOf: getShim,
+	    node: shim,
+	    objectOf: getShim,
+	    oneOf: getShim,
+	    oneOfType: getShim,
+	    shape: getShim
+	  };
+
+	  ReactPropTypes.checkPropTypes = emptyFunction;
+	  ReactPropTypes.PropTypes = ReactPropTypes;
+
+	  return ReactPropTypes;
+	};
+
+
+/***/ },
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _jss = __webpack_require__(180);
+
+	var _jssPresetDefault = __webpack_require__(216);
+
+	var _jssPresetDefault2 = _interopRequireDefault(_jssPresetDefault);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	exports['default'] = (0, _jss.create)((0, _jssPresetDefault2['default'])());
+
+/***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _jssExtend = __webpack_require__(217);
 
 	var _jssExtend2 = _interopRequireDefault(_jssExtend);
 
-	var _jssNested = __webpack_require__(207);
+	var _jssNested = __webpack_require__(218);
 
 	var _jssNested2 = _interopRequireDefault(_jssNested);
 
-	var _jssCamelCase = __webpack_require__(208);
+	var _jssCamelCase = __webpack_require__(219);
 
 	var _jssCamelCase2 = _interopRequireDefault(_jssCamelCase);
 
-	var _jssDefaultUnit = __webpack_require__(209);
+	var _jssDefaultUnit = __webpack_require__(220);
 
 	var _jssDefaultUnit2 = _interopRequireDefault(_jssDefaultUnit);
 
-	var _jssVendorPrefixer = __webpack_require__(211);
+	var _jssVendorPrefixer = __webpack_require__(222);
 
 	var _jssVendorPrefixer2 = _interopRequireDefault(_jssVendorPrefixer);
 
-	var _jssPropsSort = __webpack_require__(217);
+	var _jssPropsSort = __webpack_require__(228);
 
 	var _jssPropsSort2 = _interopRequireDefault(_jssPropsSort);
 
-	var _jssCompose = __webpack_require__(218);
+	var _jssCompose = __webpack_require__(229);
 
 	var _jssCompose2 = _interopRequireDefault(_jssCompose);
 
-	var _jssExpand = __webpack_require__(219);
+	var _jssExpand = __webpack_require__(230);
 
 	var _jssExpand2 = _interopRequireDefault(_jssExpand);
 
-	var _jssGlobal = __webpack_require__(221);
+	var _jssGlobal = __webpack_require__(232);
 
 	var _jssGlobal2 = _interopRequireDefault(_jssGlobal);
 
@@ -23955,7 +24855,7 @@
 	};
 
 /***/ },
-/* 206 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23966,38 +24866,45 @@
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+	exports['default'] = jssExtend;
+
 	var _warning = __webpack_require__(186);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	function isObject(obj) {
+	var isObject = function isObject(obj) {
 	  return obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && !Array.isArray(obj);
-	}
+	};
 
 	/**
 	 * Recursively extend styles.
 	 */
-	function extend(rule, newStyle, style) {
-	  if (typeof style.extend == 'string') {
-	    if (rule.options && rule.options.sheet) {
-	      var refRule = rule.options.sheet.getRule(style.extend);
+	function extend(style, rule, sheet) {
+	  var newStyle = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
+	  if (typeof style.extend === 'string') {
+	    if (sheet) {
+	      var refRule = sheet.getRule(style.extend);
 	      if (refRule) {
-	        if (refRule === rule) (0, _warning2['default'])(false, '[JSS] A rule tries to extend itself \r\n%s', rule);else extend(rule, newStyle, refRule.originalStyle);
+	        if (refRule === rule) (0, _warning2['default'])(false, '[JSS] A rule tries to extend itself \r\n%s', rule);else if (refRule.options.parent) {
+	          var originalStyle = refRule.options.parent.rules.raw[style.extend];
+	          extend(originalStyle, rule, sheet, newStyle);
+	        }
 	      }
 	    }
 	  } else if (Array.isArray(style.extend)) {
 	    for (var index = 0; index < style.extend.length; index++) {
-	      extend(rule, newStyle, style.extend[index]);
+	      extend(style.extend[index], rule, sheet, newStyle);
 	    }
 	  } else {
 	    for (var prop in style.extend) {
 	      if (prop === 'extend') {
-	        extend(rule, newStyle, style.extend.extend);
+	        extend(style.extend.extend, rule, sheet, newStyle);
 	      } else if (isObject(style.extend[prop])) {
 	        if (!newStyle[prop]) newStyle[prop] = {};
-	        extend(rule, newStyle[prop], style.extend[prop]);
+	        extend(style.extend[prop], rule, sheet, newStyle[prop]);
 	      } else {
 	        newStyle[prop] = style.extend[prop];
 	      }
@@ -24007,7 +24914,9 @@
 	  for (var _prop in style) {
 	    if (_prop === 'extend') continue;
 	    if (isObject(newStyle[_prop]) && isObject(style[_prop])) {
-	      extend(rule, newStyle[_prop], style[_prop]);
+	      extend(style[_prop], rule, sheet, newStyle[_prop]);
+	    } else if (isObject(style[_prop])) {
+	      newStyle[_prop] = extend(style[_prop], rule, sheet);
 	    } else {
 	      newStyle[_prop] = style[_prop];
 	    }
@@ -24022,16 +24931,16 @@
 	 * @param {Rule} rule
 	 * @api public
 	 */
+	function jssExtend() {
+	  function onProcessStyle(style, rule, sheet) {
+	    return style.extend ? extend(style, rule, sheet) : style;
+	  }
 
-	exports['default'] = function () {
-	  return function (rule) {
-	    if (!rule.style || !rule.style.extend) return;
-	    rule.style = extend(rule, {}, rule.style);
-	  };
-	};
+	  return { onProcessStyle: onProcessStyle };
+	}
 
 /***/ },
-/* 207 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24068,7 +24977,7 @@
 	    return function (match, name) {
 	      var rule = container.getRule(name);
 	      if (rule) return rule.selector;
-	      (0, _warning2.default)(false, '[JSS] Could not find the referenced rule %s. \r\n%s', name, rule);
+	      (0, _warning2.default)(false, '[JSS] Could not find the referenced rule %s in %s.', name, container.options.meta || container);
 	      return name;
 	    };
 	  }
@@ -24111,13 +25020,13 @@
 	    });
 	  }
 
-	  return function (rule) {
-	    if (rule.type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'regular') return style;
 	    var container = rule.options.parent;
 	    var options = void 0;
 	    var replaceRef = void 0;
 
-	    for (var prop in rule.style) {
+	    for (var prop in style) {
 	      var isNested = hasAnd(prop);
 	      var isNestedConditional = prop[0] === '@';
 
@@ -24133,19 +25042,23 @@
 	        // Replace all $refs.
 	        selector = selector.replace(refRegExp, replaceRef);
 
-	        container.addRule(selector, rule.style[prop], _extends({}, options, { selector: selector }));
+	        container.addRule(selector, style[prop], _extends({}, options, { selector: selector }));
 	      } else if (isNestedConditional) {
 	        // Place conditional right after the parent rule to ensure right ordering.
-	        container.addRule(prop, _defineProperty({}, rule.name, rule.style[prop]), options);
+	        container.addRule(prop, _defineProperty({}, rule.name, style[prop]), options);
 	      }
 
-	      delete rule.style[prop];
+	      delete style[prop];
 	    }
-	  };
+
+	    return style;
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
 	}
 
 /***/ },
-/* 208 */
+/* 219 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24153,6 +25066,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports["default"] = camelCase;
 	var regExp = /([A-Z])/g;
 
 	/**
@@ -24171,12 +25085,10 @@
 	 * @return {Object}
 	 */
 	function convertCase(style) {
-	  var converted = {};
+	  var converted = Object.create(null);
 
 	  for (var prop in style) {
-	    var value = style[prop];
-	    prop = prop.replace(regExp, replace);
-	    converted[prop] = value;
+	    converted[prop.replace(regExp, replace)] = style[prop];
 	  }
 
 	  if (style.fallbacks) {
@@ -24191,27 +25103,24 @@
 	 *
 	 * @param {Rule} rule
 	 */
-
-	exports["default"] = function () {
-	  return function (rule) {
-	    var style = rule.style;
-
-	    if (!style) return;
-
+	function camelCase() {
+	  function onProcessStyle(style) {
 	    if (Array.isArray(style)) {
 	      // Handle rules like @font-face, which can have multiple styles in an array
 	      for (var index = 0; index < style.length; index++) {
 	        style[index] = convertCase(style[index]);
 	      }
-	      return;
+	      return style;
 	    }
 
-	    rule.style = convertCase(style);
-	  };
-	};
+	    return convertCase(style);
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
+	}
 
 /***/ },
-/* 209 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24221,7 +25130,7 @@
 	});
 	exports['default'] = defaultUnit;
 
-	var _defaultUnits = __webpack_require__(210);
+	var _defaultUnits = __webpack_require__(221);
 
 	var _defaultUnits2 = _interopRequireDefault(_defaultUnits);
 
@@ -24257,6 +25166,7 @@
 	  if (!value) return value;
 
 	  var convertedValue = value;
+
 	  switch (value.constructor) {
 	    case Object:
 	      if (prop === 'fallbacks') {
@@ -24308,19 +25218,27 @@
 	function defaultUnit() {
 	  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-	  return function (rule) {
-	    var style = rule.style,
-	        type = rule.type;
+	  var camelCasedOptions = addCamelCasedVersion(options);
 
-	    if (!style || type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'regular') return style;
+
 	    for (var prop in style) {
-	      style[prop] = iterate(prop, style[prop], addCamelCasedVersion(options));
+	      style[prop] = iterate(prop, style[prop], camelCasedOptions);
 	    }
-	  };
+
+	    return style;
+	  }
+
+	  function onChangeValue(value, prop) {
+	    return iterate(prop, value, camelCasedOptions);
+	  }
+
+	  return { onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
 	}
 
 /***/ },
-/* 210 */
+/* 221 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24330,7 +25248,8 @@
 	});
 	/**
 	 * Generated jss-default-unit CSS property units
-	 * @object
+	 *
+	 * @type object
 	 */
 	exports['default'] = {
 	  'animation-delay': 'ms',
@@ -24363,16 +25282,11 @@
 	  'border-vertical-spacing': 'px',
 	  bottom: 'px',
 	  'box-shadow': 'px',
-	  'box-shadow-x': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-y': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-blur': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'box-shadow-spread': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'column-gap': 'px',
 	  'column-rule': 'px',
 	  'column-rule-width': 'px',
 	  'column-width': 'px',
 	  'flex-basis': 'px',
-	  'font-line-height': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'font-size': 'px',
 	  'font-size-delta': 'px',
 	  height: 'px',
@@ -24421,9 +25335,6 @@
 	  'shape-margin': 'px',
 	  size: 'px',
 	  'text-indent': 'px',
-	  'text-shadow-x': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'text-shadow-y': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
-	  'text-shadow-blur': 'px', // Not existing property. Used to avoid issues with jss-expand intergration
 	  'text-stroke': 'px',
 	  'text-stroke-width': 'px',
 	  top: 'px',
@@ -24435,11 +25346,21 @@
 	  'transition-duration': 'ms',
 	  'vertical-align': 'px',
 	  width: 'px',
-	  'word-spacing': 'px'
+	  'word-spacing': 'px',
+	  // Not existing properties.
+	  // Used to avoid issues with jss-expand intergration.
+	  'box-shadow-x': 'px',
+	  'box-shadow-y': 'px',
+	  'box-shadow-blur': 'px',
+	  'box-shadow-spread': 'px',
+	  'font-line-height': 'px',
+	  'text-shadow-x': 'px',
+	  'text-shadow-y': 'px',
+	  'text-shadow-blur': 'px'
 	};
 
 /***/ },
-/* 211 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24449,7 +25370,7 @@
 	});
 	exports['default'] = jssVendorPrefixer;
 
-	var _cssVendor = __webpack_require__(212);
+	var _cssVendor = __webpack_require__(223);
 
 	var vendor = _interopRequireWildcard(_cssVendor);
 
@@ -24462,16 +25383,17 @@
 	 * @api public
 	 */
 	function jssVendorPrefixer() {
-	  return function (rule) {
+	  function onProcessRule(rule) {
 	    if (rule.type === 'keyframe') {
 	      rule.selector = '@' + vendor.prefix.css + rule.selector.substr(1);
-	      return;
 	    }
+	  }
 
-	    if (rule.type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'regular') return style;
 
-	    for (var prop in rule.style) {
-	      var value = rule.style[prop];
+	    for (var prop in style) {
+	      var value = style[prop];
 
 	      var changeProp = false;
 	      var supportedProp = vendor.supportedProperty(prop);
@@ -24482,15 +25404,23 @@
 	      if (supportedValue && supportedValue !== value) changeValue = true;
 
 	      if (changeProp || changeValue) {
-	        if (changeProp) delete rule.style[prop];
-	        rule.style[supportedProp || prop] = supportedValue || value;
+	        if (changeProp) delete style[prop];
+	        style[supportedProp || prop] = supportedValue || value;
 	      }
 	    }
-	  };
+
+	    return style;
+	  }
+
+	  function onChangeValue(value, prop) {
+	    return vendor.supportedValue(prop, value);
+	  }
+
+	  return { onProcessRule: onProcessRule, onProcessStyle: onProcessStyle, onChangeValue: onChangeValue };
 	}
 
 /***/ },
-/* 212 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24500,15 +25430,15 @@
 	});
 	exports.supportedValue = exports.supportedProperty = exports.prefix = undefined;
 
-	var _prefix = __webpack_require__(213);
+	var _prefix = __webpack_require__(224);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _supportedProperty = __webpack_require__(214);
+	var _supportedProperty = __webpack_require__(225);
 
 	var _supportedProperty2 = _interopRequireDefault(_supportedProperty);
 
-	var _supportedValue = __webpack_require__(216);
+	var _supportedValue = __webpack_require__(227);
 
 	var _supportedValue2 = _interopRequireDefault(_supportedValue);
 
@@ -24531,7 +25461,7 @@
 	exports.supportedValue = _supportedValue2['default'];
 
 /***/ },
-/* 213 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24585,7 +25515,7 @@
 	exports['default'] = { js: js, css: css };
 
 /***/ },
-/* 214 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24599,11 +25529,11 @@
 
 	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-	var _prefix = __webpack_require__(213);
+	var _prefix = __webpack_require__(224);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
-	var _camelize = __webpack_require__(215);
+	var _camelize = __webpack_require__(226);
 
 	var _camelize2 = _interopRequireDefault(_camelize);
 
@@ -24662,7 +25592,7 @@
 	}
 
 /***/ },
-/* 215 */
+/* 226 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24688,7 +25618,7 @@
 	}
 
 /***/ },
-/* 216 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24702,7 +25632,7 @@
 
 	var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-	var _prefix = __webpack_require__(213);
+	var _prefix = __webpack_require__(224);
 
 	var _prefix2 = _interopRequireDefault(_prefix);
 
@@ -24767,7 +25697,7 @@
 	}
 
 /***/ },
-/* 217 */
+/* 228 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24787,22 +25717,22 @@
 	    return prop0.length - prop1.length;
 	  }
 
-	  return function (rule) {
-	    var style = rule.style,
-	        type = rule.type;
+	  function onProcessStyle(style, rule) {
+	    if (rule.type !== 'regular') return style;
 
-	    if (!style || type !== 'regular') return;
 	    var newStyle = {};
 	    var props = Object.keys(style).sort(sort);
 	    for (var prop in props) {
 	      newStyle[props[prop]] = style[props[prop]];
 	    }
-	    rule.style = newStyle;
-	  };
+	    return newStyle;
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
 	}
 
 /***/ },
-/* 218 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24826,6 +25756,22 @@
 	 * @return {Boolean} flag, indicating function was successfull or not
 	 */
 	function setClass(rule, composition) {
+	  // Skip falsy values
+	  if (!composition) return true;
+
+	  if (Array.isArray(composition)) {
+	    for (var index = 0; index < composition.length; index++) {
+	      var isSetted = setClass(rule, composition[index]);
+	      if (!isSetted) return false;
+	    }
+
+	    return true;
+	  }
+
+	  if (composition.indexOf(' ') > -1) {
+	    return setClass(rule, composition.split(' '));
+	  }
+
 	  if (composition[0] === '$') {
 	    var refRule = rule.options.sheet.getRule(composition.substr(1));
 
@@ -24854,25 +25800,18 @@
 	 * @api public
 	 */
 	function jssCompose() {
-	  return function (rule) {
-	    var style = rule.style;
-
-
-	    if (!style || !style.composes) return;
-
-	    if (Array.isArray(style.composes)) {
-	      for (var index = 0; index < style.composes.length; index++) {
-	        setClass(rule, style.composes[index]);
-	      }
-	    } else setClass(rule, style.composes);
-
+	  function onProcessStyle(style, rule) {
+	    if (!style.composes) return style;
+	    setClass(rule, style.composes);
 	    // Remove composes property to prevent infinite loop.
 	    delete style.composes;
-	  };
+	    return style;
+	  }
+	  return { onProcessStyle: onProcessStyle };
 	}
 
 /***/ },
-/* 219 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24880,9 +25819,12 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	exports.default = jssExpand;
 
-	var _props = __webpack_require__(220);
+	var _props = __webpack_require__(231);
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -24910,10 +25852,10 @@
 	 * @return {String} converted string
 	 */
 	function arrayToString(value, prop, scheme, rule) {
-	  if (value.length === 0) return '';
-	  if (value[0].constructor === Object) return mapValuesByProp(value, prop, rule);
 	  if (scheme[prop] == null) return value.join(',');
+	  if (value.length === 0) return '';
 	  if (Array.isArray(value[0])) return arrayToString(value[0], prop, scheme);
+	  if (_typeof(value[0]) === 'object') return mapValuesByProp(value, prop, rule);
 	  return value.join(' ');
 	}
 
@@ -24970,7 +25912,7 @@
 	    var propName = customProps[prop];
 
 	    // If current property doesn't exist already in rule - add new one
-	    if (value[prop] && (isFallback || !rule.prop(propName))) {
+	    if (typeof value[prop] !== 'undefined' && (isFallback || !rule.prop(propName))) {
 	      var appendedValue = styleDetector(_defineProperty({}, propName, value[prop]), rule)[propName];
 
 	      // Add style directly in rule
@@ -24995,22 +25937,12 @@
 	  for (var prop in style) {
 	    var value = style[prop];
 
-	    if (value.constructor === Object) {
-	      if (prop === 'fallbacks') {
-	        style[prop] = styleDetector(style[prop], rule, true);
-	        continue;
-	      }
-
-	      style[prop] = objectToString(value, prop, rule, isFallback);
-	      // Avoid creating properties with empty values
-	      if (!style[prop]) delete style[prop];
-	    }
-
-	    // Check double arrays to avoid recursion.
-	    else if (Array.isArray(value) && !Array.isArray(value[0])) {
+	    if (Array.isArray(value)) {
+	      // Check double arrays to avoid recursion.
+	      if (!Array.isArray(value[0])) {
 	        if (prop === 'fallbacks') {
-	          for (var index = 0; index < style[prop].length; index++) {
-	            style[prop][index] = styleDetector(style[prop][index], rule, true);
+	          for (var index = 0; index < style.fallbacks.length; index++) {
+	            style.fallbacks[index] = styleDetector(style.fallbacks[index], rule, true);
 	          }
 	          continue;
 	        }
@@ -25019,10 +25951,21 @@
 	        // Avoid creating properties with empty values
 	        if (!style[prop]) delete style[prop];
 	      }
+	    } else if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+	      if (prop === 'fallbacks') {
+	        style.fallbacks = styleDetector(style.fallbacks, rule, true);
+	        continue;
+	      }
 
-	      // Maybe a computed value resulting in an empty string
-	      else if (style[prop] === '') delete style[prop];
+	      style[prop] = objectToString(value, prop, rule, isFallback);
+	      // Avoid creating properties with empty values
+	      if (!style[prop]) delete style[prop];
+	    }
+
+	    // Maybe a computed value resulting in an empty string
+	    else if (style[prop] === '') delete style[prop];
 	  }
+
 	  return style;
 	}
 
@@ -25033,26 +25976,25 @@
 	 * @api public
 	 */
 	function jssExpand() {
-	  return function (rule) {
-	    var style = rule.style;
-	    var type = rule.type;
-
-	    if (!style || type !== 'regular') return;
+	  function onProcessStyle(style, rule) {
+	    if (!style || rule.type !== 'regular') return style;
 
 	    if (Array.isArray(style)) {
 	      // Pass rules one by one and reformat them
 	      for (var index = 0; index < style.length; index++) {
 	        style[index] = styleDetector(style[index], rule);
 	      }
-	      return;
+	      return style;
 	    }
 
-	    rule.style = styleDetector(style, rule);
-	  };
+	    return styleDetector(style, rule);
+	  }
+
+	  return { onProcessStyle: onProcessStyle };
 	}
 
 /***/ },
-/* 220 */
+/* 231 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -25184,11 +26126,6 @@
 	    y: 0,
 	    blur: null,
 	    color: null
-	  },
-	  flex: {
-	    grow: null,
-	    shrink: null,
-	    basis: null
 	  }
 	};
 
@@ -25213,11 +26150,24 @@
 	    family: 'font-family',
 	    lineHeight: 'line-height', // Needed to avoid compilation issues with jss-camel-case
 	    'line-height': 'line-height'
+	  },
+	  flex: {
+	    grow: 'flex-grow',
+	    basis: 'flex-basis',
+	    direction: 'flex-direction',
+	    wrap: 'flex-wrap',
+	    flow: 'flex-flow',
+	    shrink: 'flex-shrink'
+	  },
+	  align: {
+	    self: 'align-self',
+	    items: 'align-items',
+	    content: 'align-content'
 	  }
 	};
 
 /***/ },
-/* 221 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25424,7 +26374,75 @@
 	}
 
 /***/ },
-/* 222 */
+/* 233 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _hoistNonReactStatics = __webpack_require__(234);
+
+	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
+
+	var _jss = __webpack_require__(215);
+
+	var _jss2 = _interopRequireDefault(_jss);
+
+	var _createHoc = __webpack_require__(235);
+
+	var _createHoc2 = _interopRequireDefault(_createHoc);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/**
+	 * Global index counter to preserve source order.
+	 * As we create the style sheet during componentWillMount lifecycle,
+	 * children are handled after the parents, so the order of style elements would
+	 * be parent->child. It is a problem though when a parent passes a className
+	 * which needs to override any childs styles. StyleSheet of the child has a higher
+	 * specificity, because of the source order.
+	 * So our solution is to render sheets them in the reverse order child->sheet, so
+	 * that parent has a higher specificity.
+	 *
+	 * @type {Number}
+	 */
+	var indexCounter = -100000;
+
+	var Container = function Container(_ref) {
+	  var children = _ref.children;
+	  return children || null;
+	};
+
+	/**
+	 * Create a `injectSheet` function that will use the passed JSS instance.
+	 *
+	 * @param {Jss} jss
+	 * @return {Function}
+	 * @api public
+	 */
+
+	exports['default'] = function () {
+	  var localJss = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _jss2['default'];
+	  return function injectSheet(stylesOrSheet) {
+	    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+	    if (options.index === undefined) {
+	      options.index = indexCounter++;
+	    }
+	    return function () {
+	      var InnerComponent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Container;
+
+	      var Jss = (0, _createHoc2['default'])(localJss, InnerComponent, stylesOrSheet, options);
+	      return (0, _hoistNonReactStatics2['default'])(Jss, InnerComponent, { inner: true });
+	    };
+	  };
+	};
+
+/***/ },
+/* 234 */
 /***/ function(module, exports) {
 
 	/**
@@ -25480,10 +26498,10 @@
 
 
 /***/ },
-/* 223 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -25491,11 +26509,23 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(207);
+
 	var _jss = __webpack_require__(180);
+
+	var _compose = __webpack_require__(236);
+
+	var _compose2 = _interopRequireDefault(_compose);
+
+	var _getDisplayName = __webpack_require__(237);
+
+	var _getDisplayName2 = _interopRequireDefault(_getDisplayName);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -25505,46 +26535,182 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var SheetsRegistryProvider = function (_Component) {
-	  _inherits(SheetsRegistryProvider, _Component);
+	var refNs = 'ref-' + String(Math.random()).substr(2);
+	var refs = function refs(sheet) {
+	  return sheet[refNs] || 0;
+	};
+	var dec = function dec(sheet) {
+	  return --sheet[refNs];
+	};
+	var inc = function inc(sheet) {
+	  return ++sheet[refNs];
+	};
 
-	  function SheetsRegistryProvider() {
-	    _classCallCheck(this, SheetsRegistryProvider);
+	/**
+	 * Wrap a Component into a JSS Container Component.
+	 *
+	 * @param {Jss} jss
+	 * @param {Component} InnerComponent
+	 * @param {Object|StyleSheet} stylesOrSheet
+	 * @param {Object} [options]
+	 * @return {Component}
+	 */
 
-	    return _possibleConstructorReturn(this, (SheetsRegistryProvider.__proto__ || Object.getPrototypeOf(SheetsRegistryProvider)).apply(this, arguments));
+	exports['default'] = function (jss, InnerComponent, stylesOrSheet) {
+	  var _class, _temp;
+
+	  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
+	  var styles = stylesOrSheet;
+	  var staticSheet = null;
+	  var dynamicStyles = void 0;
+
+	  // Accept StyleSheet instance.
+	  if (stylesOrSheet && typeof stylesOrSheet.attach === 'function') {
+	    staticSheet = stylesOrSheet;
+	    styles = null;
 	  }
 
-	  _createClass(SheetsRegistryProvider, [{
-	    key: 'getChildContext',
-	    value: function getChildContext() {
-	      return {
-	        jssSheetsRegistry: this.props.registry
-	      };
+	  var displayName = (0, _getDisplayName2['default'])(InnerComponent);
+
+	  if (!options.meta) options.meta = displayName;
+
+	  var dynamicSheetOptions = _extends({}, options, {
+	    meta: options.meta + 'Dynamic',
+	    link: true
+	  });
+
+	  function ref() {
+	    if (!staticSheet) {
+	      staticSheet = jss.createStyleSheet(styles, options);
+	      dynamicStyles = (0, _compose2['default'])(staticSheet, (0, _jss.getDynamicStyles)(styles));
 	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var children = this.props.children;
+	    if (staticSheet[refNs] === undefined) staticSheet[refNs] = 0;
+	    if (refs(staticSheet) === 0) staticSheet.attach();
+	    inc(staticSheet);
+	    return staticSheet;
+	  }
 
-	      return _react.Children.count(children) > 1 ? _react2['default'].createElement(
-	        'div',
-	        null,
-	        children
-	      ) : children;
+	  function deref() {
+	    if (dec(staticSheet) === 0) staticSheet.detach();
+	  }
+
+	  return _temp = _class = function (_Component) {
+	    _inherits(Jss, _Component);
+
+	    function Jss() {
+	      _classCallCheck(this, Jss);
+
+	      return _possibleConstructorReturn(this, (Jss.__proto__ || Object.getPrototypeOf(Jss)).apply(this, arguments));
 	    }
-	  }]);
 
-	  return SheetsRegistryProvider;
-	}(_react.Component);
+	    _createClass(Jss, [{
+	      key: 'componentWillMount',
+	      value: function componentWillMount() {
+	        this.staticSheet = ref();
+	        if (this.dynamicSheet) this.dynamicSheet.attach();else if (dynamicStyles) {
+	          this.dynamicSheet = jss.createStyleSheet(dynamicStyles, dynamicSheetOptions).update(this.props).attach();
+	        }
+	        var jssSheetsRegistry = this.context.jssSheetsRegistry;
 
-	SheetsRegistryProvider.propTypes = {
-	  registry: _react.PropTypes.instanceOf(_jss.SheetsRegistry).isRequired,
-	  children: _react.PropTypes.node.isRequired
+	        if (jssSheetsRegistry) jssSheetsRegistry.add(this.staticSheet);
+	      }
+	    }, {
+	      key: 'componentWillReceiveProps',
+	      value: function componentWillReceiveProps(nextProps) {
+	        if (this.dynamicSheet) {
+	          this.dynamicSheet.update(nextProps);
+	        }
+	      }
+	    }, {
+	      key: 'componentWillUpdate',
+	      value: function componentWillUpdate() {
+	        if (process.env.NODE_ENV !== 'production') {
+	          // Support React Hot Loader.
+	          if (this.staticSheet !== staticSheet) {
+	            this.staticSheet.detach();
+	            this.staticSheet = ref();
+	          }
+	        }
+	      }
+	    }, {
+	      key: 'componentWillUnmount',
+	      value: function componentWillUnmount() {
+	        if (this.staticSheet && !staticSheet) {
+	          this.staticSheet.detach();
+	          var jssSheetsRegistry = this.context.jssSheetsRegistry;
+
+	          if (jssSheetsRegistry) jssSheetsRegistry.remove(this.staticSheet);
+	        } else deref();
+	        if (this.dynamicSheet) this.dynamicSheet.detach();
+	      }
+	    }, {
+	      key: 'render',
+	      value: function render() {
+	        var sheet = this.dynamicSheet || this.staticSheet;
+	        return _react2['default'].createElement(InnerComponent, _extends({ sheet: sheet, classes: sheet.classes }, this.props));
+	      }
+	    }]);
+
+	    return Jss;
+	  }(_react.Component), _class.InnerComponent = InnerComponent, _class.displayName = 'Jss(' + displayName + ')', _class.contextTypes = {
+	    jssSheetsRegistry: (0, _propTypes.instanceOf)(_jss.SheetsRegistry)
+	  }, _class.defaultProps = InnerComponent.defaultProps, _temp;
 	};
-	SheetsRegistryProvider.childContextTypes = {
-	  jssSheetsRegistry: _react.PropTypes.instanceOf(_jss.SheetsRegistry).isRequired
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 236 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	/**
+	 * Adds `composes` property to each top level rule
+	 * in order to have a composed class name for dynamic style sheets.
+	 *
+	 * @param {StyleSheet} staticSheet
+	 * @param {Object} styles
+	 * @return {Object|null}
+	 */
+	exports["default"] = function (staticSheet, styles) {
+	  for (var name in styles) {
+	    var className = staticSheet.classes[name];
+	    if (!className) break;
+	    styles[name] = _extends({}, styles[name], { composes: className });
+	  }
+
+	  if (styles) {
+	    for (var _name in staticSheet.classes) {
+	      var _className = styles[_name];
+	      if (!_className) {
+	        styles[_name] = { composes: staticSheet.classes[_name] };
+	      }
+	    }
+	  }
+
+	  return styles;
 	};
-	exports['default'] = SheetsRegistryProvider;
+
+/***/ },
+/* 237 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports['default'] = function (Component) {
+	  return Component.displayName || Component.name || 'Component';
+	};
 
 /***/ }
 /******/ ]);
