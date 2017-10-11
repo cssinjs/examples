@@ -175,5 +175,34 @@ export default {
     '100%': {
       transform: 'rotate(-2deg)'
     }
-  }
+  },
+  swing: {
+      '0%': {
+        transform: 'rotate(5deg)'
+      },
+      '12.5%': {
+        transform: 'rotate(-10deg)'
+      },
+      '25%': {
+        transform: 'rotate(10deg)'
+      },
+      '37.5%': {
+        transform: 'rotate(-15deg)'
+      },
+      '50%': {
+        transform: 'rotate(23deg)'
+      },
+      '62.5%': {
+        transform: 'rotate(-23deg)'
+      },
+      '75%': {
+        transform: 'rotate(15deg)'
+      },
+      '87.5%': {
+        transform: 'rotate(-10deg)'
+      },
+      '100%': {
+        transform: 'rotate(5deg)'
+      }
+    }  
 }

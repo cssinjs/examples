@@ -124,7 +124,8 @@
 	  '@keyframes face': _keyframes2.default.face,
 	  '@keyframes blink': _keyframes2.default.blink,
 	  '@keyframes swing-leg': _keyframes2.default.swingLeg,
-	  '@keyframes swing-tail': _keyframes2.default.swingTail
+	  '@keyframes swing-tail': _keyframes2.default.swingTail,
+	  '@keyframes swing': _keyframes2.default.swing
 	};
 
 	_jss2.default.createStyleSheet(styles).attach();
@@ -4911,6 +4912,35 @@
 	    },
 	    '100%': {
 	      transform: 'rotate(-2deg)'
+	    }
+	  },
+	  swing: {
+	    '0%': {
+	      transform: 'rotate(5deg)'
+	    },
+	    '12.5%': {
+	      transform: 'rotate(-10deg)'
+	    },
+	    '25%': {
+	      transform: 'rotate(10deg)'
+	    },
+	    '37.5%': {
+	      transform: 'rotate(-15deg)'
+	    },
+	    '50%': {
+	      transform: 'rotate(23deg)'
+	    },
+	    '62.5%': {
+	      transform: 'rotate(-23deg)'
+	    },
+	    '75%': {
+	      transform: 'rotate(15deg)'
+	    },
+	    '87.5%': {
+	      transform: 'rotate(-10deg)'
+	    },
+	    '100%': {
+	      transform: 'rotate(5deg)'
 	    }
 	  }
 	};

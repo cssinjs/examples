@@ -48,7 +48,8 @@ const styles = {
   '@keyframes face': keyframes.face,
   '@keyframes blink': keyframes.blink,
   '@keyframes swing-leg': keyframes.swingLeg,
-  '@keyframes swing-tail': keyframes.swingTail
+  '@keyframes swing-tail': keyframes.swingTail,
+  '@keyframes swing': keyframes.swing
 }
 
 jss.createStyleSheet(styles).attach()
