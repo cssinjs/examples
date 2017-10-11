@@ -52,6 +52,7 @@
     "build:react-ssr": "webpack --config ./react-ssr/webpack.config.js && node ./react-ssr/bin/build > ./react-ssr/dist/index.html",
     "build:function-values": "webpack --config ./function-values/webpack.config.js",
     "build:observables": "webpack --config ./observables/webpack.config.js",
+    "build:swinging-cat": "webpack --config ./swinging-cat/webpack.config.js",
     "jss:all": "parallelshell 'npm run jss -s' 'npm run jss:plugins -s'",
     "jss": "cpy ./node_modules/jss/dist/jss.js ./",
     "jss:plugins": "parallelshell 'npm run jss:camel-case -s' 'npm run jss:extend -s' 'npm run jss:nested -s' 'npm run jss:props-sort -s' 'npm run jss:default-unit -s' 'npm run jss:vendor-prefixer -s' 'npm run jss:perdido -s' 'npm run jss:isolate -s' 'npm run jss:global -s' 'npm run jss:preset-default -s'",
