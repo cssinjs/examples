@@ -1,9 +1,9 @@
-# WebpackBin project
+## Build
 
-## Start
-
-`npm install`
-
-`npm start`
-
-Go to `localhost:3000`
+```bash
+cd swinging-cat
+npm install
+cd ..
+npm run build:swinging-cat
+open swinging-cat/index.html
+```
