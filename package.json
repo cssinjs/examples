@@ -47,7 +47,7 @@
   },
   "scripts": {
     "all": "npm run jss:all && npm run build",
-    "build": "npm run build:calendar && npm run build:react-ssr && npm run build:function-values && npm run build:observables",
+    "build": "npm run build:calendar && npm run build:react-ssr && npm run build:function-values && npm run build:observables && npm run build:swinging-cat",
     "build:calendar": "webpack ./calendar/index.js ./calendar/dist/index.js --config ./calendar/webpack.config.js",
     "build:react-ssr": "webpack --config ./react-ssr/webpack.config.js && node ./react-ssr/bin/build > ./react-ssr/dist/index.html",
     "build:function-values": "webpack --config ./function-values/webpack.config.js",
