@@ -1,13 +1,15 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingTailAnimation } from './animation'
+import { createRotateAnimation } from './animation'
+
+const rotateDegrees = [-2, 4, -6, 9.2, -9.2, 6, -4, 4, -2]
 
 const styles = {
   catTail: {
     position: 'absolute',
     height: 15,
     width: 10,
-    ...swingTailAnimation(theme.durationSeconds, 0, theme.easing),
+    ...createRotateAnimation(theme.durationSeconds, 0, theme.easing, rotateDegrees),
     transformOrigin: 'top center',
     zIndex: 0,
     backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`,

@@ -11,7 +11,7 @@ const styles = {
     top: '100%',
     width: 75,
     left: 'calc(50% - 37.5px)',
-    ...reverseSwingAnimation(theme.durationSeconds, 200),
+    ...reverseSwingAnimation(theme.durationSeconds, 0.2),
     transformOrigin: 'top center'
   },
   catLower: {
@@ -20,7 +20,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    ...swingAnimation(theme.durationSeconds, 500),
+    ...swingAnimation(theme.durationSeconds, 0.5),
     transformOrigin: 'top center',
     '&:after': {
       content: '""',

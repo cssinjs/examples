@@ -1856,28 +1856,20 @@ exports['default'] = StyleRule;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.defaultPercents = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-exports.faceAnimation = faceAnimation;
-exports.blinkAnimation = blinkAnimation;
-exports.swingLegAnimation = swingLegAnimation;
-exports.swingTailAnimation = swingTailAnimation;
+exports.createIterations = createIterations;
+exports.createAnimationLoader = createAnimationLoader;
+exports.createAnimation = createAnimation;
+exports.createRotateAnimation = createRotateAnimation;
 exports.swingAnimation = swingAnimation;
 exports.reverseSwingAnimation = reverseSwingAnimation;
-exports.bobAnimation = bobAnimation;
 
 var _rxjs = __webpack_require__(220);
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-/* CONSTATNST */
-
-var TRANSFORM = 'transform';
-
-var percents = [100, 87.5, 75, 62.5, 50, 37.5, 25, 12.5, 0];
-
-/* UTILS */
+var defaultPercents = exports.defaultPercents = [100, 87.5, 75, 62.5, 50, 37.5, 25, 12.5, 0];
 
 function createIterations(percents, values) {
   return percents.map(function (percent, i) {
@@ -1891,7 +1883,7 @@ function createIterations(percents, values) {
 function createAnimationLoader(duration) {
   var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-  return _rxjs.Observable.interval(100).delay(delay).startWith(0).scan(function (x) {
+  return _rxjs.Observable.interval(100).delay(delay * 1000).startWith(0).scan(function (x) {
     return x > duration * 10 ? 0 : x + 1;
   }, 0).map(function (x) {
     return x * 10 / duration;
@@ -1913,46 +1905,21 @@ function getTransformTransition() {
   var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
   var transitionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'linear';
 
-  return { transition: TRANSFORM + ' ' + time + 's ' + transitionType };
+  return { transition: 'transform ' + time + 's ' + transitionType };
 }
 
 function createAnimation(duration, delay, transitionType, transionTime, iterations, modifyStyle) {
   var $animationLoader = createAnimationLoader(duration, delay);
-  return _extends(_defineProperty({}, TRANSFORM, getAnimationValue($animationLoader, iterations).map(modifyStyle)), getTransformTransition(transionTime, transitionType));
+  return _extends({
+    transform: getAnimationValue($animationLoader, iterations).map(modifyStyle)
+  }, getTransformTransition(transionTime, transitionType));
 }
 
 function createRotateAnimation(duration, delay, transitionType, values) {
-  var iterations = createIterations(percents, values);
+  var iterations = createIterations(defaultPercents, values);
   return createAnimation(duration, delay, transitionType, 1, iterations, function (x) {
     return 'rotate(' + x + 'deg)';
   });
-}
-
-/* ANIMATIONS */
-
-function faceAnimation(duration, delay, transitionType) {
-  var values = [-2.5, 5, -7.5, 11.5, -11.5, 7.5, -5, 5, -2.5];
-  var iterations = createIterations(percents, values);
-  return createAnimation(duration, delay, transitionType, 0.9, iterations, function (x) {
-    return 'translateX(' + x + 'px)';
-  });
-}
-
-function blinkAnimation(duration, delay, transitionType) {
-  var iterations = [{ percent: 80, value: 1 }, { percent: 78, value: 0.1 }, { percent: 25, value: 1 }, { percent: 23, value: 0.1 }, { percent: 10, value: 1 }, { percent: 8, value: 0.1 }];
-  return createAnimation(duration, delay, transitionType, 0.6, iterations, function (x) {
-    return 'scaleY(' + x + ')';
-  });
-}
-
-function swingLegAnimation(duration, delay, transitionType) {
-  var values = [0.5, -1, 1.5, -2.3, 2.4, -1.5, 1, -1, 0.5];
-  return createRotateAnimation(duration, delay, transitionType, values);
-}
-
-function swingTailAnimation(duration, delay, transitionType) {
-  var values = [-2, 4, -6, 9.2, -9.2, 6, -4, 4, -2];
-  return createRotateAnimation(duration, delay, transitionType, values);
 }
 
 function swingAnimation(duration, delay, transitionType) {
@@ -1963,14 +1930,6 @@ function swingAnimation(duration, delay, transitionType) {
 function reverseSwingAnimation(duration, delay, transitionType) {
   var values = [-5, 10, -15, 23, -23, 15, -10, 10, -5];
   return createRotateAnimation(duration, delay, transitionType, values);
-}
-
-function bobAnimation(duration, delay, transitionType) {
-  var iterations = [{ percent: 100, value: 0.4 }, { percent: 93.75, value: -0.4 }, { percent: 87.5, value: 0.4 }, { percent: 81.25, value: -0.4 }, { percent: 75, value: 0.4 }, { percent: 68.75, value: -0.4 }, { percent: 62.5, value: 0.4 }, { percent: 56.25, value: -0.4 }, { percent: 50, value: 0.4 }, { percent: 43.75, value: -0.4 }, { percent: 37.5, value: 0.4 }, { percent: 31.25, value: -0.4 }, { percent: 25, value: 0.4 }, { percent: 18.75, value: -0.4 }, { percent: 12.5, value: 0.4 }, { percent: 6.25, value: -0.4 }, { percent: 0, value: 0.4 }];
-  var $animationLoader = createAnimationLoader(duration, delay);
-  return _extends(_defineProperty({}, TRANSFORM, getAnimationValue($animationLoader, iterations).map(function (x) {
-    return 'translateY(' + x + 'rem)';
-  })), getTransformTransition('.3', transitionType));
 }
 
 /***/ }),
@@ -19093,11 +19052,15 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var animationIteration = [{ percent: 100, value: 0.4 }, { percent: 93.75, value: -0.4 }, { percent: 87.5, value: 0.4 }, { percent: 81.25, value: -0.4 }, { percent: 75, value: 0.4 }, { percent: 68.75, value: -0.4 }, { percent: 62.5, value: 0.4 }, { percent: 56.25, value: -0.4 }, { percent: 50, value: 0.4 }, { percent: 43.75, value: -0.4 }, { percent: 37.5, value: 0.4 }, { percent: 31.25, value: -0.4 }, { percent: 25, value: 0.4 }, { percent: 18.75, value: -0.4 }, { percent: 12.5, value: 0.4 }, { percent: 6.25, value: -0.4 }, { percent: 0, value: 0.4 }];
+
 var styles = {
   root: _extends({
     width: '100%',
     height: '100%'
-  }, (0, _animation.bobAnimation)(theme.durationSeconds, 0, theme.easing)),
+  }, (0, _animation.createAnimation)(theme.durationSeconds, 0, theme.easing, 0.3, animationIteration, function (x) {
+    return 'translateY(' + x + 'rem)';
+  })),
   scene: _extends({
     top: '10rem',
     left: 'calc(50% - 2.5rem)',
@@ -19130,7 +19093,7 @@ var styles = {
     left: 0,
     width: '100%',
     height: '100%'
-  }, (0, _animation.swingAnimation)(theme.durationSeconds, 200), {
+  }, (0, _animation.swingAnimation)(theme.durationSeconds, 0.2), {
     transformOrigin: 'top center'
   })
 };
@@ -19305,6 +19268,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var faceTranslateValues = [-2.5, 5, -7.5, 11.5, -11.5, 7.5, -5, 5, -2.5];
+
+var blinkIterations = [{ percent: 80, value: 1 }, { percent: 78, value: 0.1 }, { percent: 25, value: 1 }, { percent: 23, value: 0.1 }, { percent: 10, value: 1 }, { percent: 8, value: 0.1 }];
+
 var styles = {
   catFace: _extends({
     position: 'absolute',
@@ -19312,7 +19279,9 @@ var styles = {
     left: 0,
     height: '100%',
     width: '100%'
-  }, (0, _animation.faceAnimation)(theme.durationSeconds, 0, theme.easing), {
+  }, (0, _animation.createAnimation)(theme.durationSeconds, 0, theme.easing, 0.9, (0, _animation.createIterations)(_animation.defaultPercents, faceTranslateValues), function (x) {
+    return 'translateX(' + x + 'px)';
+  }), {
     transformStyle: 'preserve-3d',
     perspective: 100
   }),
@@ -19321,7 +19290,9 @@ var styles = {
     top: '50%',
     width: '100%',
     height: 6
-  }, (0, _animation.blinkAnimation)(theme.durationSeconds, 0, 'step-end'), {
+  }, (0, _animation.createAnimation)(theme.durationSeconds, 0, 'step-end', 0.4, blinkIterations, function (x) {
+    return 'scaleY(' + x + ')';
+  }), {
     '&:before': {
       content: '""',
       left: 20,
@@ -30680,7 +30651,7 @@ var styles = {
     top: '100%',
     width: 75,
     left: 'calc(50% - 37.5px)'
-  }, (0, _animation.reverseSwingAnimation)(theme.durationSeconds, 200), {
+  }, (0, _animation.reverseSwingAnimation)(theme.durationSeconds, 0.2), {
     transformOrigin: 'top center'
   }),
   catLower: _extends({
@@ -30689,7 +30660,7 @@ var styles = {
     left: 0,
     width: '100%',
     height: '100%'
-  }, (0, _animation.swingAnimation)(theme.durationSeconds, 500), {
+  }, (0, _animation.swingAnimation)(theme.durationSeconds, 0.5), {
     transformOrigin: 'top center',
     '&:after': {
       content: '""',
@@ -30739,12 +30710,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var rotateDegrees = [0.5, -1, 1.5, -2.3, 2.4, -1.5, 1, -1, 0.5];
+
 var styles = {
   catLowerLegPaw: _extends({
     position: 'absolute',
     height: 20,
     width: 20
-  }, (0, _animation.swingLegAnimation)(theme.durationSeconds, 300), {
+  }, (0, _animation.createRotateAnimation)(theme.durationSeconds, 0.3, undefined, rotateDegrees), {
     zIndex: 1,
     transformOrigin: 'top center',
     borderTopLeftRadius: 20,
@@ -30815,12 +30788,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var rotateDegrees = [-2, 4, -6, 9.2, -9.2, 6, -4, 4, -2];
+
 var styles = {
   catTail: _extends({
     position: 'absolute',
     height: 15,
     width: 10
-  }, (0, _animation.swingTailAnimation)(theme.durationSeconds, 0, theme.easing), {
+  }, (0, _animation.createRotateAnimation)(theme.durationSeconds, 0, theme.easing, rotateDegrees), {
     transformOrigin: 'top center',
     zIndex: 0,
     backgroundImage: 'linear-gradient(to right, #fff, ' + theme.colorFurLight + ', ' + theme.colorFurDark + ')',

@@ -1,6 +1,17 @@
 import jss from './jss'
 import * as theme from './theme'
-import { faceAnimation, blinkAnimation } from './animation'
+import { createAnimation, createIterations, defaultPercents } from './animation'
+
+const faceTranslateValues = [-2.5, 5, -7.5, 11.5, -11.5, 7.5, -5, 5, -2.5]
+
+const blinkIterations = [
+  { percent: 80, value: 1 },
+  { percent: 78, value: 0.1 },
+  { percent: 25, value: 1 },
+  { percent: 23, value: 0.1 },
+  { percent: 10, value: 1 },
+  { percent: 8, value: 0.1 }
+]
 
 const styles = {
   catFace: {
@@ -9,7 +20,7 @@ const styles = {
     left: 0,
     height: '100%',
     width: '100%',
-    ...faceAnimation(theme.durationSeconds, 0, theme.easing),
+    ...createAnimation(theme.durationSeconds, 0, theme.easing, 0.9, createIterations(defaultPercents, faceTranslateValues), x => `translateX(${x}px)`),
     transformStyle: 'preserve-3d',
     perspective: 100
   },
@@ -18,7 +29,7 @@ const styles = {
     top: '50%',
     width: '100%',
     height: 6,
-    ...blinkAnimation(theme.durationSeconds, 0, 'step-end'),
+    ...createAnimation(theme.durationSeconds, 0, 'step-end', 0.4, blinkIterations, x => `scaleY(${x})`),
     '&:before': {
       content: '""',
       left: 20,

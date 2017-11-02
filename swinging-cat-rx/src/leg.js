@@ -1,14 +1,16 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingLegAnimation } from './animation'
+import { createRotateAnimation } from './animation'
 
+
+const rotateDegrees = [0.5, -1, 1.5, -2.3, 2.4, -1.5, 1, -1, 0.5]
 
 const styles = {
   catLowerLegPaw: {
     position: 'absolute',
     height: 20,
     width: 20,
-    ...swingLegAnimation(theme.durationSeconds, 300),
+    ...createRotateAnimation(theme.durationSeconds, 0.3, undefined, rotateDegrees),
     zIndex: 1,
     transformOrigin: 'top center',
     borderTopLeftRadius: 20,
