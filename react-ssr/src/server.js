@@ -1,15 +1,15 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {SheetsRegistryProvider, SheetsRegistry} from 'react-jss'
+import {JssProvider, SheetsRegistry} from 'react-jss'
 import Button from './Button'
 
 export default function render() {
   const sheets = new SheetsRegistry()
 
   const app = renderToString(
-    <SheetsRegistryProvider registry={sheets}>
+    <JssProvider registry={sheets}>
       <Button />
-    </SheetsRegistryProvider>
+    </JssProvider>
   )
 
   return '' +
