@@ -4,6 +4,7 @@ import yarn from './yarn'
 import upperBody from './upperBody'
 import lowerBody from './lowerBody'
 import { swingAnimation, reverseSwingAnimation, bobAnimation } from './animation'
+import { controlledSwingAnimation } from './controlledAnimation'
 
 const styles = {
   root: {
@@ -17,15 +18,16 @@ const styles = {
     position: 'absolute',
     width: '5rem',
     height: '5rem',
-    transformOrigin: 'center -20rem',
-    ...swingAnimation(theme.durationSeconds, 0, theme.easing),
+    transformOrigin: `center -${theme.yarnLength}rem`,
+    // ...swingAnimation(theme.durationSeconds, 0, theme.easing),
+    ...controlledSwingAnimation(1, theme.easing, theme.yarnLength),
     '&:before': {
       content: '""',
-      height: '20rem',
+      height: `${theme.yarnLength}rem`,
       width: 2,
       backgroundColor: theme.colorYarn,
       left: 'calc(50% - 1px)',
-      bottom: '20rem'
+      bottom: `${theme.yarnLength}rem`
     }
   },
   catWrap: {

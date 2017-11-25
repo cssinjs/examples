@@ -10,3 +10,4 @@ export const easing = 'cubic-bezier(0.5, 0, 0.5, 1)'
 export const offset = '.5s'
 export const swings = '5 -10 10 -15 23 -23 15 -10 5'
 export const totalSwings = 'length($swings)'
+export const yarnLength = 20
