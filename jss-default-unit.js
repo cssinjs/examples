@@ -64,7 +64,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports['default'] = defaultUnit;
 	
-	var _defaultUnits = __webpack_require__(1);
+	var _isObservable = __webpack_require__(1);
+	
+	var _isObservable2 = _interopRequireDefault(_isObservable);
+	
+	var _defaultUnits = __webpack_require__(4);
 	
 	var _defaultUnits2 = _interopRequireDefault(_defaultUnits);
 	
@@ -102,7 +106,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var convertedValue = value;
 	
 	  var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-	  if (type === 'object' && Array.isArray(value)) type = 'array';
+	  if (type === 'object') {
+	    if (Array.isArray(value)) type = 'array';
+	    if ((0, _isObservable2['default'])(value)) type = 'observable';
+	  }
 	
 	  switch (type) {
 	    case 'object':
@@ -160,6 +167,54 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	var symbolObservable = __webpack_require__(2);
+	
+	module.exports = function (fn) {
+		return Boolean(fn && fn[symbolObservable]);
+	};
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
+	'use strict';
+	
+	module.exports = __webpack_require__(3)(global || window || this);
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function symbolObservablePonyfill(root) {
+		var result;
+		var Symbol = root.Symbol;
+	
+		if (typeof Symbol === 'function') {
+			if (Symbol.observable) {
+				result = Symbol.observable;
+			} else {
+				result = Symbol('observable');
+				Symbol.observable = result;
+			}
+		} else {
+			result = '@@observable';
+		}
+	
+		return result;
+	};
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 	'use strict';

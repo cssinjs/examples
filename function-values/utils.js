@@ -1,4 +1,4 @@
-import random from 'lodash/number/random'
+import random from 'lodash/random'
 import Stats from 'stats.js'
 
 export const getRandomColor = () => (

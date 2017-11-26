@@ -73,11 +73,173 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 37);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _warning = __webpack_require__(1);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _toCss = __webpack_require__(7);
+
+var _toCss2 = _interopRequireDefault(_toCss);
+
+var _toCssValue = __webpack_require__(13);
+
+var _toCssValue2 = _interopRequireDefault(_toCssValue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var StyleRule = function () {
+  function StyleRule(key, style, options) {
+    _classCallCheck(this, StyleRule);
+
+    this.type = 'style';
+    this.isProcessed = false;
+    var sheet = options.sheet,
+        Renderer = options.Renderer,
+        selector = options.selector;
+
+    this.key = key;
+    this.options = options;
+    this.style = style;
+    if (selector) this.selectorText = selector;
+    this.renderer = sheet ? sheet.renderer : new Renderer();
+  }
+
+  /**
+   * Set selector string.
+   * Attention: use this with caution. Most browsers didn't implement
+   * selectorText setter, so this may result in rerendering of entire Style Sheet.
+   */
+
+
+  _createClass(StyleRule, [{
+    key: 'prop',
+
+
+    /**
+     * Get or set a style property.
+     */
+    value: function prop(name, nextValue) {
+      // It's a setter.
+      if (nextValue != null) {
+        // Don't do anything if the value has not changed.
+        if (this.style[name] !== nextValue) {
+          nextValue = this.options.jss.plugins.onChangeValue(nextValue, name, this);
+          this.style[name] = nextValue;
+
+          // Renderable is defined if StyleSheet option `link` is true.
+          if (this.renderable) this.renderer.setStyle(this.renderable, name, nextValue);else {
+            var sheet = this.options.sheet;
+
+            if (sheet && sheet.attached) {
+              (0, _warning2['default'])(false, 'Rule is not linked. Missing sheet option "link: true".');
+            }
+          }
+        }
+        return this;
+      }
+
+      return this.style[name];
+    }
+
+    /**
+     * Apply rule to an element inline.
+     */
+
+  }, {
+    key: 'applyTo',
+    value: function applyTo(renderable) {
+      var json = this.toJSON();
+      for (var prop in json) {
+        this.renderer.setStyle(renderable, prop, json[prop]);
+      }return this;
+    }
+
+    /**
+     * Returns JSON representation of the rule.
+     * Fallbacks are not supported.
+     * Useful for inline styles.
+     */
+
+  }, {
+    key: 'toJSON',
+    value: function toJSON() {
+      var json = {};
+      for (var prop in this.style) {
+        var value = this.style[prop];
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') json[prop] = value;else if (Array.isArray(value)) json[prop] = (0, _toCssValue2['default'])(value);
+      }
+      return json;
+    }
+
+    /**
+     * Generates a CSS string.
+     */
+
+  }, {
+    key: 'toString',
+    value: function toString(options) {
+      var sheet = this.options.sheet;
+
+      var link = sheet ? sheet.options.link : false;
+      var opts = link ? _extends({}, options, { allowEmpty: true }) : options;
+      return (0, _toCss2['default'])(this.selector, this.style, opts);
+    }
+  }, {
+    key: 'selector',
+    set: function set(selector) {
+      if (selector === this.selectorText) return;
+
+      this.selectorText = selector;
+
+      if (this.renderable) {
+        var hasChanged = this.renderer.setSelector(this.renderable, selector);
+
+        // If selector setter is not implemented, rerender the rule.
+        if (!hasChanged && this.renderable) {
+          var renderable = this.renderer.replaceRule(this.renderable, this);
+          if (renderable) this.renderable = renderable;
+        }
+      }
+    }
+
+    /**
+     * Get selector string.
+     */
+    ,
+    get: function get() {
+      return this.selectorText;
+    }
+  }]);
+
+  return StyleRule;
+}();
+
+exports['default'] = StyleRule;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -144,172 +306,6 @@ module.exports = warning;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _warning = __webpack_require__(0);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _toCss = __webpack_require__(5);
-
-var _toCss2 = _interopRequireDefault(_toCss);
-
-var _toCssValue = __webpack_require__(13);
-
-var _toCssValue2 = _interopRequireDefault(_toCssValue);
-
-var _isDynamicValue = __webpack_require__(11);
-
-var _isDynamicValue2 = _interopRequireDefault(_isDynamicValue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var StyleRule = function () {
-  function StyleRule(key, style, options) {
-    _classCallCheck(this, StyleRule);
-
-    this.type = 'style';
-    this.isProcessed = false;
-    var sheet = options.sheet,
-        Renderer = options.Renderer,
-        selector = options.selector;
-
-    this.key = key;
-    this.options = options;
-    this.style = style;
-    if (selector) this.selectorText = selector;
-    this.renderer = sheet ? sheet.renderer : new Renderer();
-  }
-
-  /**
-   * Set selector string.
-   * Attention: use this with caution. Most browsers didn't implement
-   * selectorText setter, so this may result in rerendering of entire Style Sheet.
-   */
-
-
-  _createClass(StyleRule, [{
-    key: 'prop',
-
-
-    /**
-     * Get or set a style property.
-     */
-    value: function prop(name, nextValue) {
-      // The result of a dynamic value is prefixed with $ and is not innumerable in
-      // order to be ignored by all plugins or during stringification.
-      var $name = (0, _isDynamicValue2['default'])(this.style[name]) ? '$' + name : name;
-
-      // Its a setter.
-      if (nextValue != null) {
-        // Don't do anything if the value has not changed.
-        if (this.style[$name] !== nextValue) {
-          nextValue = this.options.jss.plugins.onChangeValue(nextValue, name, this);
-          Object.defineProperty(this.style, $name, {
-            value: nextValue,
-            writable: true
-          });
-          // Renderable is defined if StyleSheet option `link` is true.
-          if (this.renderable) this.renderer.setStyle(this.renderable, name, nextValue);else {
-            var sheet = this.options.sheet;
-
-            if (sheet && sheet.attached) {
-              (0, _warning2['default'])(false, 'Rule is not linked. Missing sheet option "link: true".');
-            }
-          }
-        }
-        return this;
-      }
-
-      return this.style[$name];
-    }
-
-    /**
-     * Apply rule to an element inline.
-     */
-
-  }, {
-    key: 'applyTo',
-    value: function applyTo(renderable) {
-      var json = this.toJSON();
-      for (var prop in json) {
-        this.renderer.setStyle(renderable, prop, json[prop]);
-      }return this;
-    }
-
-    /**
-     * Returns JSON representation of the rule.
-     * Fallbacks are not supported.
-     * Useful for inline styles.
-     */
-
-  }, {
-    key: 'toJSON',
-    value: function toJSON() {
-      var json = {};
-      for (var prop in this.style) {
-        var value = this.style[prop];
-        if ((0, _isDynamicValue2['default'])(value)) json[prop] = this.style['$' + prop];else if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') json[prop] = value;else if (Array.isArray(value)) json[prop] = (0, _toCssValue2['default'])(value);
-      }
-      return json;
-    }
-
-    /**
-     * Generates a CSS string.
-     */
-
-  }, {
-    key: 'toString',
-    value: function toString(options) {
-      return (0, _toCss2['default'])(this.selector, this.style, options);
-    }
-  }, {
-    key: 'selector',
-    set: function set(selector) {
-      if (selector === this.selectorText) return;
-
-      this.selectorText = selector;
-
-      if (this.renderable) {
-        var hasChanged = this.renderer.setSelector(this.renderable, selector);
-
-        // If selector setter is not implemented, rerender the rule.
-        if (!hasChanged && this.renderable) {
-          var renderable = this.renderer.replaceRule(this.renderable, this);
-          if (renderable) this.renderable = renderable;
-        }
-      }
-    }
-
-    /**
-     * Get selector string.
-     */
-    ,
-    get: function get() {
-      return this.selectorText;
-    }
-  }]);
-
-  return StyleRule;
-}();
-
-exports['default'] = StyleRule;
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -324,21 +320,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _createRule = __webpack_require__(10);
+var _createRule = __webpack_require__(3);
 
 var _createRule2 = _interopRequireDefault(_createRule);
-
-var _updateStyle = __webpack_require__(29);
-
-var _updateStyle2 = _interopRequireDefault(_updateStyle);
 
 var _linkRule = __webpack_require__(12);
 
 var _linkRule2 = _interopRequireDefault(_linkRule);
 
-var _StyleRule = __webpack_require__(1);
+var _StyleRule = __webpack_require__(0);
 
 var _StyleRule2 = _interopRequireDefault(_StyleRule);
+
+var _escape = __webpack_require__(29);
+
+var _escape2 = _interopRequireDefault(_escape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -396,17 +392,18 @@ var RuleList = function () {
       }, options);
 
       if (!options.selector && this.classes[name]) {
-        options.selector = '.' + this.classes[name];
+        options.selector = '.' + (0, _escape2['default'])(this.classes[name]);
       }
 
       this.raw[name] = decl;
 
       var rule = (0, _createRule2['default'])(name, decl, options);
+
       var className = void 0;
 
       if (!options.selector && rule instanceof _StyleRule2['default']) {
         className = generateClassName(rule, sheet);
-        rule.selector = '.' + className;
+        rule.selector = '.' + (0, _escape2['default'])(className);
       }
 
       this.register(rule, className);
@@ -497,13 +494,17 @@ var RuleList = function () {
   }, {
     key: 'update',
     value: function update(name, data) {
+      var _options2 = this.options,
+          plugins = _options2.jss.plugins,
+          sheet = _options2.sheet;
+
       if (typeof name === 'string') {
-        (0, _updateStyle2['default'])(this.get(name), data, RuleList);
+        plugins.onUpdate(data, this.get(name), sheet);
         return;
       }
 
       for (var index = 0; index < this.index.length; index++) {
-        (0, _updateStyle2['default'])(this.index[index], name, RuleList);
+        plugins.onUpdate(name, this.index[index], sheet);
       }
     }
 
@@ -533,13 +534,16 @@ var RuleList = function () {
     key: 'toString',
     value: function toString(options) {
       var str = '';
+      var sheet = this.options.sheet;
+
+      var link = sheet ? sheet.options.link : false;
 
       for (var index = 0; index < this.index.length; index++) {
         var rule = this.index[index];
         var css = rule.toString(options);
 
         // No need to render an empty rule.
-        if (!css) continue;
+        if (!css && !link) continue;
 
         if (str) str += '\n';
         str += css;
@@ -564,9 +568,57 @@ exports['default'] = RuleList;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports['default'] = createRule;
+
+var _warning = __webpack_require__(1);
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _StyleRule = __webpack_require__(0);
+
+var _StyleRule2 = _interopRequireDefault(_StyleRule);
+
+var _cloneStyle = __webpack_require__(28);
+
+var _cloneStyle2 = _interopRequireDefault(_cloneStyle);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Create a rule instance.
+ */
+function createRule() {
+  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'unnamed';
+  var decl = arguments[1];
+  var options = arguments[2];
+  var jss = options.jss;
+
+  var declCopy = (0, _cloneStyle2['default'])(decl);
+
+  var rule = jss.plugins.onCreateRule(name, declCopy, options);
+  if (rule) return rule;
+
+  // It is an at-rule and it has no instance.
+  if (name[0] === '@') {
+    (0, _warning2['default'])(false, '[JSS] Unknown at-rule %s', name);
+  }
+
+  return new _StyleRule2['default'](name, declCopy, options);
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.create = exports.createGenerateClassName = exports.sheets = exports.RuleList = exports.SheetsManager = exports.SheetsRegistry = exports.getDynamicStyles = undefined;
 
-var _getDynamicStyles = __webpack_require__(28);
+var _getDynamicStyles = __webpack_require__(30);
 
 Object.defineProperty(exports, 'getDynamicStyles', {
   enumerable: true,
@@ -575,7 +627,7 @@ Object.defineProperty(exports, 'getDynamicStyles', {
   }
 });
 
-var _SheetsRegistry = __webpack_require__(7);
+var _SheetsRegistry = __webpack_require__(8);
 
 Object.defineProperty(exports, 'SheetsRegistry', {
   enumerable: true,
@@ -602,7 +654,7 @@ Object.defineProperty(exports, 'RuleList', {
   }
 });
 
-var _sheets = __webpack_require__(4);
+var _sheets = __webpack_require__(5);
 
 Object.defineProperty(exports, 'sheets', {
   enumerable: true,
@@ -611,7 +663,7 @@ Object.defineProperty(exports, 'sheets', {
   }
 });
 
-var _createGenerateClassName = __webpack_require__(9);
+var _createGenerateClassName = __webpack_require__(10);
 
 Object.defineProperty(exports, 'createGenerateClassName', {
   enumerable: true,
@@ -639,7 +691,7 @@ var create = exports.create = function create(options) {
 exports['default'] = create();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -649,7 +701,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _SheetsRegistry = __webpack_require__(7);
+var _SheetsRegistry = __webpack_require__(8);
 
 var _SheetsRegistry2 = _interopRequireDefault(_SheetsRegistry);
 
@@ -664,7 +716,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 exports['default'] = new _SheetsRegistry2['default']();
 
 /***/ }),
-/* 5 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports['default'] = typeof window === 'undefined' ? global : window;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -678,10 +743,6 @@ exports['default'] = toCss;
 var _toCssValue = __webpack_require__(13);
 
 var _toCssValue2 = _interopRequireDefault(_toCssValue);
-
-var _isDynamicValue = __webpack_require__(11);
-
-var _isDynamicValue2 = _interopRequireDefault(_isDynamicValue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -699,6 +760,7 @@ function indentStr(str, indent) {
 /**
  * Converts a Rule to CSS string.
  */
+
 function toCss(selector, style) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
@@ -738,20 +800,15 @@ function toCss(selector, style) {
       }
   }
 
-  var hasDynamicValue = false;
-
   for (var _prop2 in style) {
     var _value2 = style[_prop2];
-    if ((0, _isDynamicValue2['default'])(_value2)) {
-      _value2 = style['$' + _prop2];
-      hasDynamicValue = true;
-    }
     if (_value2 != null && _prop2 !== 'fallbacks') {
       result += '\n' + indentStr(_prop2 + ': ' + (0, _toCssValue2['default'])(_value2) + ';', indent);
     }
   }
 
-  if (!result && !hasDynamicValue) return result;
+  // Allow empty style in this case, because properties will be added dynamically.
+  if (!result && !options.allowEmpty) return result;
 
   indent--;
   result = indentStr(selector + ' {' + result + '\n', indent) + indentStr('}', indent);
@@ -760,20 +817,7 @@ function toCss(selector, style) {
 }
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var symbolObservable = __webpack_require__(31);
-
-module.exports = function (fn) {
-	return Boolean(fn && fn[symbolObservable]);
-};
-
-
-/***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -877,7 +921,7 @@ var SheetsRegistry = function () {
 exports['default'] = SheetsRegistry;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1117,31 +1161,35 @@ var StyleSheet = function () {
 exports['default'] = StyleSheet;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _warning = __webpack_require__(0);
+var _warning = __webpack_require__(1);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _StyleSheet = __webpack_require__(8);
+var _StyleSheet = __webpack_require__(9);
 
 var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
+var _global = __webpack_require__(6);
+
+var _global2 = _interopRequireDefault(_global);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var globalRef = typeof window === 'undefined' ? global : window;
 var ns = '2f1acc6c3a606b082e5eef5e54414ffb';
-if (globalRef[ns] == null) globalRef[ns] = 0;
+
+if (_global2['default'][ns] == null) _global2['default'][ns] = 0;
 // In case we have more than one JSS version.
-var jssCounter = globalRef[ns]++;
+var jssCounter = _global2['default'][ns]++;
 
 var maxRules = 1e10;
 
@@ -1160,7 +1208,7 @@ exports['default'] = function () {
     ruleCounter += 1;
 
     if (ruleCounter > maxRules) {
-      (0, _warning2['default'])(false, 'You might have a memory leak. Rule counter is at %s.', ruleCounter);
+      (0, _warning2['default'])(false, '[JSS] You might have a memory leak. Rule counter is at %s.', ruleCounter);
     }
 
     if (env === 'production') {
@@ -1168,59 +1216,9 @@ exports['default'] = function () {
     }
 
     var prefix = sheet ? sheet.options.classNamePrefix || '' : '';
-
-    return '' + prefix + rule.key + '-' + jssCounter + '-' + ruleCounter;
+    return prefix + rule.key + '-' + jssCounter + '-' + ruleCounter;
   };
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports['default'] = createRule;
-
-var _warning = __webpack_require__(0);
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _StyleRule = __webpack_require__(1);
-
-var _StyleRule2 = _interopRequireDefault(_StyleRule);
-
-var _cloneStyle = __webpack_require__(27);
-
-var _cloneStyle2 = _interopRequireDefault(_cloneStyle);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/**
- * Create a rule instance.
- */
-function createRule() {
-  var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'unnamed';
-  var decl = arguments[1];
-  var options = arguments[2];
-  var jss = options.jss;
-
-  var declCopy = (0, _cloneStyle2['default'])(decl);
-
-  var rule = jss.plugins.onCreateRule(name, declCopy, options);
-  if (rule) return rule;
-
-  // It is an at-rule and it has no instance.
-  if (name[0] === '@') {
-    (0, _warning2['default'])(false, '[JSS] Unknown at-rule %s', name);
-  }
-
-  return new _StyleRule2['default'](name, declCopy, options);
-}
 
 /***/ }),
 /* 11 */
@@ -1233,14 +1231,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _isObservable = __webpack_require__(6);
+var _symbolObservable = __webpack_require__(33);
 
-var _isObservable2 = _interopRequireDefault(_isObservable);
+var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 exports['default'] = function (value) {
-  return typeof value === 'function' || (0, _isObservable2['default'])(value);
+  return value && value[_symbolObservable2['default']] && value === value[_symbolObservable2['default']]();
 };
 
 /***/ }),
@@ -1338,11 +1336,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _isInBrowser = __webpack_require__(30);
+var _isInBrowser = __webpack_require__(32);
 
 var _isInBrowser2 = _interopRequireDefault(_isInBrowser);
 
-var _StyleSheet = __webpack_require__(8);
+var _StyleSheet = __webpack_require__(9);
 
 var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 
@@ -1350,35 +1348,39 @@ var _PluginsRegistry = __webpack_require__(16);
 
 var _PluginsRegistry2 = _interopRequireDefault(_PluginsRegistry);
 
-var _rules = __webpack_require__(19);
+var _rules = __webpack_require__(20);
 
 var _rules2 = _interopRequireDefault(_rules);
 
-var _observables = __webpack_require__(18);
+var _observables = __webpack_require__(19);
 
 var _observables2 = _interopRequireDefault(_observables);
 
-var _sheets = __webpack_require__(4);
+var _functions = __webpack_require__(18);
+
+var _functions2 = _interopRequireDefault(_functions);
+
+var _sheets = __webpack_require__(5);
 
 var _sheets2 = _interopRequireDefault(_sheets);
 
-var _StyleRule = __webpack_require__(1);
+var _StyleRule = __webpack_require__(0);
 
 var _StyleRule2 = _interopRequireDefault(_StyleRule);
 
-var _createGenerateClassName = __webpack_require__(9);
+var _createGenerateClassName = __webpack_require__(10);
 
 var _createGenerateClassName2 = _interopRequireDefault(_createGenerateClassName);
 
-var _createRule2 = __webpack_require__(10);
+var _createRule2 = __webpack_require__(3);
 
 var _createRule3 = _interopRequireDefault(_createRule2);
 
-var _DomRenderer = __webpack_require__(20);
+var _DomRenderer = __webpack_require__(21);
 
 var _DomRenderer2 = _interopRequireDefault(_DomRenderer);
 
-var _VirtualRenderer = __webpack_require__(21);
+var _VirtualRenderer = __webpack_require__(22);
 
 var _VirtualRenderer2 = _interopRequireDefault(_VirtualRenderer);
 
@@ -1386,13 +1388,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var defaultPlugins = _rules2['default'].concat([_observables2['default']]);
+var defaultPlugins = _rules2['default'].concat([_observables2['default'], _functions2['default']]);
 
 var Jss = function () {
   function Jss(options) {
     _classCallCheck(this, Jss);
 
-    this.version = "9.0.0";
+    this.version = "9.3.3";
     this.plugins = new _PluginsRegistry2['default']();
     this.options = {
       createGenerateClassName: _createGenerateClassName2['default'],
@@ -1544,7 +1546,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _warning = __webpack_require__(0);
+var _warning = __webpack_require__(1);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -1561,7 +1563,8 @@ var PluginsRegistry = function () {
       onProcessRule: [],
       onProcessStyle: [],
       onProcessSheet: [],
-      onChangeValue: []
+      onChangeValue: [],
+      onUpdate: []
 
       /**
        * Call `onCreateRule` hooks and return an object if returned by a hook.
@@ -1628,6 +1631,18 @@ var PluginsRegistry = function () {
     }
 
     /**
+     * Call `onUpdate` hooks.
+     */
+
+  }, {
+    key: 'onUpdate',
+    value: function onUpdate(data, rule, sheet) {
+      for (var i = 0; i < this.hooks.onUpdate.length; i++) {
+        this.hooks.onUpdate[i](data, rule, sheet);
+      }
+    }
+
+    /**
      * Call `onChangeValue` hooks.
      */
 
@@ -1673,7 +1688,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _warning = __webpack_require__(0);
+var _warning = __webpack_require__(1);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -1764,36 +1779,76 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _isObservable = __webpack_require__(6);
+var _RuleList = __webpack_require__(2);
 
-var _isObservable2 = _interopRequireDefault(_isObservable);
+var _RuleList2 = _interopRequireDefault(_RuleList);
 
-var _StyleRule = __webpack_require__(1);
+var _StyleRule = __webpack_require__(0);
 
 var _StyleRule2 = _interopRequireDefault(_StyleRule);
 
+var _kebabCase = __webpack_require__(31);
+
+var _kebabCase2 = _interopRequireDefault(_kebabCase);
+
+var _createRule = __webpack_require__(3);
+
+var _createRule2 = _interopRequireDefault(_createRule);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+// A symbol replacement.
+var now = Date.now();
+var fnValuesNs = 'fnValues' + now;
+var fnStyleNs = 'fnStyle' + ++now;
+
 exports['default'] = {
-  onProcessRule: function onProcessRule(rule) {
-    if (!(rule instanceof _StyleRule2['default'])) return;
-    var style = rule.style;
-
-    var _loop = function _loop(prop) {
-      var value = style[prop];
-      if (!(0, _isObservable2['default'])(value)) return 'continue';
-      value.subscribe({
-        next: function next(nextValue) {
-          // $FlowFixMe
-          rule.prop(prop, nextValue);
-        }
-      });
-    };
-
+  onCreateRule: function onCreateRule(name, decl, options) {
+    if (typeof decl !== 'function') return null;
+    var rule = (0, _createRule2['default'])(name, {}, options);
+    rule[fnStyleNs] = decl;
+    return rule;
+  },
+  onProcessStyle: function onProcessStyle(style, rule) {
+    var fn = {};
     for (var prop in style) {
-      var _ret = _loop(prop);
+      var value = style[prop];
+      if (typeof value !== 'function') continue;
+      delete style[prop];
+      fn[(0, _kebabCase2['default'])(prop)] = value;
+    }
+    rule = rule;
+    rule[fnValuesNs] = fn;
+    return style;
+  },
+  onUpdate: function onUpdate(data, rule) {
+    // It is a rules container like for e.g. ConditionalRule.
+    if (rule.rules instanceof _RuleList2['default']) {
+      rule.rules.update(data);
+      return;
+    }
+    if (!(rule instanceof _StyleRule2['default'])) return;
 
-      if (_ret === 'continue') continue;
+    rule = rule;
+
+    // If we have a fn values map, it is a rule with function values.
+    if (rule[fnValuesNs]) {
+      for (var prop in rule[fnValuesNs]) {
+        rule.prop(prop, rule[fnValuesNs][prop](data));
+      }
+    }
+
+    rule = rule;
+
+    var fnStyle = rule[fnStyleNs];
+
+    // If we have a style function, the entire rule is dynamic and style object
+    // will be returned from that function.
+    if (fnStyle) {
+      var style = fnStyle(data);
+      for (var _prop in style) {
+        rule.prop(_prop, style[_prop]);
+      }
     }
   }
 };
@@ -1809,23 +1864,92 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _SimpleRule = __webpack_require__(25);
+var _StyleRule = __webpack_require__(0);
+
+var _StyleRule2 = _interopRequireDefault(_StyleRule);
+
+var _createRule = __webpack_require__(3);
+
+var _createRule2 = _interopRequireDefault(_createRule);
+
+var _isObservable = __webpack_require__(11);
+
+var _isObservable2 = _interopRequireDefault(_isObservable);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+exports['default'] = {
+  onCreateRule: function onCreateRule(name, decl, options) {
+    if (!(0, _isObservable2['default'])(decl)) return null;
+
+    // Cast `decl` to `Observable`, since it passed the type guard.
+    var style$ = decl;
+
+    var rule = (0, _createRule2['default'])(name, {}, options);
+
+    // TODO
+    // Call `stream.subscribe()` returns a subscription, which should be explicitly
+    // unsubscribed from when we know this sheet is no longer needed.
+    style$.subscribe(function (style) {
+      for (var prop in style) {
+        rule.prop(prop, style[prop]);
+      }
+    });
+
+    return rule;
+  },
+  onProcessRule: function onProcessRule(rule) {
+    if (!(rule instanceof _StyleRule2['default'])) return;
+    var styleRule = rule;
+    var style = styleRule.style;
+
+    var _loop = function _loop(prop) {
+      var value = style[prop];
+      if (!(0, _isObservable2['default'])(value)) return 'continue';
+      delete style[prop];
+      value.subscribe({
+        next: function next(nextValue) {
+          styleRule.prop(prop, nextValue);
+        }
+      });
+    };
+
+    for (var prop in style) {
+      var _ret = _loop(prop);
+
+      if (_ret === 'continue') continue;
+    }
+  }
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _SimpleRule = __webpack_require__(26);
 
 var _SimpleRule2 = _interopRequireDefault(_SimpleRule);
 
-var _KeyframesRule = __webpack_require__(24);
+var _KeyframesRule = __webpack_require__(25);
 
 var _KeyframesRule2 = _interopRequireDefault(_KeyframesRule);
 
-var _ConditionalRule = __webpack_require__(22);
+var _ConditionalRule = __webpack_require__(23);
 
 var _ConditionalRule2 = _interopRequireDefault(_ConditionalRule);
 
-var _FontFaceRule = __webpack_require__(23);
+var _FontFaceRule = __webpack_require__(24);
 
 var _FontFaceRule2 = _interopRequireDefault(_FontFaceRule);
 
-var _ViewportRule = __webpack_require__(26);
+var _ViewportRule = __webpack_require__(27);
 
 var _ViewportRule2 = _interopRequireDefault(_ViewportRule);
 
@@ -1856,7 +1980,7 @@ exports['default'] = Object.keys(classes).map(function (key) {
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1868,17 +1992,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _warning = __webpack_require__(0);
+var _warning = __webpack_require__(1);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _sheets = __webpack_require__(4);
+var _sheets = __webpack_require__(5);
 
 var _sheets2 = _interopRequireDefault(_sheets);
 
-var _StyleRule = __webpack_require__(1);
+var _StyleRule = __webpack_require__(0);
 
 var _StyleRule2 = _interopRequireDefault(_StyleRule);
+
+var _global = __webpack_require__(6);
+
+var _global2 = _interopRequireDefault(_global);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -2140,6 +2268,9 @@ var DomRenderer = function () {
     this.element.setAttribute('data-jss', '');
     if (media) this.element.setAttribute('media', media);
     if (meta) this.element.setAttribute('data-meta', meta);
+    // eslint-disable-next-line no-underscore-dangle
+    var nonce = _global2['default'].__webpack_nonce__;
+    if (nonce) this.element.setAttribute('nonce', nonce);
   }
 
   /**
@@ -2275,7 +2406,7 @@ var DomRenderer = function () {
 exports['default'] = DomRenderer;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2359,7 +2490,7 @@ var VirtualRenderer = function () {
 exports['default'] = VirtualRenderer;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2455,7 +2586,7 @@ var ConditionalRule = function () {
 exports['default'] = ConditionalRule;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2467,7 +2598,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _toCss = __webpack_require__(5);
+var _toCss = __webpack_require__(7);
 
 var _toCss2 = _interopRequireDefault(_toCss);
 
@@ -2514,7 +2645,7 @@ var FontFaceRule = function () {
 exports['default'] = FontFaceRule;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2582,7 +2713,7 @@ var KeyframesRule = function () {
 exports['default'] = KeyframesRule;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2636,7 +2767,7 @@ var SimpleRule = function () {
 exports['default'] = SimpleRule;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2648,7 +2779,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _toCss = __webpack_require__(5);
+var _toCss = __webpack_require__(7);
 
 var _toCss2 = _interopRequireDefault(_toCss);
 
@@ -2686,7 +2817,7 @@ var ViewportRule = function () {
 exports['default'] = ViewportRule;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2700,7 +2831,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports['default'] = cloneStyle;
 
-var _isObservable = __webpack_require__(6);
+var _isObservable = __webpack_require__(11);
 
 var _isObservable2 = _interopRequireDefault(_isObservable);
 
@@ -2713,15 +2844,22 @@ function cloneStyle(style) {
 
   // Support string value for SimpleRule.
   var typeOfStyle = typeof style === 'undefined' ? 'undefined' : _typeof(style);
-  if (typeOfStyle === 'string' || typeOfStyle === 'number') return style;
+
+  if (typeOfStyle === 'string' || typeOfStyle === 'number' || typeOfStyle === 'function') {
+    return style;
+  }
 
   // Support array for FontFaceRule.
   if (isArray(style)) return style.map(cloneStyle);
 
+  // Support Observable styles.  Observables are immutable, so we don't need to
+  // copy them.
+  if ((0, _isObservable2['default'])(style)) return style;
+
   var newStyle = {};
   for (var name in style) {
     var value = style[name];
-    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && !(0, _isObservable2['default'])(value)) {
+    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
       newStyle[name] = cloneStyle(value);
       continue;
     }
@@ -2732,7 +2870,42 @@ function cloneStyle(style) {
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _global = __webpack_require__(6);
+
+var _global2 = _interopRequireDefault(_global);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var CSS = _global2['default'].CSS;
+
+var env = "development";
+
+var escapeRegex = /([[\].#*$><+~=|^:(),"'`])/g;
+
+exports['default'] = function (str) {
+  // We don't need to escape it in production, because we are not using user's
+  // input for selectors, we are generating a valid selector.
+  if (env === 'production') return str;
+
+  if (!CSS || !CSS.escape) {
+    return str.replace(escapeRegex, '\\$1');
+  }
+
+  return CSS.escape(str);
+};
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2775,7 +2948,7 @@ exports['default'] = function (styles) {
 };
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2784,22 +2957,17 @@ exports['default'] = function (styles) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var regExp = /([A-Z])/g;
+var replace = function replace(str) {
+  return "-" + str.toLowerCase();
+};
 
-exports['default'] = function (rule, data, RuleList) {
-  if (rule.type === 'style') {
-    for (var prop in rule.style) {
-      var value = rule.style[prop];
-      if (typeof value === 'function') {
-        rule.prop(prop, value(data));
-      }
-    }
-  } else if (rule.rules instanceof RuleList) {
-    rule.rules.update(data);
-  }
+exports["default"] = function (str) {
+  return str.replace(regExp, replace);
 };
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2813,34 +2981,69 @@ var isBrowser = (typeof window === "undefined" ? "undefined" : _typeof(window)) 
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/* global window */
+module.exports = __webpack_require__(34);
 
-
-module.exports = __webpack_require__(32)(global || window || this);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 32 */
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global, module) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _ponyfill = __webpack_require__(35);
+
+var _ponyfill2 = _interopRequireDefault(_ponyfill);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var root; /* global window */
+
+
+if (typeof self !== 'undefined') {
+  root = self;
+} else if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof global !== 'undefined') {
+  root = global;
+} else if (true) {
+  root = module;
+} else {
+  root = Function('return this')();
+}
+
+var result = (0, _ponyfill2['default'])(root);
+exports['default'] = result;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(36)(module)))
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = function symbolObservablePonyfill(root) {
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports['default'] = symbolObservablePonyfill;
+function symbolObservablePonyfill(root) {
 	var result;
-	var Symbol = root.Symbol;
+	var _Symbol = root.Symbol;
 
-	if (typeof Symbol === 'function') {
-		if (Symbol.observable) {
-			result = Symbol.observable;
+	if (typeof _Symbol === 'function') {
+		if (_Symbol.observable) {
+			result = _Symbol.observable;
 		} else {
-			result = Symbol('observable');
-			Symbol.observable = result;
+			result = _Symbol('observable');
+			_Symbol.observable = result;
 		}
 	} else {
 		result = '@@observable';
@@ -2849,13 +3052,40 @@ module.exports = function symbolObservablePonyfill(root) {
 	return result;
 };
 
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(3);
-module.exports = __webpack_require__(3);
+__webpack_require__(4);
+module.exports = __webpack_require__(4);
 
 
 /***/ })

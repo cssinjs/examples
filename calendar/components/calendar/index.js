@@ -1,4 +1,4 @@
-import debounce from 'lodash/function/debounce'
+import debounce from 'lodash/debounce'
 import jss from '../jss'
 import * as utils from '../utils'
 import Canvas from '../canvas'
