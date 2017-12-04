@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "removeComments": true,
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "preserveWhitespaces": false
+  }
+}
