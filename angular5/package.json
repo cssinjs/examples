@@ -1,0 +1,29 @@
+{
+  "name": "jss-angular-example",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\"",
+    "lite": "lite-server",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@angular/common": "5.0.5",
+    "@angular/compiler": "5.0.5",
+    "@angular/core": "5.0.5",
+    "@angular/platform-browser": "5.0.5",
+    "@angular/platform-browser-dynamic": "5.0.5",
+    "core-js": "2.5.1",
+    "jss": "9.3.3",
+    "jss-preset-default": "4.0.1",
+    "rxjs": "5.5.3",
+    "systemjs": "0.20.19",
+    "zone.js": "0.8.18"
+  },
+  "devDependencies": {
+    "concurrently": "3.5.1",
+    "lite-server": "2.3.0",
+    "typescript": "2.6.2"
+  }
+}
