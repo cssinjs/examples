@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
     const styles: Object = {
       title: {
-        'text-align': 'center',
+        textAlign: 'center',
         backgroundColor: '#E0E0E0',
         '&:hover': {
           backgroundColor: '#BDBDBD'
@@ -55,8 +55,8 @@ export class AppComponent implements OnInit {
       },
       buttons: {
         display: 'flex',
-        'flex-direction': 'row',
-        'margin-top': '1rem'
+        flexDirection: 'row',
+        marginTop: '1rem'
       },
       redButton: this.createButtonStyle(this.red),
       greenButton: this.createButtonStyle(this.green),
