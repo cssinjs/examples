@@ -1,57 +1,51 @@
-import {Observable} from 'rxjs'
+import {Observable, Subject} from 'rxjs'
+import 'hammerjs'
+import dynamics from 'dynamics.js'
 
-export const defaultPercents = [100, 87.5, 75, 62.5, 50, 37.5, 25, 12.5, 0]
+export const swingAnimationValues = [5, -10, 15, -23, 23, -15, 10, -10, 5]
 
-export function createIterations(percents, values) {
-  return percents.map((percent, i) => ({
-    percent: percent,
-    value: values[i]
-  }))
-}
+export const animationSubject = new Subject(0)
 
-export function createAnimationLoader(duration, delay = 0) {
-  return Observable
-    .interval(100)
-    .delay(delay * 1000)
-    .startWith(0)
-    .scan(x => x > duration * 10 ? 0 : x + 1, 0)
-    .map(x => x * 10 / duration)
-}
+const subscription = animationSubject.subscribe(
+  x => console.log('Next: ' + x),
+  err => console.log('Error: ' + err),
+  () => console.log('Completed')
+)
 
-function getAnimationValue($animationLoader, iterations) {
-  return $animationLoader.map(percent => {
-    for (let i = 0; i < iterations.length; i++) {
-      if (percent >= iterations[i].percent) {
-        return iterations[i].value
+export const rotate = ($val, $mult) => `rotate(${$val * $mult}deg)`
+export const translateY = ($val, $mult) => `translateY(${$val * $mult}px)`
+export const translateX = ($val, $mult) => `translateX(${$val * $mult}px)`
+
+export const swingAnimation = ($mult = 1, animation = rotate) => 
+  animationSubject.map($val => animation($val, $mult))
+
+export const setupAnimation = function() {
+  const cat = document.querySelector('#cat');
+  const hCat = new Hammer(cat);
+  const noop = () => {};
+
+  const springBack = fromX => Observable
+    .fromEventPattern(handler => dynamics.animate(
+      { deltaX: fromX },
+      { deltaX: 0 },
+      {
+        change: e => handler(e.deltaX),
+        type: dynamics.spring,
+        duration: 3000,
+        bounciness: 500,
+        friction: 100
       }
-    }
-    return iterations[iterations.length - 1].value
-  })
-}
+    ), noop)
 
-function getTransformTransition(time = 1, transitionType = 'linear') {
-  return { transition: `transform ${time}s ${transitionType}`}
-}
+  const pan$ = Observable
+    .fromEventPattern(handler =>
+      hCat.on('panleft panright panend', handler), noop)
 
-export function createAnimation(duration, delay, transitionType, transionTime, iterations, modifyStyle) {
-  const $animationLoader = createAnimationLoader(duration, delay)
-  return {
-    transform: getAnimationValue($animationLoader, iterations).map(modifyStyle),
-    ...getTransformTransition(transionTime, transitionType)
-  }
-}
+  const move$ = pan$
+    .switchMap(e => e.type === 'panend'
+      ? springBack(e.deltaX)
+      : Observable.of(e.deltaX))
+    .startWith(0)
 
-export function createRotateAnimation(duration, delay, transitionType, values) {
-  const iterations = createIterations(defaultPercents, values)
-  return createAnimation(duration, delay, transitionType, 1, iterations, x => `rotate(${x}deg)`)
-}
-
-export function swingAnimation(duration, delay, transitionType) {
-  const values = [5, -10, 15, -23, 23, -15, 10, -10, 5]
-  return createRotateAnimation(duration, delay, transitionType, values)
-}
-
-export function reverseSwingAnimation(duration, delay, transitionType) {
-  const values = [-5, 10, -15, 23, -23, 15, -10, 10, -5]
-  return createRotateAnimation(duration, delay, transitionType, values)
+  move$.subscribe(deltaX => animationSubject.next(-deltaX * .1))
 }

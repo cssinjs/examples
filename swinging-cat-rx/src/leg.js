@@ -1,20 +1,21 @@
 import jss from './jss'
 import * as theme from './theme'
-import { createRotateAnimation } from './animation'
+import { swingAnimation } from './animation'
 
-
-const rotateDegrees = [0.5, -1, 1.5, -2.3, 2.4, -1.5, 1, -1, 0.5]
+const $swingLeg = {
+  transform: swingAnimation(.1)
+}
 
 const styles = {
   catLowerLegPaw: {
     position: 'absolute',
     height: 20,
     width: 20,
-    ...createRotateAnimation(theme.durationSeconds, 0.3, undefined, rotateDegrees),
     zIndex: 1,
     transformOrigin: 'top center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    ...$swingLeg,
     backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`
   },
   catLegFirstNested: {
@@ -29,7 +30,8 @@ const styles = {
   catLowerPaw: {
     top: '50%',
     borderRadius: '50%',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    ...$swingLeg
   }
 }
 

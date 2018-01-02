@@ -2,7 +2,7 @@ import jss from './jss'
 import * as theme from './theme'
 import leg from './leg'
 import tail from './tail'
-import { swingAnimation, reverseSwingAnimation } from './animation'
+import { swingAnimation } from './animation'
 
 const styles = {
   catLowerWrap: {
@@ -11,8 +11,8 @@ const styles = {
     top: '100%',
     width: 75,
     left: 'calc(50% - 37.5px)',
-    ...reverseSwingAnimation(theme.durationSeconds, 0.2),
-    transformOrigin: 'top center'
+    transformOrigin: 'top center',
+    transform: swingAnimation(-1)
   },
   catLower: {
     position: 'absolute',
@@ -20,7 +20,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    ...swingAnimation(theme.durationSeconds, 0.5),
+    transform: swingAnimation(),
     transformOrigin: 'top center',
     '&:after': {
       content: '""',
