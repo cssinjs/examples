@@ -1,4 +1,4 @@
-import {Observable, Subject} from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 import 'hammerjs'
 import dynamics from 'dynamics.js'
 
@@ -6,18 +6,38 @@ export const swingAnimationValues = [5, -10, 15, -23, 23, -15, 10, -10, 5]
 
 export const animationSubject = new Subject(0)
 
+export function getPercentValue(animationValues, $percent) {
+  for (let i = 0; i < animationValues.length; i++) {
+    if ($percent >= animationValues[i].percent) {
+      return animationValues[i].value
+    }
+  }
+  return animationValues[animationValues.length - 1].value
+}
+
 const subscription = animationSubject.subscribe(
-  x => console.log('Next: ' + x),
+  $val => console.log('Next: ' + $val),
   err => console.log('Error: ' + err),
   () => console.log('Completed')
 )
 
-export const rotate = ($val, $mult) => `rotate(${$val * $mult}deg)`
-export const translateY = ($val, $mult) => `translateY(${$val * $mult}px)`
-export const translateX = ($val, $mult) => `translateX(${$val * $mult}px)`
+export const rotate = ($val, $mult = 1) => `rotate(${$val * $mult}deg)`
+export const scaleY = $val => `scaleY(${$val})`
+export const translateY = ($val, $mult = 1) => `translateY(${$val * $mult}rem)`
+export const translateX = ($val, $mult = 1) => `translateX(${$val * $mult}px)`
 
-export const swingAnimation = ($mult = 1, animation = rotate) => 
+export const swingAnimation$ = ($mult = 1, animation = rotate) => 
   animationSubject.map($val => animation($val, $mult))
+
+export const animationLoader$ = duration => Observable
+  .interval(100)
+  .startWith(0)
+  .scan(x => x > duration * 10 ? 0 : x + 1, 0)
+  .map(x => x * 10 / duration)
+
+export const doAnimation$ = loader$ => Observable.combineLatest(
+  animationSubject, loader$, ($val, $percent) => $val != 0 ? $percent : 0
+)
 
 export const setupAnimation = function() {
   const cat = document.querySelector('#cat');

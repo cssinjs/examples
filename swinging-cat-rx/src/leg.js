@@ -1,9 +1,9 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingAnimation } from './animation'
+import { swingAnimation$ } from './animation'
 
 const $swingLeg = {
-  transform: swingAnimation(.1)
+  transform: swingAnimation$(.1)
 }
 
 const styles = {

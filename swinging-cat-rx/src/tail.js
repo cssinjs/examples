@@ -1,6 +1,6 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingAnimation } from './animation'
+import { swingAnimation$ } from './animation'
 
 
 const styles = {
@@ -10,8 +10,8 @@ const styles = {
     width: 10,
     transformOrigin: 'top center',
     zIndex: 0,
-    transform: swingAnimation(-.4),
-    transition: `rotate ${theme.easing}`,
+    transform: swingAnimation$(-.4),
+    transitionTimingFunction: theme.easing,
     backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10
