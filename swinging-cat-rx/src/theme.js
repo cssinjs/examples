@@ -6,5 +6,5 @@ export const colorFeaturesLight = '#9FA2CB'
 export const colorYarn = '#DB242A'
 export const easing = 'cubic-bezier(0.5, 0, 0.5, 1)'
 export const offset = '.5s'
-export const duration = 7
+export const duration = 5
 

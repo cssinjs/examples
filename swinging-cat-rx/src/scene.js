@@ -44,7 +44,7 @@ const styles = {
     height: '5rem',
     transformOrigin: 'center -20rem',
     transitionTimingFunction: theme.easing,
-    transform: swingAnimation$(),
+    transform: swingAnimation$().delay(200),
     '&:before': {
       content: '""',
       height: '20rem',
@@ -69,7 +69,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    transform: swingAnimation$(),
+    transform: swingAnimation$().delay(200),
     transformOrigin: 'top center'
   }
 }

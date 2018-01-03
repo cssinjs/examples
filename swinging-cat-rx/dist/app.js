@@ -1382,7 +1382,7 @@ var colorFeaturesLight = exports.colorFeaturesLight = '#9FA2CB';
 var colorYarn = exports.colorYarn = '#DB242A';
 var easing = exports.easing = 'cubic-bezier(0.5, 0, 0.5, 1)';
 var offset = exports.offset = '.5s';
-var duration = exports.duration = 7;
+var duration = exports.duration = 5;
 
 /***/ }),
 /* 15 */
@@ -19339,7 +19339,7 @@ var styles = {
     height: '5rem',
     transformOrigin: 'center -20rem',
     transitionTimingFunction: theme.easing,
-    transform: (0, _animation.swingAnimation$)(),
+    transform: (0, _animation.swingAnimation$)().delay(200),
     '&:before': {
       content: '""',
       height: '20rem',
@@ -19364,7 +19364,7 @@ var styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    transform: (0, _animation.swingAnimation$)(),
+    transform: (0, _animation.swingAnimation$)().delay(200),
     transformOrigin: 'top center'
   }
 };
@@ -35417,7 +35417,7 @@ var styles = {
     width: 75,
     left: 'calc(50% - 37.5px)',
     transformOrigin: 'top center',
-    transform: (0, _animation.swingAnimation$)(-1)
+    transform: (0, _animation.swingAnimation$)(-1).delay(200)
   },
   catLower: {
     position: 'absolute',
@@ -35476,7 +35476,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var $swingLeg = {
-  transform: (0, _animation.swingAnimation$)(.1)
+  transform: (0, _animation.swingAnimation$)(.1).delay(300)
 };
 
 var styles = {
