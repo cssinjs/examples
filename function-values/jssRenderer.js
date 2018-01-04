@@ -1,7 +1,7 @@
 import jss from 'jss'
 import preset from 'jss-preset-default'
 import {getRandomColor, getRandomTransform} from './utils'
-import times from 'lodash/utility/times'
+import times from 'lodash/times'
 
 jss.setup(preset())
 

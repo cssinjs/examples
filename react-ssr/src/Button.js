@@ -7,8 +7,7 @@ const styles = {
   }
 }
 
-function Button(props) {
-  const {classes} = props.sheet
+function Button({classes}) {
   return <button className={classes.button}>My Button</button>
 }
 

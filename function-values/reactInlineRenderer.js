@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import times from 'lodash/utility/times'
+import times from 'lodash/times'
 import {getRandomColor, getRandomTransform} from './utils'
 
 export default (amount) => (

@@ -30405,7 +30405,6 @@ var styles = {
     height: 6,
     transition: '0.6s',
     transform: (0, _animation.doAnimation$)((0, _animation.animationLoader$)(theme.duration)).map(function ($val) {
-      console.log((0, _animation.getPercentValue)(animationValues, $val));
       return (0, _animation.scaleY)((0, _animation.getPercentValue)(animationValues, $val));
     }),
     '&:before': {
