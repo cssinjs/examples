@@ -3,7 +3,7 @@ import * as theme from './theme'
 import { swingAnimation$ } from './animation'
 
 const $swingLeg = {
-  transform: swingAnimation$(.1).delay(300)
+  transform: swingAnimation$(.1).delay(200)
 }
 
 const styles = {

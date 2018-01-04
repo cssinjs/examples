@@ -12,7 +12,7 @@ const styles = {
     width: 75,
     left: 'calc(50% - 37.5px)',
     transformOrigin: 'top center',
-    transform: swingAnimation$(-1).delay(200)
+    transform: swingAnimation$(-1).delay(100)
   },
   catLower: {
     position: 'absolute',

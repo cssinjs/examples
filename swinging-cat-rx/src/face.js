@@ -4,9 +4,9 @@ import { swingAnimation$, translateX, doAnimation$, animationLoader$, getPercent
 
 
 const animationValues = [
-  { percent: 80, value: 1 },
+  { percent: 100, value: 1 },
   { percent: 78, value: 0.1 },
-  { percent: 25, value: 1 },
+  { percent: 43, value: 1 },
   { percent: 23, value: 0.1 },
   { percent: 10, value: 1 },
   { percent: 8, value: 0.1 },
@@ -30,7 +30,7 @@ const styles = {
     top: '50%',
     width: '100%',
     height: 6,
-    transition: '0.4s',
+    transition: '0.6s',
     transform: doAnimation$(animationLoader$(theme.duration)).map($val => 
       scaleY(getPercentValue(animationValues, $val))
     ),

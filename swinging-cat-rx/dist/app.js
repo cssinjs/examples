@@ -19339,7 +19339,7 @@ var styles = {
     height: '5rem',
     transformOrigin: 'center -20rem',
     transitionTimingFunction: theme.easing,
-    transform: (0, _animation.swingAnimation$)().delay(200),
+    transform: (0, _animation.swingAnimation$)().delay(100),
     '&:before': {
       content: '""',
       height: '20rem',
@@ -19364,7 +19364,7 @@ var styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    transform: (0, _animation.swingAnimation$)().delay(200),
+    transform: (0, _animation.swingAnimation$)().delay(150),
     transformOrigin: 'top center'
   }
 };
@@ -30384,7 +30384,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var animationValues = [{ percent: 80, value: 1 }, { percent: 78, value: 0.1 }, { percent: 25, value: 1 }, { percent: 23, value: 0.1 }, { percent: 10, value: 1 }, { percent: 8, value: 0.1 }, { percent: 0, value: 1 }];
+var animationValues = [{ percent: 100, value: 1 }, { percent: 78, value: 0.1 }, { percent: 43, value: 1 }, { percent: 23, value: 0.1 }, { percent: 10, value: 1 }, { percent: 8, value: 0.1 }, { percent: 0, value: 1 }];
 
 var styles = {
   catFace: {
@@ -30403,8 +30403,9 @@ var styles = {
     top: '50%',
     width: '100%',
     height: 6,
-    transition: '0.4s',
+    transition: '0.6s',
     transform: (0, _animation.doAnimation$)((0, _animation.animationLoader$)(theme.duration)).map(function ($val) {
+      console.log((0, _animation.getPercentValue)(animationValues, $val));
       return (0, _animation.scaleY)((0, _animation.getPercentValue)(animationValues, $val));
     }),
     '&:before': {
@@ -35417,7 +35418,7 @@ var styles = {
     width: 75,
     left: 'calc(50% - 37.5px)',
     transformOrigin: 'top center',
-    transform: (0, _animation.swingAnimation$)(-1).delay(200)
+    transform: (0, _animation.swingAnimation$)(-1).delay(100)
   },
   catLower: {
     position: 'absolute',
@@ -35476,7 +35477,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var $swingLeg = {
-  transform: (0, _animation.swingAnimation$)(.1).delay(300)
+  transform: (0, _animation.swingAnimation$)(.1).delay(200)
 };
 
 var styles = {
