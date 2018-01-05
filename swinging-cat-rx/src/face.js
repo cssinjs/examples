@@ -1,6 +1,17 @@
 import jss from './jss'
 import * as theme from './theme'
-import { faceAnimation, blinkAnimation } from './animation'
+import { swingAnimation$, translateX, doAnimation$, animationLoader$, getPercentValue, scaleY } from './animation'
+
+
+const animationValues = [
+  { percent: 100, value: 1 },
+  { percent: 78, value: 0.1 },
+  { percent: 43, value: 1 },
+  { percent: 23, value: 0.1 },
+  { percent: 10, value: 1 },
+  { percent: 8, value: 0.1 },
+  { percent: 0, value: 1 }
+]
 
 const styles = {
   catFace: {
@@ -9,7 +20,8 @@ const styles = {
     left: 0,
     height: '100%',
     width: '100%',
-    ...faceAnimation(theme.durationSeconds, 0, theme.easing),
+    transform: swingAnimation$(-.5, translateX),
+    transitionTimingFunction: theme.easing,
     transformStyle: 'preserve-3d',
     perspective: 100
   },
@@ -18,7 +30,10 @@ const styles = {
     top: '50%',
     width: '100%',
     height: 6,
-    ...blinkAnimation(theme.durationSeconds, 0, 'step-end'),
+    transition: '0.6s',
+    transform: doAnimation$(animationLoader$(theme.duration)).map($val => 
+      scaleY(getPercentValue(animationValues, $val))
+    ),
     '&:before': {
       content: '""',
       left: 20,

@@ -1,18 +1,21 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingLegAnimation } from './animation'
+import { swingAnimation$ } from './animation'
 
+const $swingLeg = {
+  transform: swingAnimation$(.1).delay(200)
+}
 
 const styles = {
   catLowerLegPaw: {
     position: 'absolute',
     height: 20,
     width: 20,
-    ...swingLegAnimation(theme.durationSeconds, 300),
     zIndex: 1,
     transformOrigin: 'top center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    ...$swingLeg,
     backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`
   },
   catLegFirstNested: {
@@ -27,7 +30,8 @@ const styles = {
   catLowerPaw: {
     top: '50%',
     borderRadius: '50%',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    ...$swingLeg
   }
 }
 

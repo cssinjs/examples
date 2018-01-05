@@ -1,116 +1,71 @@
-import {Observable} from 'rxjs'
+import { Observable, Subject } from 'rxjs'
+import 'hammerjs'
+import dynamics from 'dynamics.js'
 
-/* CONSTATNST */
+export const swingAnimationValues = [5, -10, 15, -23, 23, -15, 10, -10, 5]
 
-const TRANSFORM = 'transform'
+export const animationSubject = new Subject(0)
 
-const percents = [100, 87.5, 75, 62.5, 50, 37.5, 25, 12.5, 0]
-
-/* UTILS */
-
-function createIterations(percents, values) {
-  return percents.map((percent, i) => ({
-    percent: percent,
-    value: values[i]
-  }))
-}
-
-function createAnimationLoader(duration, delay = 0) {
-  return Observable
-    .interval(100)
-    .delay(delay)
-    .startWith(0)
-    .scan(x => x > duration * 10 ? 0 : x + 1, 0)
-    .map(x => x * 10 / duration)
-}
-
-function getAnimationValue($animationLoader, iterations) {
-  return $animationLoader.map(percent => {
-    for (let i = 0; i < iterations.length; i++) {
-      if (percent >= iterations[i].percent) {
-        return iterations[i].value
-      }
+export function getPercentValue(animationValues, $percent) {
+  for (let i = 0; i < animationValues.length; i++) {
+    if ($percent >= animationValues[i].percent) {
+      return animationValues[i].value
     }
-    return iterations[iterations.length - 1].value
-  })
-}
-
-function getTransformTransition(time = 1, transitionType = 'linear') {
-  return { transition: `${TRANSFORM} ${time}s ${transitionType}`}
-}
-
-function createAnimation(duration, delay, transitionType, transionTime, iterations, modifyStyle) {
-  const $animationLoader = createAnimationLoader(duration, delay)
-  return {
-    [TRANSFORM]: getAnimationValue($animationLoader, iterations).map(modifyStyle),
-    ...getTransformTransition(transionTime, transitionType)
   }
+  return animationValues[animationValues.length - 1].value
 }
 
-function createRotateAnimation(duration, delay, transitionType, values) {
-  const iterations = createIterations(percents, values)
-  return createAnimation(duration, delay, transitionType, 1, iterations, x => `rotate(${x}deg)`)
-}
+const subscription = animationSubject.subscribe(
+  $val => console.log('Next: ' + $val),
+  err => console.log('Error: ' + err),
+  () => console.log('Completed')
+)
 
-/* ANIMATIONS */
+export const rotate = ($val, $mult = 1) => `rotate(${$val * $mult}deg)`
+export const scaleY = $val => `scaleY(${$val})`
+export const translateY = ($val, $mult = 1) => `translateY(${$val * $mult}rem)`
+export const translateX = ($val, $mult = 1) => `translateX(${$val * $mult}px)`
 
-export function faceAnimation(duration, delay, transitionType) {
-  const values = [-2.5, 5, -7.5, 11.5, -11.5, 7.5, -5, 5, -2.5]
-  const iterations = createIterations(percents, values)
-  return createAnimation(duration, delay, transitionType, 0.9, iterations, x => `translateX(${x}px)`)
-}
+export const swingAnimation$ = ($mult = 1, animation = rotate) => 
+  animationSubject.map($val => animation($val, $mult))
 
-export function blinkAnimation(duration, delay, transitionType) {
-  const iterations = [
-    { percent: 80, value: 1 },
-    { percent: 78, value: 0.1 },
-    { percent: 25, value: 1 },
-    { percent: 23, value: 0.1 },
-    { percent: 10, value: 1 },
-    { percent: 8, value: 0.1 }
-  ]
-  return createAnimation(duration, delay, transitionType, 0.6, iterations, x => `scaleY(${x})`)
-}
+export const animationLoader$ = duration => Observable
+  .interval(100)
+  .startWith(0)
+  .scan(x => x > duration * 10 ? 0 : x + 1, 0)
+  .map(x => x * 10 / duration)
 
-export function swingLegAnimation(duration, delay, transitionType) {
-  const values = [0.5, -1, 1.5, -2.3, 2.4, -1.5, 1, -1, 0.5]
-  return createRotateAnimation(duration, delay, transitionType, values)
-}
+export const doAnimation$ = loader$ => Observable.combineLatest(
+  animationSubject, loader$, ($val, $percent) => $val != 0 ? $percent : 0
+)
 
-export function swingTailAnimation(duration, delay, transitionType) {
-  const values = [-2, 4, -6, 9.2, -9.2, 6, -4, 4, -2]
-  return createRotateAnimation(duration, delay, transitionType, values)
-}
+export const setupAnimation = function() {
+  const cat = document.querySelector('#cat');
+  const hCat = new Hammer(cat);
+  const noop = () => {};
 
-export function swingAnimation(duration, delay, transitionType) {
-  const values = [5, -10, 15, -23, 23, -15, 10, -10, 5]
-  return createRotateAnimation(duration, delay, transitionType, values)
-}
+  const springBack = fromX => Observable
+    .fromEventPattern(handler => dynamics.animate(
+      { deltaX: fromX },
+      { deltaX: 0 },
+      {
+        change: e => handler(e.deltaX),
+        type: dynamics.spring,
+        duration: 3000,
+        bounciness: 500,
+        friction: 100
+      }
+    ), noop)
 
-export function reverseSwingAnimation(duration, delay, transitionType) {
-  const values = [-5, 10, -15, 23, -23, 15, -10, 10, -5]
-  return createRotateAnimation(duration, delay, transitionType, values)
-}
+  const pan$ = Observable
+    .fromEventPattern(handler =>
+      hCat.on('panleft panright panend', handler), noop)
 
-export function bobAnimation(duration, delay, transitionType) {
-  const iterations = [
-    { percent: 100, value: 0.4 },
-    { percent: 93.75, value: -0.4 },
-    { percent: 87.5, value: 0.4 },
-    { percent: 81.25, value: -0.4 },
-    { percent: 75, value: 0.4 },
-    { percent: 68.75, value: -0.4 },
-    { percent: 62.5, value: 0.4 },
-    { percent: 56.25, value: -0.4 },
-    { percent: 50, value: 0.4 },
-    { percent: 43.75, value: -0.4 },
-    { percent: 37.5, value: 0.4 },
-    { percent: 31.25, value: -0.4 },
-    { percent: 25, value: 0.4 },
-    { percent: 18.75, value: -0.4 },
-    { percent: 12.5, value: 0.4 },
-    { percent: 6.25, value: -0.4 },
-    { percent: 0, value: 0.4 }
-  ]
-  return createAnimation(duration, delay, transitionType, 0.3, iterations, x => `translateY(${x}rem)`)
+  const move$ = pan$
+    .switchMap(e => e.type === 'panend'
+      ? springBack(e.deltaX)
+      : Observable.of(e.deltaX))
+    .startWith(0)
+
+  move$.subscribe(deltaX => animationSubject.next(-deltaX * .1))
 }

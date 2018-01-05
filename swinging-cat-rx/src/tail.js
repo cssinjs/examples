@@ -1,15 +1,17 @@
 import jss from './jss'
 import * as theme from './theme'
-import { swingTailAnimation } from './animation'
+import { swingAnimation$ } from './animation'
+
 
 const styles = {
   catTail: {
     position: 'absolute',
     height: 15,
     width: 10,
-    ...swingTailAnimation(theme.durationSeconds, 0, theme.easing),
     transformOrigin: 'top center',
     zIndex: 0,
+    transform: swingAnimation$(-.4),
+    transitionTimingFunction: theme.easing,
     backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10
