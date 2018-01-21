@@ -4,7 +4,7 @@ import * as theme from './theme'
 import yarn from './yarn'
 import upperBody from './upperBody'
 import lowerBody from './lowerBody'
-import { swingAnimation$, doAnimation$, animationLoader$, translateY, getPercentValue } from './animation'
+import { swingAnimation$, doAnimation$, translateY, getPercentValue } from './animation'
 
 const animationValues = [
   { percent: 100, value: 0.4 },
@@ -31,9 +31,7 @@ const styles = {
     width: '100%',
     height: '100%',
     transitionTimingFunction: theme.easing,
-    transition: '0.9s',
-    transform: doAnimation$(animationLoader$(theme.duration))
-      .map($val => translateY(getPercentValue(animationValues, $val)))
+    transition: '0.9s'
   },
   scene: {
     top: '10rem',

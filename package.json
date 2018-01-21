@@ -46,7 +46,6 @@
     "webpack": "^3.8.1"
   },
   "scripts": {
-    "all": "npm run jss:all && npm run build",
     "build": "npm run build:calendar && npm run build:react-ssr && npm run build:function-values && npm run build:observables && npm run build:swinging-cat && npm run build:swinging-cat-rx",
     "build:calendar": "webpack ./calendar/index.js ./calendar/dist/index.js --config ./calendar/webpack.config.js",
     "build:react-ssr": "webpack --config ./react-ssr/webpack.config.js && node ./react-ssr/bin/build > ./react-ssr/dist/index.html",
@@ -67,6 +66,6 @@
     "jss:global": "cpy ./node_modules/jss-global/dist/jss-global.js ./",
     "jss:preset-default": "cpy ./node_modules/jss-preset-default/dist/jss-preset-default.js ./",
     "jss:perdido": "cpy ./node_modules/perdido/dist/perdido.js ./",
-    "prepublishOnly": "npm run all"
+    "prepublishOnly": "NODE_ENV=production npm run jss:all && npm run build"
   }
 }

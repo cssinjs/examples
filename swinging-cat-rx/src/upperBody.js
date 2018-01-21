@@ -17,7 +17,13 @@ const styles = {
   catHead: {
     width: 90,
     height: 90,
-    backgroundImage: `radial-gradient(circle at 10px 10px, #ffffff, #ffffff 40%, ${theme.colorFurLight} 65%, ${theme.colorFurDark})`,
+    backgroundImage: `radial-gradient(
+      circle at 10px 10px,
+      #ffffff,
+      #ffffff 40%,
+      ${theme.colorFurLight} 65%,
+      ${theme.colorFurDark}
+    )`,
     borderRadius: '50%',
     top: 'calc(100% - 45px)'
   },

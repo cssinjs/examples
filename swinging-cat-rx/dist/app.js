@@ -1864,7 +1864,7 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setupAnimation = exports.doAnimation$ = exports.animationLoader$ = exports.swingAnimation$ = exports.translateX = exports.translateY = exports.scaleY = exports.rotate = exports.animationSubject = exports.swingAnimationValues = undefined;
+exports.setup = exports.doAnimation$ = exports.animationLoader$ = exports.swingAnimation$ = exports.translateX = exports.translateY = exports.scaleY = exports.rotate = exports.animationSubject = exports.swingAnimationValues = undefined;
 exports.getPercentValue = getPercentValue;
 
 var _rxjs = __webpack_require__(76);
@@ -1881,6 +1881,12 @@ var swingAnimationValues = exports.swingAnimationValues = [5, -10, 15, -23, 23, 
 
 var animationSubject = exports.animationSubject = new _rxjs.Subject(0);
 
+// animationSubject.subscribe(
+//   $val => console.log('Next: ' + $val),
+//   err => console.log('Error: ' + err),
+//   () => console.log('Completed')
+// )
+
 function getPercentValue(animationValues, $percent) {
   for (var i = 0; i < animationValues.length; i++) {
     if ($percent >= animationValues[i].percent) {
@@ -1889,14 +1895,6 @@ function getPercentValue(animationValues, $percent) {
   }
   return animationValues[animationValues.length - 1].value;
 }
-
-var subscription = animationSubject.subscribe(function ($val) {
-  return console.log('Next: ' + $val);
-}, function (err) {
-  return console.log('Error: ' + err);
-}, function () {
-  return console.log('Completed');
-});
 
 var rotate = exports.rotate = function rotate($val) {
   var $mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
@@ -1924,19 +1922,19 @@ var swingAnimation$ = exports.swingAnimation$ = function swingAnimation$() {
 
 var animationLoader$ = exports.animationLoader$ = function animationLoader$(duration) {
   return _rxjs.Observable.interval(0, _rxjs.Scheduler.animationFrame).startWith(0).scan(function (x) {
-    return x > duration * 10 ? 0 : x + 1;
+    return x > duration * (10 ? 0 : x + 1);
   }, 0).map(function (x) {
     return x * 10 / duration;
   });
 };
 
 var doAnimation$ = exports.doAnimation$ = function doAnimation$(loader$) {
-  return _rxjs.Observable.combineLatest(animationSubject, loader$, function ($val, $percent) {
-    return $val != 0 ? $percent : 0;
+  return _rxjs.Observable.combineLatest(animationSubject, loader$, function (val, percent) {
+    return val === 0 ? val : percent;
   });
 };
 
-var setupAnimation = exports.setupAnimation = function setupAnimation() {
+var setup = exports.setup = function setup() {
   var cat = document.querySelector('#cat');
   var hCat = new Hammer(cat);
   var noop = function noop() {};
@@ -16106,7 +16104,7 @@ var _animation = __webpack_require__(20);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.body.appendChild((0, _scene2.default)());
-(0, _animation.setupAnimation)();
+(0, _animation.setup)();
 
 /***/ }),
 /* 180 */
@@ -19584,10 +19582,7 @@ var styles = {
     width: '100%',
     height: '100%',
     transitionTimingFunction: theme.easing,
-    transition: '0.9s',
-    transform: (0, _animation.doAnimation$)((0, _animation.animationLoader$)(theme.duration)).map(function ($val) {
-      return (0, _animation.translateY)((0, _animation.getPercentValue)(animationValues, $val));
-    })
+    transition: '0.9s'
   },
   scene: {
     top: '10rem',
@@ -30570,7 +30565,7 @@ var styles = {
     width: 80,
     height: 80,
     borderRadius: '50%',
-    backgroundImage: 'radial-gradient(circle at top left, #e97c7f, ' + theme.colorYarn + ' 50%, #af1d22)',
+    backgroundImage: 'radial-gradient(\n      circle at top left,\n      #e97c7f,\n      ' + theme.colorYarn + ' 50%,\n      #af1d22\n    )',
     zIndex: 1,
     '&:before': {
       content: '""',
@@ -30650,7 +30645,7 @@ var styles = {
   catHead: {
     width: 90,
     height: 90,
-    backgroundImage: 'radial-gradient(circle at 10px 10px, #ffffff, #ffffff 40%, ' + theme.colorFurLight + ' 65%, ' + theme.colorFurDark + ')',
+    backgroundImage: 'radial-gradient(\n      circle at 10px 10px,\n      #ffffff,\n      #ffffff 40%,\n      ' + theme.colorFurLight + ' 65%,\n      ' + theme.colorFurDark + '\n    )',
     borderRadius: '50%',
     top: 'calc(100% - 45px)'
   },
@@ -30759,7 +30754,7 @@ var styles = {
       position: 'absolute',
       width: '90%',
       height: '100%',
-      border: '2px solid ' + theme.colorFeaturesLight,
+      border: [2, 'solid', theme.colorFeaturesLight],
       top: '80%',
       borderRadius: 100,
       borderTopColor: 'transparent',
@@ -30774,7 +30769,7 @@ var styles = {
       position: 'absolute',
       width: '90%',
       height: '100%',
-      border: '2px solid ' + theme.colorFeaturesLight,
+      border: [2, 'solid', theme.colorFeaturesLight],
       top: '80%',
       borderRadius: 100,
       borderTopColor: 'transparent',
@@ -30797,7 +30792,7 @@ var styles = {
       position: 'absolute',
       height: '100%',
       width: '30%',
-      border: '2px solid  ' + theme.colorFeaturesLight,
+      border: [2, 'solid', theme.colorFeaturesLight],
       borderLeft: 'none',
       borderRight: 'none'
     },
@@ -30809,7 +30804,7 @@ var styles = {
       position: 'absolute',
       height: '100%',
       width: '30%',
-      border: '2px solid  ' + theme.colorFeaturesLight,
+      border: [2, 'solid', theme.colorFeaturesLight],
       borderLeft: 'none',
       borderRight: 'none'
     }
@@ -35592,7 +35587,7 @@ var styles = {
     height: '100%',
     backgroundColor: '#fff',
     zIndex: -1,
-    backgroundImage: 'linear-gradient(to right, ' + theme.colorFurLight + ', ' + theme.colorFurLight + ' 20%, ' + theme.colorFurDark + ')',
+    backgroundImage: 'linear-gradient(\n      to right,\n      ' + theme.colorFurLight + ',\n      ' + theme.colorFurLight + ' 20%,\n      ' + theme.colorFurDark + '\n    )',
     '&:nth-child(1)': {
       borderTopLeftRadius: 100,
       left: 10,
@@ -35771,8 +35766,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _jss = __webpack_require__(11);
 
 var _jss2 = _interopRequireDefault(_jss);
@@ -35787,22 +35780,20 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var $swingLeg = {
-  transform: (0, _animation.swingAnimation$)(.1).delay(200)
-};
+var transform = (0, _animation.swingAnimation$)(.1).delay(200);
 
 var styles = {
-  catLowerLegPaw: _extends({
+  catLowerLegPaw: {
     position: 'absolute',
     height: 20,
     width: 20,
     zIndex: 1,
     transformOrigin: 'top center',
+    transform: transform,
     borderTopLeftRadius: 20,
-    borderTopRightRadius: 20
-  }, $swingLeg, {
+    borderTopRightRadius: 20,
     backgroundImage: 'linear-gradient(to right, #fff, ' + theme.colorFurLight + ', ' + theme.colorFurDark + ')'
-  }),
+  },
   catLegFirstNested: {
     bottom: 20
   },
@@ -35812,11 +35803,12 @@ var styles = {
   catLegSecond: {
     right: 0
   },
-  catLowerPaw: _extends({
+  catLowerPaw: {
     top: '50%',
     borderRadius: '50%',
-    backgroundColor: '#fff'
-  }, $swingLeg)
+    backgroundColor: '#fff',
+    transform: transform
+  }
 };
 
 var _jss$createStyleSheet = _jss2.default.createStyleSheet(styles, { link: true }).attach(),
@@ -35874,7 +35866,7 @@ var styles = {
     zIndex: 0,
     transform: (0, _animation.swingAnimation$)(-.4),
     transitionTimingFunction: theme.easing,
-    backgroundImage: 'linear-gradient(to right, #fff, ' + theme.colorFurLight + ', ' + theme.colorFurDark + ')',
+    backgroundImage: 'linear-gradient(\n      to right,\n      #fff,\n      ' + theme.colorFurLight + ',\n      ' + theme.colorFurDark + '\n    )',
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10
   },

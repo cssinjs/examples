@@ -12,7 +12,12 @@ const styles = {
     zIndex: 0,
     transform: swingAnimation$(-.4),
     transitionTimingFunction: theme.easing,
-    backgroundImage: `linear-gradient(to right, #fff, ${theme.colorFurLight}, ${theme.colorFurDark})`,
+    backgroundImage: `linear-gradient(
+      to right,
+      #fff,
+      ${theme.colorFurLight},
+      ${theme.colorFurDark}
+    )`,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10
   },

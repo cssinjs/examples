@@ -2,7 +2,6 @@ import jss from './jss'
 import * as theme from './theme'
 import { swingAnimation$, translateX, doAnimation$, animationLoader$, getPercentValue, scaleY } from './animation'
 
-
 const animationValues = [
   { percent: 100, value: 1 },
   { percent: 78, value: 0.1 },
@@ -31,9 +30,8 @@ const styles = {
     width: '100%',
     height: 6,
     transition: '0.6s',
-    transform: doAnimation$(animationLoader$(theme.duration)).map($val => 
-      scaleY(getPercentValue(animationValues, $val))
-    ),
+    transform: doAnimation$(animationLoader$(theme.duration))
+      .map($val => scaleY(getPercentValue(animationValues, $val))),
     '&:before': {
       content: '""',
       left: 20,
@@ -74,7 +72,7 @@ const styles = {
       position: 'absolute',
       width: '90%',
       height: '100%',
-      border: `2px solid ${theme.colorFeaturesLight}`,
+      border: [2, 'solid', theme.colorFeaturesLight],
       top: '80%',
       borderRadius: 100,
       borderTopColor: 'transparent',
@@ -89,7 +87,7 @@ const styles = {
       position: 'absolute',
       width: '90%',
       height: '100%',
-      border: `2px solid ${theme.colorFeaturesLight}`,
+      border: [2, 'solid', theme.colorFeaturesLight],
       top: '80%',
       borderRadius: 100,
       borderTopColor: 'transparent',
@@ -112,7 +110,7 @@ const styles = {
       position: 'absolute',
       height: '100%',
       width: '30%',
-      border: `2px solid  ${theme.colorFeaturesLight}`,
+      border: [2, 'solid', theme.colorFeaturesLight],
       borderLeft: 'none',
       borderRight: 'none'
     },
@@ -124,7 +122,7 @@ const styles = {
       position: 'absolute',
       height: '100%',
       width: '30%',
-      border: `2px solid  ${theme.colorFeaturesLight}`,
+      border: [2, 'solid', theme.colorFeaturesLight],
       borderLeft: 'none',
       borderRight: 'none'
     }

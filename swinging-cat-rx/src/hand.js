@@ -8,7 +8,12 @@ const styles = {
     height: '100%',
     backgroundColor: '#fff',
     zIndex: -1,
-    backgroundImage: `linear-gradient(to right, ${theme.colorFurLight}, ${theme.colorFurLight} 20%, ${theme.colorFurDark})`,
+    backgroundImage: `linear-gradient(
+      to right,
+      ${theme.colorFurLight},
+      ${theme.colorFurLight} 20%,
+      ${theme.colorFurDark}
+    )`,
     '&:nth-child(1)': {
       borderTopLeftRadius: 100,
       left: 10,
