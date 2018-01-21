@@ -1923,7 +1923,7 @@ var swingAnimation$ = exports.swingAnimation$ = function swingAnimation$() {
 };
 
 var animationLoader$ = exports.animationLoader$ = function animationLoader$(duration) {
-  return _rxjs.Observable.interval(100).startWith(0).scan(function (x) {
+  return _rxjs.Observable.interval(0, _rxjs.Scheduler.animationFrame).startWith(0).scan(function (x) {
     return x > duration * 10 ? 0 : x + 1;
   }, 0).map(function (x) {
     return x * 10 / duration;

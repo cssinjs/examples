@@ -32,9 +32,8 @@ const styles = {
     height: '100%',
     transitionTimingFunction: theme.easing,
     transition: '0.9s',
-    transform: doAnimation$(animationLoader$(theme.duration)).map($val => 
-      translateY(getPercentValue(animationValues, $val))
-    )
+    transform: doAnimation$(animationLoader$(theme.duration))
+      .map($val => translateY(getPercentValue(animationValues, $val)))
   },
   scene: {
     top: '10rem',

@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs'
+import { Observable, Subject, Scheduler } from 'rxjs'
 import 'hammerjs'
 import dynamics from 'dynamics.js'
 
@@ -26,45 +26,48 @@ export const scaleY = $val => `scaleY(${$val})`
 export const translateY = ($val, $mult = 1) => `translateY(${$val * $mult}rem)`
 export const translateX = ($val, $mult = 1) => `translateX(${$val * $mult}px)`
 
-export const swingAnimation$ = ($mult = 1, animation = rotate) => 
+export const swingAnimation$ = ($mult = 1, animation = rotate) =>
   animationSubject.map($val => animation($val, $mult))
 
-export const animationLoader$ = duration => Observable
-  .interval(100)
-  .startWith(0)
-  .scan(x => x > duration * 10 ? 0 : x + 1, 0)
-  .map(x => x * 10 / duration)
+export const animationLoader$ = duration => (
+  Observable
+    .interval(0, Scheduler.animationFrame)
+    .startWith(0)
+    .scan(x => x > duration * 10 ? 0 : x + 1, 0)
+    .map(x => x * 10 / duration)
+)
 
 export const doAnimation$ = loader$ => Observable.combineLatest(
-  animationSubject, loader$, ($val, $percent) => $val != 0 ? $percent : 0
+  animationSubject,
+  loader$,
+  ($val, $percent) => $val != 0 ? $percent : 0
 )
 
 export const setupAnimation = function() {
-  const cat = document.querySelector('#cat');
-  const hCat = new Hammer(cat);
-  const noop = () => {};
+  const cat = document.querySelector('#cat')
+  const hCat = new Hammer(cat)
+  const noop = () => {}
 
-  const springBack = fromX => Observable
-    .fromEventPattern(handler => dynamics.animate(
-      { deltaX: fromX },
-      { deltaX: 0 },
-      {
-        change: e => handler(e.deltaX),
-        type: dynamics.spring,
-        duration: 3000,
-        bounciness: 500,
-        friction: 100
-      }
-    ), noop)
+  const springBack = fromX => Observable.fromEventPattern(
+    handler => dynamics.animate(
+        { deltaX: fromX },
+        { deltaX: 0 },
+        {
+          change: e => handler(e.deltaX),
+          type: dynamics.spring,
+          duration: 3000,
+          bounciness: 500,
+          friction: 100
+        }
+    ),
+    noop
+  )
 
   const pan$ = Observable
-    .fromEventPattern(handler =>
-      hCat.on('panleft panright panend', handler), noop)
+    .fromEventPattern(handler => hCat.on('panleft panright panend', handler), noop)
 
   const move$ = pan$
-    .switchMap(e => e.type === 'panend'
-      ? springBack(e.deltaX)
-      : Observable.of(e.deltaX))
+    .switchMap(e => e.type === 'panend' ? springBack(e.deltaX) : Observable.of(e.deltaX))
     .startWith(0)
 
   move$.subscribe(deltaX => animationSubject.next(-deltaX * .1))
