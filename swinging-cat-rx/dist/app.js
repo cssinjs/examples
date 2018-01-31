@@ -19326,7 +19326,7 @@ var styles = {
     width: '100%',
     height: '100%',
     transitionTimingFunction: theme.easing,
-    transition: '0.9s',
+    transition: '0.8s',
     transform: (0, _animation.doAnimation$)((0, _animation.animationLoader$)(theme.duration)).map(function ($val) {
       return (0, _animation.translateY)((0, _animation.getPercentValue)(animationValues, $val));
     })
@@ -19339,6 +19339,7 @@ var styles = {
     height: '5rem',
     transformOrigin: 'center -20rem',
     transitionTimingFunction: theme.easing,
+    transition: '0.1s',
     transform: (0, _animation.swingAnimation$)().delay(100),
     '&:before': {
       content: '""',
@@ -19355,6 +19356,7 @@ var styles = {
     left: 'calc(50% - 45px)',
     width: 90,
     height: 130,
+    transition: '0.1s',
     transform: (0, _animation.swingAnimation$)(-1),
     transformOrigin: 'top center'
   },
@@ -19364,6 +19366,7 @@ var styles = {
     left: 0,
     width: '100%',
     height: '100%',
+    transition: '0.1s',
     transform: (0, _animation.swingAnimation$)().delay(150),
     transformOrigin: 'top center'
   }

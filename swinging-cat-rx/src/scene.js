@@ -31,7 +31,7 @@ const styles = {
     width: '100%',
     height: '100%',
     transitionTimingFunction: theme.easing,
-    transition: '0.9s',
+    transition: '0.8s',
     transform: doAnimation$(animationLoader$(theme.duration)).map($val => 
       translateY(getPercentValue(animationValues, $val))
     )
@@ -44,6 +44,7 @@ const styles = {
     height: '5rem',
     transformOrigin: 'center -20rem',
     transitionTimingFunction: theme.easing,
+    transition: '0.1s',
     transform: swingAnimation$().delay(100),
     '&:before': {
       content: '""',
@@ -60,6 +61,7 @@ const styles = {
     left: 'calc(50% - 45px)',
     width: 90,
     height: 130,
+    transition: '0.1s',
     transform: swingAnimation$(-1),
     transformOrigin: 'top center'
   },
@@ -69,6 +71,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
+    transition: '0.1s',
     transform: swingAnimation$().delay(150),
     transformOrigin: 'top center'
   }
